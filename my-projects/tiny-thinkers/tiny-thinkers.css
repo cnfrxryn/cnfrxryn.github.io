@@ -1,0 +1,77 @@
+/* HERO */
+.tt-hero {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #7bb6a8, #9dc7be);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8%;
+}
+
+/* TEXT */
+.tt-content {
+  max-width: 500px;
+}
+
+.tt-content h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.tt-content p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* GOOGLE PLAY */
+.play-btn img {
+  width: 180px;
+}
+
+/* IMAGES */
+.tt-images {
+  position: relative;
+}
+
+.tablet {
+  width: 400px;
+}
+
+.phone {
+  width: 200px;
+  position: absolute;
+  right: -40px;
+  top: -40px;
+}
+
+/* FEATURES */
+.tt-features {
+  background: #d6d0c7;
+  padding: 80px 8%;
+  text-align: center;
+}
+
+.tt-features h2 {
+  font-size: 36px;
+  margin-bottom: 50px;
+}
+
+/* GRID */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.feature h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.feature p {
+  font-size: 16px;
+  color: #555;
+}
