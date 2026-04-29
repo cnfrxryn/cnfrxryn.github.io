@@ -81,6 +81,15 @@
   transition: 0.3s;
 }
 
+.card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-link .card {
+  cursor: pointer;
+}
+
 /* HOVER EFFECT */
 .card:hover {
   transform: translateY(-5px);
