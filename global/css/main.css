@@ -1,0 +1,65 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Layout */
+.home {
+  display: flex;
+  height: 100vh;
+}
+
+/* LEFT SIDE IMAGE */
+.home-left {
+  width: 50%;
+  background: url('../../assets/images/bg-img.jpg') center/cover no-repeat;
+}
+
+/* RIGHT SIDE */
+.home-right {
+  width: 50%;
+  background-color: #5a5651; /* adjust to match your mock */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-left::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.3);
+}
+
+/* CONTENT */
+.content {
+  text-align: center;
+}
+
+/* SCRIPT TITLE */
+.title-script {
+  font-family: 'Great Vibes', cursive;
+  font-size: 80px;
+  color: #f5f5f5;
+  margin-bottom: 40px;
+}
+
+/* MENU LINKS */
+.menu a {
+  display: block;
+  text-decoration: none;
+  color: #eaeaea;
+  font-size: 22px;
+  margin: 15px 0;
+  letter-spacing: 1px;
+  transition: 0.3s;
+}
+
+.menu a:hover {
+  opacity: 0.7;
+}
