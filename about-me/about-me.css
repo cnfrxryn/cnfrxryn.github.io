@@ -24,7 +24,7 @@
 .about-text {
   position: absolute;
   top: 50%;
-  right: 8%;
+  left: 8%;              /* align with title */
   transform: translateY(-50%);
   width: 35%;
   color: #545454;
