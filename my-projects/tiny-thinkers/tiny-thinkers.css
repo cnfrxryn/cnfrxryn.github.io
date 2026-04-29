@@ -87,12 +87,52 @@
 }
 
 /* GRID */
-.features-grid {
+/* FEATURES LAYOUT */
+.features-layout {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 350px 1fr;
+  align-items: center;
   gap: 40px;
-  max-width: 900px;
-  margin: 0 auto;
+}
+
+/* COLUMN */
+.features-col {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* FEATURE ITEM */
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  text-align: left;
+}
+
+/* ICON */
+.feature-icon {
+  width: 28px;
+  margin-top: 5px;
+}
+
+/* TEXT */
+.feature-item h3 {
+  font-family: 'League Spartan', sans-serif;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.feature-item p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: #555;
+}
+
+/* CENTER IMAGE */
+.features-image img {
+  width: 100%;
+  max-width: 320px;
 }
 
 .feature h3 {
