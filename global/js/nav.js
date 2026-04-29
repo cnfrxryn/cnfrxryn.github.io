@@ -3,6 +3,15 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.text())
     .then(data => {
       document.getElementById("nav-container").innerHTML = data;
+
+      // ✅ FIX: allow submenu links to work
+      const submenuLinks = document.querySelectorAll(".projects-submenu a");
+
+      submenuLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+          e.stopPropagation();
+        });
+      });
     });
 });
 
@@ -12,7 +21,6 @@ function toggleMenu() {
 
   menu.classList.toggle("active");
 
-  // Change icon
   if (menu.classList.contains("active")) {
     hamburger.innerHTML = "✕";
   } else {
