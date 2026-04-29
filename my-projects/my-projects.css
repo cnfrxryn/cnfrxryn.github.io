@@ -58,8 +58,7 @@
   position: absolute;
   top: 200px;
   left: 8%;
-  right: 8%;
-
+  right: 5%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 40px;
@@ -67,22 +66,18 @@
 
 /* CARD */
 .card {
-  background-color: #e8e6e3;
-  border: 1px solid #aaa;
+  background-color: #dddddd;
+  border: 1px solid #545454;
   border-radius: 12px;
-
-  height: 160px;
-
+  height: 200px;
+  width: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
-
   text-align: center;
   padding: 20px;
-
   font-size: 18px;
   color: #545454;
-
   transition: 0.3s;
 }
 
@@ -90,4 +85,5 @@
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  cursor: pointer;
 }
