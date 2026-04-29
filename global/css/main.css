@@ -17,6 +17,10 @@ body {
   background-repeat: no-repeat;
 }
 
+.about {
+  position: relative;
+}
+
 /* TEXT CONTAINER */
 .overlay-content {
   position: absolute;

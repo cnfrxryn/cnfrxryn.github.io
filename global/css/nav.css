@@ -1,0 +1,80 @@
+/* HAMBURGER */
+.nav {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  z-index: 1000;
+}
+
+.hamburger {
+  font-size: 28px;
+  cursor: pointer;
+  color: #545454;
+}
+
+/* SIDE MENU */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  height: 100vh;
+  background-color: #e6dfd6;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  transition: 0.4s ease;
+  z-index: 99;
+}
+
+/* OPEN STATE */
+.side-menu.active {
+  right: 0;
+}
+
+/* LINKS */
+.side-menu a,
+.menu-item {
+  text-decoration: none;
+  color: #545454;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* SUBMENU */
+.projects-submenu {
+  position: absolute;
+  inset: 0;
+  background-color: #e6dfd6;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 25px;
+
+  transform: translateX(100%);
+  transition: 0.4s;
+}
+
+/* SHOW SUBMENU */
+.projects-submenu.active {
+  transform: translateX(0);
+}
+
+/* BACK BUTTON */
+.back {
+  position: absolute;
+  top: 40px;
+  left: 30px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* ARROW */
+.arrow {
+  margin-left: 10px;
+}

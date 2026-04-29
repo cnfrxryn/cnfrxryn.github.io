@@ -56,7 +56,7 @@
 /* GRID */
 .projects-grid {
   position: absolute;
-  top: 200px;
+  top: 30%;
   left: 8%;
   right: 5%;
   display: grid;
