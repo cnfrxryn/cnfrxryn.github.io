@@ -8,14 +8,23 @@ body {
   font-family: 'Playfair Display', serif;
 }
 
-/* FULL BACKGROUND */
-.home {
+/* BACKGROUND */
+.home, .about {
   height: 100vh;
   background-image: url('../../assets/images/bg-img.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
+/* 
+.about {
+  height: 100vh;
+  background-image: url('../../assets/images/bg-img.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+} */
 
 /* TEXT CONTAINER */
 .overlay-content {
