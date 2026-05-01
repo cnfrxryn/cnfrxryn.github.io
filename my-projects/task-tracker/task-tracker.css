@@ -456,3 +456,55 @@ table td:nth-child(3) {
 .close-btn:hover {
   opacity: 0.6;
 }
+
+/* VIEW MODAL CONTENT */
+.view-description {
+  background: #eee;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+/* CARDS ROW */
+.view-cards {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* INDIVIDUAL CARD */
+.view-card {
+  flex: 1;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.view-card span {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+/* VALUE + ICON */
+.view-value {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-value img {
+  width: 22px;
+}
+
+/* UPDATE BUTTON */
+.btn-update {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #444;
+  color: white;
+  cursor: pointer;
+}

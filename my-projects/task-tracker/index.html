@@ -189,6 +189,56 @@
     </div>
 
   </div>
+
+  <!-- VIEW / EDIT TASK MODAL -->
+  <div class="modal" id="viewModal">
+
+    <div class="modal-content">
+
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h3 id="viewTitle">Task Title</h3>
+        <span class="close-btn" onclick="closeViewModal()">✕</span>
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div class="view-description" id="viewDescription"></div>
+
+      <!-- INFO CARDS -->
+      <div class="view-cards">
+
+        <div class="view-card">
+          <span>Priority</span>
+          <div class="view-value">
+            <span id="viewPriority">High</span>
+            <img src="/assets/icons/high-priority.png">
+          </div>
+        </div>
+
+        <div class="view-card">
+          <span>Status</span>
+          <div class="view-value">
+            <span id="viewStatus">In Progress</span>
+            <img src="/assets/icons/status.png">
+          </div>
+        </div>
+
+        <div class="view-card">
+          <span>Deadline</span>
+          <div class="view-value">
+            <span id="viewDeadline">May 3, 2026</span>
+            <img src="/assets/icons/due-date.png">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ACTION -->
+      <button class="btn-update" onclick="updateTask()">Update</button>
+
+    </div>
+
+  </div>
 </div>
 
 <script src="/global/js/nav.js"></script>
