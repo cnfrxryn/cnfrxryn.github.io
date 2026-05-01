@@ -363,6 +363,7 @@ table td:nth-child(3) {
   display: none;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 
 .modal.active {
@@ -371,13 +372,84 @@ table td:nth-child(3) {
 
 .modal-content {
   background: white;
-  padding: 20px;
   border-radius: 12px;
-  width: 400px;
+  width: 480px;
+  overflow: hidden;
 }
 
 .modal-header {
+  position: relative;
+  padding: 15px 20px;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  background: linear-gradient(to right, #1f1f1f, #555);
+  color: white;
+}
+
+.modal-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('/assets/images/task-tracker-banner.png') center/cover no-repeat;
+  opacity: 0.2;
+}
+
+.modal-header h3 {
+  position: relative;
+  z-index: 1;
+  font-size: 18px;
+}
+
+/* FORM LAYOUT */
+#taskForm {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+}
+
+/* INPUTS */
+#taskForm input,
+#taskForm textarea,
+#taskForm select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* TEXTAREA HEIGHT */
+#taskForm textarea {
+  min-height: 80px;
+  resize: none;
+}
+
+/* BUTTON */
+#taskForm button {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #444;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#taskForm button:hover {
+  background: #222;
+}
+
+/* Modal Close Button */
+.close-btn {
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.close-btn:hover {
+  opacity: 0.6;
 }
