@@ -267,3 +267,14 @@ th, td {
 .page.active {
   font-weight: bold;
 }
+
+/* NAV MENU OVERRIDE */
+.nav {
+  left: 20px !important;
+  right: auto !important;
+}
+
+.side-menu {
+  left: 0 !important;
+  right: auto !important;
+}
