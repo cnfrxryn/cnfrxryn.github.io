@@ -3,70 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <title>Task Tracker</title>
+
+  <link rel="stylesheet" href="/global/css/nav.css">
   <link rel="stylesheet" href="task-tracker.css">
 </head>
 
 <body>
+
+<!-- NAV (reuse existing) -->
+<div id="nav-container"></div>
 
 <div class="container">
 
   <!-- HEADER -->
   <header class="header">
     <div class="left">
-      <span class="hamburger">☰</span>
+      <!-- Hamburger (uses your existing nav JS) -->
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()">☰</div>
       <h1>My Tasks</h1>
-    </div>
-    <div class="right">
-      <img src="chatbot.png" alt="chatbot" class="chatbot-icon">
     </div>
   </header>
 
   <!-- TOGGLE -->
   <div class="toggle-container">
-    <button id="btnActive" class="toggle active">ACTIVE</button>
-    <button id="btnCompleted" class="toggle">COMPLETED</button>
+    <button class="toggle active">ACTIVE</button>
+    <button class="toggle">COMPLETED</button>
   </div>
 
   <!-- SUMMARY -->
   <section class="summary">
 
     <div class="summary-cards">
+
       <div class="card">
-        <p>Total Tasks</p>
-        <h3 id="totalTasks">40</h3>
+        <div class="card-top">
+          <span class="card-title">Total Tasks</span>
+          <img src="/assets/icons/placeholder.png" class="card-icon">
+        </div>
+        <h3>40</h3>
       </div>
 
-      <div class="card clickable" id="filterHigh">
-        <p>High Priority</p>
+      <div class="card clickable">
+        <div class="card-top">
+          <span class="card-title">High Priority</span>
+          <img src="/assets/icons/placeholder.png" class="card-icon">
+        </div>
         <h3>20</h3>
       </div>
 
       <div class="card">
-        <p>Due Soon</p>
+        <div class="card-top">
+          <span class="card-title">Due Soon</span>
+          <img src="/assets/icons/placeholder.png" class="card-icon">
+        </div>
         <h3>20</h3>
       </div>
+
     </div>
 
     <div class="summary-actions">
-      <button id="btnAdd">+ Add New</button>
+      <button class="btn-primary">+ Add New</button>
 
       <div class="dropdown">
-        <button id="btnDownload">Download</button>
-        <div class="dropdown-menu" id="downloadMenu">
-          <button id="downloadXLS">.XLS</button>
-          <button id="downloadPDF">.PDF</button>
+        <button class="btn-primary">
+          ↓ Download
+        </button>
+
+        <div class="dropdown-menu">
+          <button>.XLS</button>
+          <button>.PDF</button>
         </div>
       </div>
     </div>
 
   </section>
 
-  <!-- SEARCH + FILTER -->
+  <!-- CONTROLS -->
   <section class="controls">
-    <input type="text" placeholder="Search..." id="searchInput">
-    <button id="btnFilter">Filters</button>
 
-    <button id="btnComplete" class="hidden">Mark as Completed</button>
+    <!-- SEARCH -->
+    <div class="search-box">
+      <img src="/assets/icons/search.png" class="search-icon">
+      <span class="divider">|</span>
+      <input type="text" placeholder="Search...">
+    </div>
+
+    <!-- FILTER BUTTON -->
+    <button class="btn-filter">FILTERS</button>
+
+    <!-- MARK COMPLETE -->
+    <button class="btn-complete hidden">Mark as Completed</button>
+
   </section>
 
   <!-- TABLE -->
@@ -75,7 +102,7 @@
     <table>
       <thead>
         <tr>
-          <th><input type="checkbox" id="selectAll"></th>
+          <th><input type="checkbox"></th>
           <th></th>
           <th>TASK</th>
           <th>PRIORITY</th>
@@ -84,22 +111,26 @@
         </tr>
       </thead>
 
-      <tbody id="taskTable">
+      <tbody>
 
         <tr class="task-row">
-          <td><input type="checkbox" class="rowCheck"></td>
-          <td><img src="edit.png" class="edit-icon"></td>
+          <td><input type="checkbox"></td>
+          <td><img src="/assets/icons/edit.png" class="edit-icon"></td>
           <td>Create a task table</td>
-          <td class="priority high">High</td>
+          <td>
+            High <img src="/assets/icons/placeholder.png" class="priority-icon">
+          </td>
           <td>May 1, 2026</td>
           <td>Not Started</td>
         </tr>
 
         <tr class="task-row">
-          <td><input type="checkbox" class="rowCheck"></td>
-          <td><img src="edit.png" class="edit-icon"></td>
+          <td><input type="checkbox"></td>
+          <td><img src="/assets/icons/edit.png" class="edit-icon"></td>
           <td>Develop Tiny Thinkers</td>
-          <td class="priority high">High</td>
+          <td>
+            High <img src="/assets/icons/placeholder.png" class="priority-icon">
+          </td>
           <td>May 2, 2026</td>
           <td>In Progress</td>
         </tr>
@@ -113,12 +144,14 @@
       <span class="page">2</span>
       <span class="page">3</span>
       <span class="page">4</span>
-      <span class="next">›</span>
+      <span>›</span>
     </div>
 
   </section>
 
 </div>
+
+<script src="/global/js/nav.js"></script>
 
 </body>
 </html>

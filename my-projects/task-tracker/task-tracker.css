@@ -16,8 +16,8 @@ body {
 /* HEADER */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .header .left {
@@ -31,8 +31,10 @@ body {
   font-weight: bold;
 }
 
-.chatbot-icon {
-  width: 40px;
+/* MOVE NAV ICON LEFT (override global) */
+.nav {
+  left: 30px !important;
+  right: auto !important;
 }
 
 /* TOGGLE */
@@ -42,11 +44,12 @@ body {
 
 .toggle {
   padding: 10px 25px;
-  border: none;
   border-radius: 20px;
+  border: none;
   margin-right: 10px;
   cursor: pointer;
   background: #eee;
+  font-weight: bold;
 }
 
 .toggle.active {
@@ -64,41 +67,61 @@ body {
   align-items: center;
 }
 
+/* CARDS */
 .summary-cards {
   display: flex;
   gap: 20px;
 }
 
 .card {
-  background: #fff;
+  background: white;
   padding: 15px;
-  border-radius: 10px;
-  width: 150px;
+  border-radius: 12px;
+  width: 160px;
 }
 
-.card p {
-  font-size: 12px;
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.card-icon {
+  width: 18px;
 }
 
 .card h3 {
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 .card.clickable {
   cursor: pointer;
 }
 
-/* ACTIONS */
+/* ACTION BUTTONS */
 .summary-actions {
   display: flex;
   gap: 10px;
 }
 
-.summary-actions button {
-  padding: 8px 15px;
+.btn-primary {
+  padding: 10px 16px;
   border-radius: 20px;
   border: none;
+  background: #eee;
+  font-weight: bold;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: #444;
+  color: white;
 }
 
 /* DROPDOWN */
@@ -108,19 +131,28 @@ body {
 
 .dropdown-menu {
   position: absolute;
-  top: 40px;
+  top: 45px;
   right: 0;
   background: white;
   border-radius: 10px;
   display: none;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: flex;
 }
 
 .dropdown-menu button {
   padding: 10px;
   border: none;
-  background: none;
+  background: white;
   cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background: #eee;
 }
 
 /* CONTROLS */
@@ -128,12 +160,57 @@ body {
   margin: 20px 0;
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
-.controls input {
-  padding: 8px;
+/* SEARCH */
+.search-box {
+  display: flex;
+  align-items: center;
+  background: white;
   border-radius: 20px;
-  border: 1px solid #aaa;
+  padding: 8px 12px;
+  gap: 8px;
+  border: 1px solid #ccc;
+}
+
+.search-icon {
+  width: 14px;
+}
+
+.divider {
+  color: #aaa;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+}
+
+/* FILTER BUTTON */
+.btn-filter {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #eee;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-filter:hover {
+  background: #444;
+  color: white;
+}
+
+/* COMPLETE BUTTON */
+.btn-complete {
+  margin-left: auto;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #444;
+  color: white;
+  cursor: pointer;
 }
 
 .hidden {
@@ -166,12 +243,14 @@ th, td {
   cursor: pointer;
 }
 
-.priority.high {
-  color: red;
+/* ICONS */
+.edit-icon {
+  width: 14px;
 }
 
-.edit-icon {
-  width: 16px;
+.priority-icon {
+  width: 14px;
+  margin-left: 5px;
 }
 
 /* PAGINATION */
