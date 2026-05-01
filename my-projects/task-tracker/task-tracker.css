@@ -66,9 +66,7 @@ body {
   justify-content: space-between;
   align-items: center;
   overflow: hidden;
-
-  /* base gradient */
-  background: linear-gradient(to right, #1f1f1f, #555);
+  background: linear-gradient(to right, #1f1f1f, #555); /* base gradient */
 }
 
 /* decorative overlay (pattern feel) */
@@ -76,10 +74,8 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-
-  background: url('/assets/images/pattern.png') center/cover no-repeat;
+  background: url('/assets/images/task-tracker-banner.png') center/cover no-repeat;
   opacity: 0.15;
-
   pointer-events: none;
 }
 
@@ -301,12 +297,12 @@ th, td {
 }
 
 /* NAV MENU OVERRIDE */
-.nav {
+/* .nav.active {
   left: 20px !important;
   right: auto !important;
 }
 
-.side-menu {
+.side-menu.active {
   left: 0 !important;
   right: auto !important;
-}
+} */
