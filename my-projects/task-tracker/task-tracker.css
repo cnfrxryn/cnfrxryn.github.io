@@ -31,12 +31,6 @@ body {
   font-weight: bold;
 }
 
-/* MOVE NAV ICON LEFT (override global) */
-.nav {
-  left: 30px !important;
-  right: auto !important;
-}
-
 /* TOGGLE */
 .toggle-container {
   margin: 20px 0;
@@ -66,7 +60,9 @@ body {
   justify-content: space-between;
   align-items: center;
   overflow: hidden;
-  background: linear-gradient(to right, #1f1f1f, #555); /* base gradient */
+
+  /* base gradient */
+  background: linear-gradient(to right, #1f1f1f, #555);
 }
 
 /* decorative overlay (pattern feel) */
@@ -103,9 +99,9 @@ body {
 
 .card {
   background: white;
-  padding: 15px;
+  padding: 18px;
   border-radius: 12px;
-  width: 160px;
+  width: 170px;
 }
 
 .card-top {
@@ -120,7 +116,9 @@ body {
 }
 
 .card-icon {
-  width: 18px;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
 }
 
 .card h3 {
@@ -274,6 +272,8 @@ th, td {
 /* ICONS */
 .edit-icon {
   width: 14px;
+  display: block;
+  margin: 0 auto;
 }
 
 .priority-icon {
@@ -296,13 +296,62 @@ th, td {
   font-weight: bold;
 }
 
+/* COLUMN WIDTH CONTROL */
+table th:nth-child(1),
+table td:nth-child(1) {
+  width: 35px; /* checkbox */
+  text-align: center;
+}
+
+table th:nth-child(2),
+table td:nth-child(2) {
+  width: 30px; /* edit icon */
+  text-align: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* tighten spacing between checkbox + icon */
+table td {
+  vertical-align: middle;
+}
+
+/* reduce gap between icon and task */
+table td:nth-child(3) {
+  padding-left: 5px;
+}
+
 /* NAV MENU OVERRIDE */
-/* .nav.active {
-  left: 20px !important;
+/* 1) Move hamburger to left (keep same spacing) */
+.nav {
+  left: 40px !important;
   right: auto !important;
 }
 
-.side-menu.active {
-  left: 0 !important;
+/* 2) Side menu: anchor to left instead of right */
+.side-menu {
+  left: -350px !important;   /* was right: -350px */
   right: auto !important;
-} */
+}
+
+/* 3) Open state: slide in from left */
+.side-menu.active {
+  left: 0 !important;        /* was right: 0 */
+  right: auto !important;
+}
+
+/* 4) Submenu animation: slide from LEFT (not right) */
+.projects-submenu {
+  transform: translateX(-100%) !important;  /* was +100% */
+}
+
+/* 5) Show submenu (same trigger) */
+.projects-submenu.active {
+  transform: translateX(0) !important;
+}
+
+/* 6) Back button: mirror to right side for consistency */
+.back {
+  left: auto !important;
+  right: 30px !important;
+}
