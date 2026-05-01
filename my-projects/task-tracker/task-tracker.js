@@ -1,5 +1,7 @@
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let selectedTaskId = null;
+let currentPage = 1;
+const rowsPerPage = 10;
 
 function createTask() {
   const title = document.getElementById("taskTitle").value;
@@ -71,9 +73,20 @@ function closeViewModal() {
 
 function renderTasks() {
   const tbody = document.querySelector("tbody");
-  tbody.innerHTML = "";
+  const pagination = document.getElementById("pagination");
 
-  tasks.forEach(task => {
+  tbody.innerHTML = "";
+  pagination.innerHTML = "";
+
+  const totalPages = Math.ceil(tasks.length / rowsPerPage);
+
+  // 🧠 slice data for current page
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const paginatedTasks = tasks.slice(start, end);
+
+  // 🔁 render rows
+  paginatedTasks.forEach(task => {
     const row = document.createElement("tr");
     row.classList.add("task-row");
 
@@ -86,14 +99,16 @@ function renderTasks() {
       <td>${task.status}</td>
     `;
 
-    // 🔥 CLICK ROW → OPEN MODAL
     row.addEventListener("click", (e) => {
-      if (e.target.tagName === "INPUT") return; // ignore checkbox click
+      if (e.target.tagName === "INPUT") return;
       openViewModal(task.id);
     });
 
     tbody.appendChild(row);
   });
+
+  // 🧭 render pagination
+  renderPagination(totalPages);
 }
 
 function formatDate(dateStr) {
@@ -108,3 +123,49 @@ function formatDate(dateStr) {
 document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
 });
+
+function renderPagination(totalPages) {
+  const pagination = document.getElementById("pagination");
+
+  // ⬅ PREVIOUS
+  if (currentPage > 1) {
+    const prev = document.createElement("span");
+    prev.textContent = "<";
+    prev.classList.add("page");
+    prev.onclick = () => {
+      currentPage--;
+      renderTasks();
+    };
+    pagination.appendChild(prev);
+  }
+
+  // 🔢 PAGE NUMBERS
+  for (let i = 1; i <= totalPages; i++) {
+    const page = document.createElement("span");
+    page.textContent = i;
+    page.classList.add("page");
+
+    if (i === currentPage) {
+      page.classList.add("active");
+    }
+
+    page.onclick = () => {
+      currentPage = i;
+      renderTasks();
+    };
+
+    pagination.appendChild(page);
+  }
+
+  // ➡ NEXT
+  if (currentPage < totalPages) {
+    const next = document.createElement("span");
+    next.textContent = ">";
+    next.classList.add("page");
+    next.onclick = () => {
+      currentPage++;
+      renderTasks();
+    };
+    pagination.appendChild(next);
+  }
+}

@@ -295,6 +295,20 @@ th, td {
   font-weight: bold;
 }
 
+.pagination span {
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+.pagination span:hover {
+  background: #eee;
+}
+
+.pagination .active {
+  background: #444;
+  color: white;
+}
+
 /* COLUMN WIDTH CONTROL */
 table th:nth-child(1),
 table td:nth-child(1) {
@@ -373,7 +387,7 @@ table td:nth-child(3) {
 .modal-content {
   background: white;
   border-radius: 12px;
-  width: 480px;
+  width: 30%;
   overflow: hidden;
 }
 
@@ -462,14 +476,14 @@ table td:nth-child(3) {
   background: #eee;
   padding: 12px;
   border-radius: 8px;
-  margin: 15px 0;
+  margin: 15px 20px;
 }
 
 /* CARDS ROW */
 .view-cards {
   display: flex;
   gap: 15px;
-  margin-bottom: 20px;
+  margin: 20px;
 }
 
 /* INDIVIDUAL CARD */
@@ -500,11 +514,12 @@ table td:nth-child(3) {
 
 /* UPDATE BUTTON */
 .btn-update {
-  width: 100%;
+  width: 30%;
   padding: 12px;
   border: none;
   border-radius: 8px;
   background: #444;
   color: white;
   cursor: pointer;
+  margin: 15px 35%;
 }
