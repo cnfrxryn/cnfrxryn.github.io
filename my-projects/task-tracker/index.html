@@ -2,6 +2,123 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TASK TRACKER PLACEHOLDER</title>
+  <title>Task Tracker</title>
+  <link rel="stylesheet" href="task-tracker.css">
 </head>
+
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="left">
+      <span class="hamburger">☰</span>
+      <h1>My Tasks</h1>
+    </div>
+    <div class="right">
+      <img src="chatbot.png" alt="chatbot" class="chatbot-icon">
+    </div>
+  </header>
+
+  <!-- TOGGLE -->
+  <div class="toggle-container">
+    <button id="btnActive" class="toggle active">ACTIVE</button>
+    <button id="btnCompleted" class="toggle">COMPLETED</button>
+  </div>
+
+  <!-- SUMMARY -->
+  <section class="summary">
+
+    <div class="summary-cards">
+      <div class="card">
+        <p>Total Tasks</p>
+        <h3 id="totalTasks">40</h3>
+      </div>
+
+      <div class="card clickable" id="filterHigh">
+        <p>High Priority</p>
+        <h3>20</h3>
+      </div>
+
+      <div class="card">
+        <p>Due Soon</p>
+        <h3>20</h3>
+      </div>
+    </div>
+
+    <div class="summary-actions">
+      <button id="btnAdd">+ Add New</button>
+
+      <div class="dropdown">
+        <button id="btnDownload">Download</button>
+        <div class="dropdown-menu" id="downloadMenu">
+          <button id="downloadXLS">.XLS</button>
+          <button id="downloadPDF">.PDF</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SEARCH + FILTER -->
+  <section class="controls">
+    <input type="text" placeholder="Search..." id="searchInput">
+    <button id="btnFilter">Filters</button>
+
+    <button id="btnComplete" class="hidden">Mark as Completed</button>
+  </section>
+
+  <!-- TABLE -->
+  <section class="table-container">
+
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selectAll"></th>
+          <th></th>
+          <th>TASK</th>
+          <th>PRIORITY</th>
+          <th>DEADLINE</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+
+      <tbody id="taskTable">
+
+        <tr class="task-row">
+          <td><input type="checkbox" class="rowCheck"></td>
+          <td><img src="edit.png" class="edit-icon"></td>
+          <td>Create a task table</td>
+          <td class="priority high">High</td>
+          <td>May 1, 2026</td>
+          <td>Not Started</td>
+        </tr>
+
+        <tr class="task-row">
+          <td><input type="checkbox" class="rowCheck"></td>
+          <td><img src="edit.png" class="edit-icon"></td>
+          <td>Develop Tiny Thinkers</td>
+          <td class="priority high">High</td>
+          <td>May 2, 2026</td>
+          <td>In Progress</td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <span class="page active">1</span>
+      <span class="page">2</span>
+      <span class="page">3</span>
+      <span class="page">4</span>
+      <span class="next">›</span>
+    </div>
+
+  </section>
+
+</div>
+
+</body>
 </html>
