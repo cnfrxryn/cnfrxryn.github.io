@@ -27,6 +27,8 @@ function createTask() {
 
   // SAVE
   localStorage.setItem("tasks", JSON.stringify(tasks));
+  console.log("New task:", newTask);
+  console.log("All tasks:", tasks);
 
   // RESET FORM
   document.getElementById("taskForm").reset();
@@ -102,3 +104,7 @@ function formatDate(dateStr) {
     year: "numeric"
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderTasks();
+});
