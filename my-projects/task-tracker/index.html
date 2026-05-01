@@ -51,7 +51,7 @@
 
       <div class="card">
         <div class="card-top">
-          <span class="card-title">Due Soon</span>
+          <span class="card-title">At Risk</span>
           <img src="/assets/icons/due-date.png" class="card-icon">
         </div>
         <h3>20</h3>
@@ -60,7 +60,7 @@
     </div>
 
     <div class="summary-actions">
-      <button class="btn-primary">+ Add New</button>
+      <button class="btn-primary" onclick="openModal()">+ Add New</button>
 
       <div class="dropdown">
         <button class="btn-primary">
@@ -149,7 +149,50 @@
 
 </div>
 
+<!-- MODALS -->
+<div id="modals">
+  <!-- CREATE TASK MODAL -->
+  <div class="modal" id="taskModal">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h3>Create New Task</h3>
+        <span onclick="closeModal()">✕</span>
+      </div>
+
+      <form id="taskForm">
+
+        <input id="taskTitle" type="text" placeholder="Task name" required>
+
+        <textarea id="taskDescription" placeholder="Description"></textarea>
+
+        <select id="taskPriority" required>
+          <option value="">Select priority</option>
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+        </select>
+
+        <input id="taskDeadline" type="date" required>
+
+        <select id="taskStatus" required>
+          <option value="">Select status</option>
+          <option>Not Started</option>
+          <option>In Progress</option>
+        </select>
+
+        <button type="button" onclick="createTask()">Create</button>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
 <script src="/global/js/nav.js"></script>
+<script src="task-tracker.js"></script>
 
 </body>
 </html>
