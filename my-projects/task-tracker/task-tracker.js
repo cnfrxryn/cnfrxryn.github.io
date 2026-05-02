@@ -5,6 +5,10 @@ const rowsPerPage = 10;
 let isEditMode = false;
 let selectedTaskIds = new Set();
 let currentView = "active"; // active | completed
+let filters = JSON.parse(localStorage.getItem("filters")) || {
+  priority: "",
+  status: ""
+};
 
 /* =========================
    CREATE / UPDATE TASK
@@ -120,8 +124,20 @@ function renderTasks() {
       ? tasks.filter(t => t.status !== "Completed")
       : tasks.filter(t => t.status === "Completed");
 
+  // APPLY FILTERS
+  if (filters.priority) {
+    filteredTasks = filteredTasks.filter(t => t.priority === filters.priority);
+  }
+
+  if (filters.status) {
+    filteredTasks = filteredTasks.filter(t => t.status === filters.status);
+  }
+
   // 🔥 PAGINATION
   const totalPages = Math.ceil(filteredTasks.length / rowsPerPage) || 1;
+  if (currentPage > totalPages) {
+    currentPage = 1;
+  }
 
   const start = (currentPage - 1) * rowsPerPage;
   const end = start + rowsPerPage;
@@ -156,6 +172,9 @@ function renderTasks() {
   });
 
   renderPagination(totalPages);
+
+  const selectAll = document.getElementById("selectAll");
+  if (selectAll) selectAll.checked = false;
 }
 
 /* =========================
@@ -232,13 +251,32 @@ function updateCompleteButton() {
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
+  updateActionButtonText();
 
   // SELECT ALL
   document.getElementById("selectAll").addEventListener("change", (e) => {
+    selectedTaskIds.clear();
+
     if (e.target.checked) {
-      tasks.forEach(task => selectedTaskIds.add(task.id));
-    } else {
-      selectedTaskIds.clear();
+      let visibleTasks =
+        currentView === "active"
+          ? tasks.filter(t => t.status !== "Completed")
+          : tasks.filter(t => t.status === "Completed");
+
+      if (filters.priority) {
+        visibleTasks = visibleTasks.filter(t => t.priority === filters.priority);
+      }
+
+      if (filters.status) {
+        visibleTasks = visibleTasks.filter(t => t.status === filters.status);
+      }
+
+      const start = (currentPage - 1) * rowsPerPage;
+      const end = start + rowsPerPage;
+
+      visibleTasks.slice(start, end).forEach(task => {
+        selectedTaskIds.add(task.id);
+      });
     }
 
     renderTasks();
@@ -249,15 +287,20 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector(".btn-complete").addEventListener("click", () => {
     tasks.forEach(task => {
       if (selectedTaskIds.has(task.id)) {
-        task.status = "Completed";
+        task.status =
+          currentView === "active"
+            ? "Completed"
+            : "In Progress";
       }
     });
 
     localStorage.setItem("tasks", JSON.stringify(tasks));
 
     selectedTaskIds.clear();
+
+    updateActionButtonText(); // ✅ ADD THIS
+    updateCompleteButton();   // already there
     renderTasks();
-    updateCompleteButton();
   });
 
   // TOGGLE VIEW
@@ -274,6 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 🔥 IMPORTANT FIX
       selectedTaskIds.clear();
       updateCompleteButton();
+      updateActionButtonText();
 
       renderTasks();
     });
@@ -290,4 +334,41 @@ function formatDate(dateStr) {
     day: "numeric",
     year: "numeric"
   });
+}
+
+function openFilterModal() {
+  document.getElementById("filterModal").classList.add("active");
+
+  // preload values
+  document.getElementById("filterPriority").value = filters.priority;
+  document.getElementById("filterStatus").value = filters.status;
+}
+
+function closeFilterModal() {
+  document.getElementById("filterModal").classList.remove("active");
+}
+
+function applyFilters() {
+  filters.priority = document.getElementById("filterPriority").value;
+  filters.status = document.getElementById("filterStatus").value;
+
+  localStorage.setItem("filters", JSON.stringify(filters));
+
+  closeFilterModal();
+  currentPage = 1;
+  updateActionButtonText();
+  updateCompleteButton();
+  renderTasks();
+}
+
+function updateActionButtonText() {
+  const btn = document.querySelector(".btn-complete");
+
+  if (currentView === "active") {
+    btn.textContent = "Mark as Completed";
+    btn.classList.remove("restore");
+  } else {
+    btn.textContent = "Restore to Active";
+    btn.classList.add("restore");
+  }
 }

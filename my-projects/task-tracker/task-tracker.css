@@ -244,6 +244,15 @@ body {
   color: white;
 }
 
+.btn-complete.restore {
+  background: #bbb;
+}
+
+.btn-complete.restore:hover {
+  background: #888;
+  color: white;
+}
+
 .hidden {
   display: none;
 }
@@ -533,4 +542,59 @@ input[type="checkbox"] {
   font-style: italic;
   color: #777;
   margin: 0 20px 10px 20px;
+}
+
+/* ACTIVE / COMPLETED TABS STYLING */
+.table-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.table-tabs .toggle {
+  border-radius: 10px 10px 0 0;
+  background: #ddd;
+}
+
+.table-tabs .toggle.active {
+  background: #444;
+  color: white;
+}
+
+/* FILTER BUTTON ICON */
+.filter-icon {
+  width: 14px;
+  margin-right: 6px;
+}
+
+/* FILTER MODAL */
+.filter-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+}
+
+.filter-body select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+}
+
+.filter-actions button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.filter-actions button:last-child {
+  background: #444;
+  color: white;
 }

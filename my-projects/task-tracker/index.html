@@ -22,12 +22,6 @@
     </div>
   </header>
 
-  <!-- TOGGLE -->
-  <div class="toggle-container">
-    <button class="toggle active">ACTIVE</button>
-    <button class="toggle">COMPLETED</button>
-  </div>
-
   <!-- SUMMARY -->
   <section class="summary">
 
@@ -87,7 +81,9 @@
     </div>
 
     <!-- FILTER BUTTON -->
-    <button class="btn-filter">FILTERS</button>
+    <button class="btn-filter" onclick="openFilterModal()">
+      <img src="/assets/icons/filter.png" class="filter-icon">FILTERS
+    </button>
 
     <!-- MARK COMPLETE -->
     <button class="btn-complete hidden">Mark as Completed</button>
@@ -96,6 +92,11 @@
 
   <!-- TABLE -->
   <section class="table-container">
+    <!-- TOGGLE -->
+    <div class="table-tabs">
+      <button class="toggle active">ACTIVE</button>
+      <button class="toggle">COMPLETED</button>
+    </div>
 
     <table>
       <thead>
@@ -205,6 +206,42 @@
 
       <!-- ACTION -->
       <button class="btn-update" onclick="editTask()">Edit Task</button>
+
+    </div>
+
+  </div>
+
+  <!-- FILTER MODAL -->
+  <div class="modal" id="filterModal">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h3>Filter Tasks</h3>
+      </div>
+
+      <div class="filter-body">
+
+        <select id="filterPriority">
+          <option value="">All Priorities</option>
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+        </select>
+
+        <select id="filterStatus">
+          <option value="">All Status</option>
+          <option>Not Started</option>
+          <option>In Progress</option>
+          <option>Completed</option>
+        </select>
+
+      </div>
+
+      <div class="filter-actions">
+        <button onclick="closeFilterModal()">Cancel</button>
+        <button onclick="applyFilters()">Apply</button>
+      </div>
 
     </div>
 
