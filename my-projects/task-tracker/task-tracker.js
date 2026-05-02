@@ -9,6 +9,7 @@ let filters = JSON.parse(localStorage.getItem("filters")) || {
   priority: "",
   status: ""
 };
+let searchQuery = "";
 
 /* =========================
    CREATE / UPDATE TASK
@@ -112,6 +113,7 @@ function editTask() {
    RENDER TABLE
 ========================= */
 function renderTasks() {
+  updateCounts();
   const tbody = document.querySelector("tbody");
   const pagination = document.getElementById("pagination");
 
@@ -131,6 +133,16 @@ function renderTasks() {
 
   if (filters.status) {
     filteredTasks = filteredTasks.filter(t => t.status === filters.status);
+  }
+
+  // 🔍 SEARCH FILTER
+  if (searchQuery) {
+    filteredTasks = filteredTasks.filter(t => {
+      const title = t.title.toLowerCase();
+      const desc = (t.description || "").toLowerCase();
+
+      return title.includes(searchQuery) || desc.includes(searchQuery);
+    });
   }
 
   // 🔥 PAGINATION
@@ -253,6 +265,14 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
   updateActionButtonText();
 
+  const btn = document.querySelector(".btn-filter");
+
+  if (filters.priority || filters.status) {
+    btn.classList.add("active");
+  } else {
+    btn.classList.remove("active");
+  }
+
   // SELECT ALL
   document.getElementById("selectAll").addEventListener("change", (e) => {
     selectedTaskIds.clear();
@@ -322,6 +342,12 @@ document.addEventListener("DOMContentLoaded", () => {
       renderTasks();
     });
   });
+
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    searchQuery = e.target.value.trim().toLowerCase();
+    currentPage = 1;
+    renderTasks();
+  });
 });
 
 /* =========================
@@ -359,6 +385,14 @@ function applyFilters() {
   updateActionButtonText();
   updateCompleteButton();
   renderTasks();
+
+  const btn = document.querySelector(".btn-filter");
+
+  if (filters.priority || filters.status) {
+    btn.classList.add("active");
+  } else {
+    btn.classList.remove("active");
+  }
 }
 
 function updateActionButtonText() {
@@ -371,4 +405,35 @@ function updateActionButtonText() {
     btn.textContent = "Restore to Active";
     btn.classList.add("restore");
   }
+}
+
+function updateCounts() {
+  const total = tasks.length;
+
+  const high = tasks.filter(t => t.priority === "High").length;
+
+  const today = new Date();
+
+  const risk = tasks.filter(t => {
+    const d = new Date(t.deadline);
+    const diffDays = Math.ceil((d - today) / (1000 * 60 * 60 * 24));
+
+    return diffDays <= 2; // includes overdue + today + near due
+  }).length;
+
+  document.getElementById("totalCount").textContent = total;
+  document.getElementById("highCount").textContent = high;
+  document.getElementById("riskCount").textContent = risk;
+}
+
+function filterHighPriority() {
+  filters.priority = "High";
+  localStorage.setItem("filters", JSON.stringify(filters));
+
+  currentPage = 1;
+
+  // highlight filter button
+  document.querySelector(".btn-filter").classList.add("active");
+
+  renderTasks();
 }
