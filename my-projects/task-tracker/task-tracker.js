@@ -4,7 +4,11 @@ let currentPage = 1;
 const rowsPerPage = 10;
 let isEditMode = false;
 let selectedTaskIds = new Set();
+let currentView = "active"; // active | completed
 
+/* =========================
+   CREATE / UPDATE TASK
+========================= */
 function createTask() {
   const title = document.getElementById("taskTitle").value;
   const description = document.getElementById("taskDescription").value;
@@ -18,9 +22,7 @@ function createTask() {
   }
 
   if (isEditMode) {
-    // 🔄 UPDATE EXISTING TASK
     const task = tasks.find(t => t.id === selectedTaskId);
-
     if (task) {
       task.title = title;
       task.description = description;
@@ -28,11 +30,9 @@ function createTask() {
       task.deadline = deadline;
       task.status = status;
     }
-
     isEditMode = false;
   } else {
-    // ➕ CREATE NEW TASK
-    const newTask = {
+    tasks.push({
       id: Date.now(),
       title,
       description,
@@ -40,26 +40,21 @@ function createTask() {
       deadline,
       status,
       createdAt: new Date().toISOString()
-    };
-
-    tasks.push(newTask);
+    });
   }
 
-  // SAVE
   localStorage.setItem("tasks", JSON.stringify(tasks));
 
-  // RESET
   document.getElementById("taskForm").reset();
-
-  // RESET BUTTON TEXT
   document.querySelector("#taskForm button").textContent = "Create";
 
-  // CLOSE
   closeModal();
-
   renderTasks();
 }
 
+/* =========================
+   MODALS
+========================= */
 function openModal() {
   document.getElementById("taskModal").classList.add("active");
 }
@@ -70,26 +65,48 @@ function closeModal() {
 
 function openViewModal(taskId) {
   const task = tasks.find(t => t.id === taskId);
-
   if (!task) return;
 
   selectedTaskId = taskId;
 
   document.getElementById("viewTitle").textContent = task.title;
   document.getElementById("viewDescription").textContent = task.description || "";
-
   document.getElementById("viewPriority").textContent = task.priority;
   document.getElementById("viewStatus").textContent = task.status;
   document.getElementById("viewDeadline").textContent = formatDate(task.deadline);
+  document.getElementById("viewCreated").textContent =
+    "Task created on " + formatDate(task.createdAt);
 
   document.getElementById("viewModal").classList.add("active");
-  document.getElementById("viewCreated").textContent = "Task created on " + formatDate(task.createdAt);
 }
 
 function closeViewModal() {
   document.getElementById("viewModal").classList.remove("active");
 }
 
+/* =========================
+   EDIT MODE
+========================= */
+function editTask() {
+  const task = tasks.find(t => t.id === selectedTaskId);
+  if (!task) return;
+
+  document.getElementById("taskTitle").value = task.title;
+  document.getElementById("taskDescription").value = task.description;
+  document.getElementById("taskPriority").value = task.priority;
+  document.getElementById("taskDeadline").value = task.deadline;
+  document.getElementById("taskStatus").value = task.status;
+
+  isEditMode = true;
+  document.querySelector("#taskForm button").textContent = "Update";
+
+  closeViewModal();
+  openModal();
+}
+
+/* =========================
+   RENDER TABLE
+========================= */
 function renderTasks() {
   const tbody = document.querySelector("tbody");
   const pagination = document.getElementById("pagination");
@@ -97,20 +114,33 @@ function renderTasks() {
   tbody.innerHTML = "";
   pagination.innerHTML = "";
 
-  const totalPages = Math.ceil(tasks.length / rowsPerPage);
+  // 🔥 FILTER FIRST
+  let filteredTasks =
+    currentView === "active"
+      ? tasks.filter(t => t.status !== "Completed")
+      : tasks.filter(t => t.status === "Completed");
 
-  // 🧠 slice data for current page
+  // 🔥 PAGINATION
+  const totalPages = Math.ceil(filteredTasks.length / rowsPerPage) || 1;
+
   const start = (currentPage - 1) * rowsPerPage;
   const end = start + rowsPerPage;
-  const paginatedTasks = tasks.slice(start, end);
 
-  // 🔁 render rows
+  const paginatedTasks = filteredTasks.slice(start, end);
+
+  // 🔁 RENDER ROWS
   paginatedTasks.forEach(task => {
     const row = document.createElement("tr");
     row.classList.add("task-row");
 
     row.innerHTML = `
-      <td><input type="checkbox" ${selectedTaskIds.has(task.id) ? "checked" : ""} onclick="toggleTaskSelection(event, ${task.id})"></td>
+      <td>
+        <input 
+          type="checkbox"
+          ${selectedTaskIds.has(task.id) ? "checked" : ""}
+          onclick="toggleTaskSelection(event, ${task.id})"
+        >
+      </td>
       <td>${task.title}</td>
       <td>${task.priority}</td>
       <td>${formatDate(task.deadline)}</td>
@@ -125,27 +155,15 @@ function renderTasks() {
     tbody.appendChild(row);
   });
 
-  // 🧭 render pagination
   renderPagination(totalPages);
 }
 
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric"
-  });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  renderTasks();
-});
-
+/* =========================
+   PAGINATION
+========================= */
 function renderPagination(totalPages) {
   const pagination = document.getElementById("pagination");
 
-  // ⬅ PREVIOUS
   if (currentPage > 1) {
     const prev = document.createElement("span");
     prev.textContent = "<";
@@ -157,15 +175,12 @@ function renderPagination(totalPages) {
     pagination.appendChild(prev);
   }
 
-  // 🔢 PAGE NUMBERS
   for (let i = 1; i <= totalPages; i++) {
     const page = document.createElement("span");
     page.textContent = i;
     page.classList.add("page");
 
-    if (i === currentPage) {
-      page.classList.add("active");
-    }
+    if (i === currentPage) page.classList.add("active");
 
     page.onclick = () => {
       currentPage = i;
@@ -175,7 +190,6 @@ function renderPagination(totalPages) {
     pagination.appendChild(page);
   }
 
-  // ➡ NEXT
   if (currentPage < totalPages) {
     const next = document.createElement("span");
     next.textContent = ">";
@@ -188,28 +202,9 @@ function renderPagination(totalPages) {
   }
 }
 
-function editTask() {
-  const task = tasks.find(t => t.id === selectedTaskId);
-  if (!task) return;
-
-  // PREFILL FORM
-  document.getElementById("taskTitle").value = task.title;
-  document.getElementById("taskDescription").value = task.description;
-  document.getElementById("taskPriority").value = task.priority;
-  document.getElementById("taskDeadline").value = task.deadline;
-  document.getElementById("taskStatus").value = task.status;
-
-  // SWITCH MODE
-  isEditMode = true;
-
-  // CHANGE BUTTON TEXT
-  document.querySelector("#taskForm button").textContent = "Update";
-
-  // CLOSE VIEW → OPEN FORM
-  closeViewModal();
-  openModal();
-}
-
+/* =========================
+   CHECKBOX LOGIC
+========================= */
 function toggleTaskSelection(e, taskId) {
   e.stopPropagation();
 
@@ -222,13 +217,25 @@ function toggleTaskSelection(e, taskId) {
   updateCompleteButton();
 }
 
+function updateCompleteButton() {
+  const btn = document.querySelector(".btn-complete");
+
+  if (selectedTaskIds.size > 0) {
+    btn.classList.remove("hidden");
+  } else {
+    btn.classList.add("hidden");
+  }
+}
+
+/* =========================
+   INIT
+========================= */
 document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
 
-  const selectAll = document.getElementById("selectAll");
-
-  selectAll.addEventListener("change", () => {
-    if (selectAll.checked) {
+  // SELECT ALL
+  document.getElementById("selectAll").addEventListener("change", (e) => {
+    if (e.target.checked) {
       tasks.forEach(task => selectedTaskIds.add(task.id));
     } else {
       selectedTaskIds.clear();
@@ -238,6 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCompleteButton();
   });
 
+  // MARK COMPLETE
   document.querySelector(".btn-complete").addEventListener("click", () => {
     tasks.forEach(task => {
       if (selectedTaskIds.has(task.id)) {
@@ -245,24 +253,41 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // SAVE
     localStorage.setItem("tasks", JSON.stringify(tasks));
 
-    // RESET SELECTION
     selectedTaskIds.clear();
-
-    // RELOAD
     renderTasks();
     updateCompleteButton();
   });
+
+  // TOGGLE VIEW
+  const toggles = document.querySelectorAll(".toggle");
+
+  toggles.forEach(btn => {
+    btn.addEventListener("click", () => {
+      toggles.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      currentView = btn.textContent.toLowerCase();
+      currentPage = 1;
+
+      // 🔥 IMPORTANT FIX
+      selectedTaskIds.clear();
+      updateCompleteButton();
+
+      renderTasks();
+    });
+  });
 });
 
-function updateCompleteButton() {
-  const btn = document.querySelector(".btn-complete");
-
-  if (selectedTaskIds.size > 0) {
-    btn.classList.remove("hidden");
-  } else {
-    btn.classList.add("hidden");
-  }
+/* =========================
+   UTIL
+========================= */
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
 }
