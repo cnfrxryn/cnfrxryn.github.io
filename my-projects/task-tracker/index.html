@@ -43,7 +43,7 @@
         <h3 id="highCount">0</h3>
       </div>
 
-      <div class="card">
+      <div class="card clickable" onclick="filterAtRisk()" title="Tasks due within 2 days or overdue">
         <div class="card-top">
           <span class="card-title">At Risk</span>
           <img src="/assets/icons/due-date.png" class="card-icon">
@@ -105,6 +105,7 @@
           <th>TASK</th>
           <th>PRIORITY</th>
           <th>DEADLINE</th>
+          <th>URGENCY</th>
           <th>STATUS</th>
         </tr>
       </thead>
@@ -234,6 +235,13 @@
           <option>Not Started</option>
           <option>In Progress</option>
           <option>Completed</option>
+        </select>
+
+        <select id="filterUrgency">
+          <option value="">All Urgency</option>
+          <option>High</option>
+          <option>Medium</option>
+          <option>Low</option>
         </select>
 
       </div>

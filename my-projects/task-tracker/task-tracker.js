@@ -7,7 +7,8 @@ let selectedTaskIds = new Set();
 let currentView = "active"; // active | completed
 let filters = JSON.parse(localStorage.getItem("filters")) || {
   priority: "",
-  status: ""
+  status: "",
+  urgency: ""
 };
 let searchQuery = "";
 
@@ -135,6 +136,17 @@ function renderTasks() {
     filteredTasks = filteredTasks.filter(t => t.status === filters.status);
   }
 
+  if (filters.urgency) {
+    if (filters.urgency === "AtRisk") {
+      filteredTasks = filteredTasks.filter(t => {
+        const u = getUrgency(t);
+        return u === "High" || u === "Medium";
+      });
+    } else {
+      filteredTasks = filteredTasks.filter(t => getUrgency(t) === filters.urgency);
+    }
+  }
+
   // 🔍 SEARCH FILTER
   if (searchQuery) {
     filteredTasks = filteredTasks.filter(t => {
@@ -172,6 +184,9 @@ function renderTasks() {
       <td>${task.title}</td>
       <td>${task.priority}</td>
       <td>${formatDate(task.deadline)}</td>
+      <td class="urgency-${getUrgency(task).toLowerCase()}">
+        ${getUrgency(task)}
+      </td>
       <td>${task.status}</td>
     `;
 
@@ -267,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const btn = document.querySelector(".btn-filter");
 
-  if (filters.priority || filters.status) {
+  if (filters.priority || filters.status || filters.urgency) {
     btn.classList.add("active");
   } else {
     btn.classList.remove("active");
@@ -289,6 +304,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (filters.status) {
         visibleTasks = visibleTasks.filter(t => t.status === filters.status);
+      }
+
+      if (filters.urgency) {
+        if (filters.urgency === "AtRisk") {
+          visibleTasks = visibleTasks.filter(t => {
+            const u = getUrgency(t);
+            return u === "High" || u === "Medium";
+          });
+        } else {
+          visibleTasks = visibleTasks.filter(t => getUrgency(t) === filters.urgency);
+        }
       }
 
       const start = (currentPage - 1) * rowsPerPage;
@@ -368,6 +394,7 @@ function openFilterModal() {
   // preload values
   document.getElementById("filterPriority").value = filters.priority;
   document.getElementById("filterStatus").value = filters.status;
+  document.getElementById("filterUrgency").value = filters.urgency;
 }
 
 function closeFilterModal() {
@@ -377,6 +404,7 @@ function closeFilterModal() {
 function applyFilters() {
   filters.priority = document.getElementById("filterPriority").value;
   filters.status = document.getElementById("filterStatus").value;
+  filters.urgency = document.getElementById("filterUrgency").value;
 
   localStorage.setItem("filters", JSON.stringify(filters));
 
@@ -388,7 +416,7 @@ function applyFilters() {
 
   const btn = document.querySelector(".btn-filter");
 
-  if (filters.priority || filters.status) {
+  if (filters.priority || filters.status || filters.urgency) {
     btn.classList.add("active");
   } else {
     btn.classList.remove("active");
@@ -427,13 +455,46 @@ function updateCounts() {
 }
 
 function filterHighPriority() {
-  filters.priority = "High";
+  filters = {
+    priority: "High",
+    status: "",
+    urgency: ""
+  };
   localStorage.setItem("filters", JSON.stringify(filters));
 
   currentPage = 1;
 
   // highlight filter button
   document.querySelector(".btn-filter").classList.add("active");
+
+  renderTasks();
+}
+
+function getUrgency(task) {
+  const today = new Date();
+  const d = new Date(task.deadline);
+
+  today.setHours(0,0,0,0);
+  d.setHours(0,0,0,0);
+
+  const diffDays = Math.ceil((d - today) / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) return "High";
+  if (diffDays <= 2) return "Medium";
+  return "Low";
+}
+
+function filterAtRisk() {
+  filters = {
+    priority: "",
+    status: "",
+    urgency: "AtRisk"
+  };
+  currentPage = 1;
+
+  document.querySelector(".btn-filter").classList.add("active");
+
+  localStorage.setItem("filters", JSON.stringify(filters));
 
   renderTasks();
 }
