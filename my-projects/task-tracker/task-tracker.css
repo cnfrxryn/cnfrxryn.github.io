@@ -233,9 +233,15 @@ body {
   padding: 10px 16px;
   border-radius: 20px;
   border: none;
+  background: #eee;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-complete:hover {
   background: #444;
   color: white;
-  cursor: pointer;
 }
 
 .hidden {
@@ -332,6 +338,11 @@ table td {
 /* reduce gap between icon and task */
 table td:nth-child(3) {
   padding-left: 5px;
+}
+
+/* checkbox hover */
+input[type="checkbox"] {
+  cursor: pointer;
 }
 
 /* NAV MENU OVERRIDE */
@@ -522,4 +533,12 @@ table td:nth-child(3) {
   color: white;
   cursor: pointer;
   margin: 15px 35%;
+}
+
+/* CREATE DATE IN VIEW MODAL */
+.view-created {
+  font-size: 12px;
+  font-style: italic;
+  color: #777;
+  margin: 0 20px 10px 20px;
 }

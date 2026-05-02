@@ -2,6 +2,8 @@ let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let selectedTaskId = null;
 let currentPage = 1;
 const rowsPerPage = 10;
+let isEditMode = false;
+let selectedTaskIds = new Set();
 
 function createTask() {
   const title = document.getElementById("taskTitle").value;
@@ -15,30 +17,46 @@ function createTask() {
     return;
   }
 
-  const newTask = {
-    id: Date.now(),
-    title,
-    description,
-    priority,
-    deadline,
-    status,
-    createdAt: new Date().toISOString()
-  };
+  if (isEditMode) {
+    // 🔄 UPDATE EXISTING TASK
+    const task = tasks.find(t => t.id === selectedTaskId);
 
-  tasks.push(newTask);
+    if (task) {
+      task.title = title;
+      task.description = description;
+      task.priority = priority;
+      task.deadline = deadline;
+      task.status = status;
+    }
+
+    isEditMode = false;
+  } else {
+    // ➕ CREATE NEW TASK
+    const newTask = {
+      id: Date.now(),
+      title,
+      description,
+      priority,
+      deadline,
+      status,
+      createdAt: new Date().toISOString()
+    };
+
+    tasks.push(newTask);
+  }
 
   // SAVE
   localStorage.setItem("tasks", JSON.stringify(tasks));
-  console.log("New task:", newTask);
-  console.log("All tasks:", tasks);
 
-  // RESET FORM
+  // RESET
   document.getElementById("taskForm").reset();
 
-  // CLOSE MODAL
+  // RESET BUTTON TEXT
+  document.querySelector("#taskForm button").textContent = "Create";
+
+  // CLOSE
   closeModal();
 
-  // RE-RENDER TABLE
   renderTasks();
 }
 
@@ -65,6 +83,7 @@ function openViewModal(taskId) {
   document.getElementById("viewDeadline").textContent = formatDate(task.deadline);
 
   document.getElementById("viewModal").classList.add("active");
+  document.getElementById("viewCreated").textContent = "Task created on " + formatDate(task.createdAt);
 }
 
 function closeViewModal() {
@@ -91,8 +110,7 @@ function renderTasks() {
     row.classList.add("task-row");
 
     row.innerHTML = `
-      <td><input type="checkbox"></td>
-      <td><img src="/assets/icons/edit-task.png" class="edit-icon"></td>
+      <td><input type="checkbox" ${selectedTaskIds.has(task.id) ? "checked" : ""} onclick="toggleTaskSelection(event, ${task.id})"></td>
       <td>${task.title}</td>
       <td>${task.priority}</td>
       <td>${formatDate(task.deadline)}</td>
@@ -167,5 +185,84 @@ function renderPagination(totalPages) {
       renderTasks();
     };
     pagination.appendChild(next);
+  }
+}
+
+function editTask() {
+  const task = tasks.find(t => t.id === selectedTaskId);
+  if (!task) return;
+
+  // PREFILL FORM
+  document.getElementById("taskTitle").value = task.title;
+  document.getElementById("taskDescription").value = task.description;
+  document.getElementById("taskPriority").value = task.priority;
+  document.getElementById("taskDeadline").value = task.deadline;
+  document.getElementById("taskStatus").value = task.status;
+
+  // SWITCH MODE
+  isEditMode = true;
+
+  // CHANGE BUTTON TEXT
+  document.querySelector("#taskForm button").textContent = "Update";
+
+  // CLOSE VIEW → OPEN FORM
+  closeViewModal();
+  openModal();
+}
+
+function toggleTaskSelection(e, taskId) {
+  e.stopPropagation();
+
+  if (selectedTaskIds.has(taskId)) {
+    selectedTaskIds.delete(taskId);
+  } else {
+    selectedTaskIds.add(taskId);
+  }
+
+  updateCompleteButton();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderTasks();
+
+  const selectAll = document.getElementById("selectAll");
+
+  selectAll.addEventListener("change", () => {
+    if (selectAll.checked) {
+      tasks.forEach(task => selectedTaskIds.add(task.id));
+    } else {
+      selectedTaskIds.clear();
+    }
+
+    renderTasks();
+    updateCompleteButton();
+  });
+
+  document.querySelector(".btn-complete").addEventListener("click", () => {
+    tasks.forEach(task => {
+      if (selectedTaskIds.has(task.id)) {
+        task.status = "Completed";
+      }
+    });
+
+    // SAVE
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+
+    // RESET SELECTION
+    selectedTaskIds.clear();
+
+    // RELOAD
+    renderTasks();
+    updateCompleteButton();
+  });
+});
+
+function updateCompleteButton() {
+  const btn = document.querySelector(".btn-complete");
+
+  if (selectedTaskIds.size > 0) {
+    btn.classList.remove("hidden");
+  } else {
+    btn.classList.add("hidden");
   }
 }

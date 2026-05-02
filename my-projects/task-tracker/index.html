@@ -100,8 +100,7 @@
     <table>
       <thead>
         <tr>
-          <th><input type="checkbox"></th>
-          <th></th>
+          <th><input type="checkbox" id="selectAll"></th>
           <th>TASK</th>
           <th>PRIORITY</th>
           <th>DEADLINE</th>
@@ -109,31 +108,6 @@
         </tr>
       </thead>
       <tbody></tbody>
-      <!-- <tbody>
-
-        <tr class="task-row">
-          <td><input type="checkbox"></td>
-          <td><img src="/assets/icons/edit-task.png" class="edit-icon"></td>
-          <td>Create a task table</td>
-          <td>
-            High <img src="/assets/icons/high-priority.png" class="priority-icon">
-          </td>
-          <td>May 1, 2026</td>
-          <td>Not Started</td>
-        </tr>
-
-        <tr class="task-row">
-          <td><input type="checkbox"></td>
-          <td><img src="/assets/icons/edit-task.png" class="edit-icon"></td>
-          <td>Develop Tiny Thinkers</td>
-          <td>
-            High <img src="/assets/icons/high-priority.png" class="priority-icon">
-          </td>
-          <td>May 2, 2026</td>
-          <td>In Progress</td>
-        </tr>
-
-      </tbody> -->
     </table>
 
     <!-- PAGINATION -->
@@ -227,8 +201,10 @@
 
       </div>
 
+      <div class="view-created" id="viewCreated"></div>
+
       <!-- ACTION -->
-      <button class="btn-update" onclick="updateTask()">Update</button>
+      <button class="btn-update" onclick="editTask()">Edit Task</button>
 
     </div>
 
