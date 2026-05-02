@@ -220,6 +220,9 @@ body {
   background: #eee;
   font-weight: bold;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .btn-filter:hover {
@@ -262,6 +265,7 @@ body {
   background: white;
   border-radius: 12px;
   padding: 10px;
+  border-top-left-radius: 0;
 }
 
 table {
@@ -547,8 +551,6 @@ input[type="checkbox"] {
 /* ACTIVE / COMPLETED TABS STYLING */
 .table-tabs {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
 }
 
 .table-tabs .toggle {
@@ -559,12 +561,19 @@ input[type="checkbox"] {
 .table-tabs .toggle.active {
   background: #444;
   color: white;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
 }
 
 /* FILTER BUTTON ICON */
 .filter-icon {
   width: 14px;
   margin-right: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.btn-filter:hover .filter-icon {
+  content: url('/assets/icons/filter-table-light.png');
+  opacity: 0.9;
 }
 
 /* FILTER MODAL */
