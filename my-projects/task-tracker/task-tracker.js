@@ -394,7 +394,16 @@ function openFilterModal() {
   // preload values
   document.getElementById("filterPriority").value = filters.priority;
   document.getElementById("filterStatus").value = filters.status;
-  document.getElementById("filterUrgency").value = filters.urgency;
+  const urgencyDropdown = document.getElementById("filterUrgency");
+  const hint = document.getElementById("filterHint");
+
+  if (filters.urgency === "AtRisk") {
+    urgencyDropdown.value = "";       // keep dropdown blank
+    hint.classList.remove("hidden");  // show message
+  } else {
+    urgencyDropdown.value = filters.urgency;
+    hint.classList.add("hidden");
+  }
 }
 
 function closeFilterModal() {

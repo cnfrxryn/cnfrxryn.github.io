@@ -322,11 +322,6 @@ table td {
   vertical-align: middle;
 }
 
-/* reduce gap between icon and task */
-table td:nth-child(3) {
-  padding-left: 5px;
-}
-
 /* checkbox hover */
 input[type="checkbox"] {
   cursor: pointer;
@@ -632,4 +627,10 @@ input[type="checkbox"] {
 .urgency-low {
   color: #5cb85c;
   font-weight: bold;
+}
+
+.filter-hint {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
 }
