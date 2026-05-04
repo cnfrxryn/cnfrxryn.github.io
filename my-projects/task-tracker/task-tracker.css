@@ -627,19 +627,29 @@ input[type="checkbox"] {
 }
 
 /* URGENCY COLORS */
+.urgency-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+/* COLORS */
 .urgency-high {
-  color: #d9534f;
-  font-weight: bold;
+  background-color: #d9534f; /* red */
 }
 
 .urgency-medium {
-  color: #f0ad4e;
-  font-weight: bold;
+  background-color: #f0ad4e; /* orange */
 }
 
 .urgency-low {
-  color: #5cb85c;
-  font-weight: bold;
+  background-color: #5cb85c; /* green */
+}
+
+td {
+  vertical-align: middle;
 }
 
 .filter-hint {
