@@ -150,7 +150,7 @@ body {
   gap: 6px;
 }
 
-.dropdown:hover .btn-primary {
+.btn-primary:hover, .dropdown:hover .btn-primary {
   background: #444;
   color: white;
 }
