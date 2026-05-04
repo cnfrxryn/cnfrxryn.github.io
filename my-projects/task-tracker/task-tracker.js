@@ -826,7 +826,7 @@ function updateSortIcons() {
       el.textContent = sortConfig.direction === "asc" ? "↑" : "↓";
       el.classList.add("active");
     } else {
-      el.textContent = "↕"; // 👈 default hint
+      el.textContent = "↕";
       el.classList.remove("active");
     }
   });
