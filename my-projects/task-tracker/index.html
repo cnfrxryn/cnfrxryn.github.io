@@ -28,37 +28,41 @@
     <div class="summary-cards">
 
       <div class="card">
-        <div class="card-top">
+        <div class="card-text">
           <span class="card-title">Total Tasks</span>
-          <img src="/assets/icons/total-tasks.png" class="card-icon">
+          <h3 id="totalCount">0</h3>
         </div>
-        <h3 id="totalCount">0</h3>
+        <img src="/assets/icons/total-tasks.png" class="card-icon">
       </div>
 
       <div class="card clickable" onclick="filterHighPriority()">
-        <div class="card-top">
+        <div class="card-text">
           <span class="card-title">High Priority</span>
-          <img src="/assets/icons/high-priority.png" class="card-icon">
+          <h3 id="highCount">0</h3>
         </div>
-        <h3 id="highCount">0</h3>
+        <img src="/assets/icons/high-priority.png" class="card-icon">
       </div>
 
       <div class="card clickable" onclick="filterAtRisk()" title="Tasks due within 2 days or overdue">
-        <div class="card-top">
+        <div class="card-text">
           <span class="card-title">At Risk</span>
-          <img src="/assets/icons/due-date.png" class="card-icon">
+          <h3 id="riskCount">0</h3>
         </div>
-        <h3 id="riskCount">0</h3>
+        <img src="/assets/icons/due-date.png" class="card-icon">
       </div>
 
     </div>
 
     <div class="summary-actions">
-      <button class="btn-primary" onclick="openModal()">+ Add New</button>
+      <button class="btn-primary" onclick="openModal()">
+        <img src="/assets/icons/add-new-btn.png" class="btn-icon-img">
+        Add New
+      </button>
 
       <div class="dropdown">
         <button class="btn-primary">
-          ↓ Download
+          <img src="/assets/icons/download-btn.png" class="btn-icon-img">
+          Download
         </button>
 
         <div class="dropdown-menu">
@@ -84,6 +88,10 @@
     <button class="btn-filter" onclick="openFilterModal()">
       <img src="/assets/icons/filter-table-dark.png" class="filter-icon">FILTERS
     </button>
+
+    <span id="clearFilters" class="clear-filters hidden" onclick="clearFilters()">
+      Clear ✕
+    </span>
 
     <!-- MARK COMPLETE -->
      <div class="selection-wrapper">

@@ -328,6 +328,8 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.classList.remove("active");
   }
 
+  updateClearFiltersVisibility();
+
   // SELECT ALL
   document.getElementById("selectAll").addEventListener("change", (e) => {
     let visibleTasks =
@@ -504,6 +506,8 @@ function applyFilters() {
   } else {
     btn.classList.remove("active");
   }
+
+  updateClearFiltersVisibility();
 }
 
 function updateActionButtonText() {
@@ -551,6 +555,7 @@ function filterHighPriority() {
   document.querySelector(".btn-filter").classList.add("active");
 
   renderTasks();
+  updateClearFiltersVisibility();
 }
 
 function getUrgency(task) {
@@ -579,5 +584,39 @@ function filterAtRisk() {
 
   localStorage.setItem("filters", JSON.stringify(filters));
 
+  renderTasks();
+  updateClearFiltersVisibility();
+}
+
+function updateClearFiltersVisibility() {
+  const clear = document.getElementById("clearFilters");
+  if (!clear) return;
+
+  if (filters.priority || filters.status || filters.urgency) {
+    clear.classList.remove("hidden");
+  } else {
+    clear.classList.add("hidden");
+  }
+}
+
+function clearFilters() {
+  filters = {
+    priority: "",
+    status: "",
+    urgency: ""
+  };
+
+  localStorage.setItem("filters", JSON.stringify(filters));
+
+  // reset UI states
+  currentPage = 1;
+
+  document.querySelector(".btn-filter").classList.remove("active");
+  document.getElementById("filterPriority").value = "";
+  document.getElementById("filterStatus").value = "";
+  document.getElementById("filterUrgency").value = "";
+  document.getElementById("filterHint").classList.add("hidden");
+  
+  updateClearFiltersVisibility();
   renderTasks();
 }
