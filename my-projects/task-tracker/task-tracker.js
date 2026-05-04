@@ -816,10 +816,18 @@ function updateSortIcons() {
     const el = document.getElementById(`sort-${col}`);
     if (!el) return;
 
-    if (sortConfig.key === col && !(currentView === "completed" && col === "status")) {
-      el.textContent = sortConfig.direction === "asc" ? "↑" : "↓";
-    } else {
+    // hide status sort in completed tab
+    if (currentView === "completed" && col === "status") {
       el.textContent = "";
+      return;
+    }
+
+    if (sortConfig.key === col) {
+      el.textContent = sortConfig.direction === "asc" ? "↑" : "↓";
+      el.classList.add("active");
+    } else {
+      el.textContent = "↕"; // 👈 default hint
+      el.classList.remove("active");
     }
   });
 }

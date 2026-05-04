@@ -326,6 +326,22 @@ th.disabled-sort {
   opacity: 0.6;
 }
 
+.th-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sort-icon {
+  font-size: 11px;
+  opacity: 0.4;
+  transition: 0.2s ease;
+}
+
+.sort-icon.active {
+  opacity: 1;
+}
+
 /* ICONS */
 .edit-icon {
   width: 14px;
