@@ -113,11 +113,26 @@
       <thead>
         <tr>
           <th><input type="checkbox" id="selectAll"></th>
-          <th>TASK</th>
-          <th>PRIORITY</th>
-          <th>DEADLINE</th>
-          <th>URGENCY</th>
-          <th>STATUS</th>
+
+          <th onclick="handleSort('title')">
+            TASK <span class="sort-icon" id="sort-title"></span>
+          </th>
+
+          <th onclick="handleSort('priority')">
+            PRIORITY <span class="sort-icon" id="sort-priority"></span>
+          </th>
+
+          <th onclick="handleSort('deadline')">
+            DEADLINE <span class="sort-icon" id="sort-deadline"></span>
+          </th>
+
+          <th onclick="handleSort('urgency')">
+            URGENCY <span class="sort-icon" id="sort-urgency"></span>
+          </th>
+
+          <th onclick="handleSort('status')">
+            STATUS <span class="sort-icon" id="sort-status"></span>
+          </th>
         </tr>
       </thead>
       <tbody></tbody>

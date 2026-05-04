@@ -312,6 +312,20 @@ th, td {
   gap: 6px;
 }
 
+th {
+  cursor: pointer;
+}
+
+.sort-icon {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+th.disabled-sort {
+  cursor: default;
+  opacity: 0.6;
+}
+
 /* ICONS */
 .edit-icon {
   width: 14px;

@@ -11,6 +11,10 @@ let filters = JSON.parse(localStorage.getItem("filters")) || {
   urgency: ""
 };
 let searchQuery = "";
+let sortConfig = {
+  key: "createdAt",
+  direction: "desc"
+};
 
 /* =========================
    CREATE / UPDATE TASK
@@ -111,6 +115,54 @@ function editTask() {
   openModal();
 }
 
+function sortTasks(list) {
+  return [...list].sort((a, b) => {
+    let valA, valB;
+
+    switch (sortConfig.key) {
+      case "title":
+        valA = a.title.toLowerCase();
+        valB = b.title.toLowerCase();
+        break;
+
+      case "priority":
+        const priorityOrder = { High: 3, Medium: 2, Low: 1 };
+        valA = priorityOrder[a.priority];
+        valB = priorityOrder[b.priority];
+        break;
+
+      case "urgency":
+        const urgencyOrder = { High: 3, Medium: 2, Low: 1 };
+        valA = urgencyOrder[getUrgency(a)];
+        valB = urgencyOrder[getUrgency(b)];
+        break;
+
+      case "deadline":
+        valA = new Date(a.deadline);
+        valB = new Date(b.deadline);
+        break;
+
+      case "status":
+        const statusOrder = {
+          "Not Started": 1,
+          "In Progress": 2,
+          "Completed": 3
+        };
+        valA = statusOrder[a.status];
+        valB = statusOrder[b.status];
+        break;
+
+      default:
+        valA = new Date(a.createdAt);
+        valB = new Date(b.createdAt);
+    }
+
+    if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+    if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+    return 0;
+  });
+}
+
 /* =========================
    RENDER TABLE
 ========================= */
@@ -157,6 +209,8 @@ function renderTasks() {
       return title.includes(searchQuery) || desc.includes(searchQuery);
     });
   }
+
+  filteredTasks = sortTasks(filteredTasks);
 
   // 🔥 PAGINATION
   const totalPages = Math.ceil(filteredTasks.length / rowsPerPage) || 1;
@@ -322,6 +376,8 @@ function updateCompleteButton() {
 document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
   updateActionButtonText();
+  updateSortIcons();
+  updateDisabledSortState();
 
   const btn = document.querySelector(".btn-filter");
 
@@ -422,6 +478,8 @@ document.addEventListener("DOMContentLoaded", () => {
       updateActionButtonText();
 
       renderTasks();
+      updateSortIcons();
+      updateDisabledSortState();
     });
   });
 
@@ -731,4 +789,49 @@ function downloadPDF() {
   });
 
   doc.save("task-tracker.pdf");
+}
+
+function handleSort(key) {
+  // Prevent status sort in completed tab
+  if (currentView === "completed" && key === "status") return;
+
+  if (sortConfig.key === key) {
+    sortConfig.direction =
+      sortConfig.direction === "asc" ? "desc" : "asc";
+  } else {
+    sortConfig.key = key;
+    sortConfig.direction = "asc";
+  }
+
+  currentPage = 1;
+  renderTasks();
+  updateSortIcons();
+  updateDisabledSortState();
+}
+
+function updateSortIcons() {
+  const columns = ["title", "priority", "deadline", "urgency", "status"];
+
+  columns.forEach(col => {
+    const el = document.getElementById(`sort-${col}`);
+    if (!el) return;
+
+    if (sortConfig.key === col && !(currentView === "completed" && col === "status")) {
+      el.textContent = sortConfig.direction === "asc" ? "↑" : "↓";
+    } else {
+      el.textContent = "";
+    }
+  });
+}
+
+function updateDisabledSortState() {
+  document.querySelectorAll("th").forEach(th => {
+    th.classList.remove("disabled-sort");
+  });
+
+  if (currentView === "completed") {
+    document
+      .querySelector("th[onclick*='status']")
+      ?.classList.add("disabled-sort");
+  }
 }
