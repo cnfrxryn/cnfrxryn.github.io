@@ -282,6 +282,12 @@ th, td {
   cursor: pointer;
 }
 
+.cell-flex {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* ICONS */
 .edit-icon {
   width: 14px;
@@ -290,8 +296,9 @@ th, td {
 }
 
 .priority-icon {
-  width: 14px;
-  margin-left: 5px;
+  width: 12px;
+  margin-left: 6px;
+  opacity: 0.6;
 }
 
 /* PAGINATION */
@@ -646,10 +653,6 @@ input[type="checkbox"] {
 
 .urgency-low {
   background-color: #5cb85c; /* green */
-}
-
-td {
-  vertical-align: middle;
 }
 
 .filter-hint {

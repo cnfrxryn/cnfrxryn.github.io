@@ -202,12 +202,12 @@ function renderTasks() {
         >
       </td>
       <td>${task.title}</td>
-      <td>
+      <td class="cell-flex">
         ${task.priority}
         <img src="/assets/icons/${task.priority.toLowerCase()}-priority.png" class="priority-icon">
       </td>
       <td>${formatDate(task.deadline)}</td>
-      <td>
+      <td class="cell-flex">
         <span class="urgency-dot urgency-${getUrgency(task).toLowerCase()}"></span>
         ${getUrgency(task)}
       </td>
