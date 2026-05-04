@@ -80,9 +80,7 @@ function openViewModal(taskId) {
   document.getElementById("viewPriority").textContent = task.priority;
   document.getElementById("viewStatus").textContent = task.status;
   document.getElementById("viewDeadline").textContent = formatDate(task.deadline);
-  document.getElementById("viewCreated").textContent =
-    "Task created on " + formatDate(task.createdAt);
-
+  document.getElementById("viewCreated").innerHTML = `Task created on ${formatDate(task.createdAt)}<br>${getDueText(task)}`;
   document.getElementById("viewModal").classList.add("active");
 }
 
@@ -441,6 +439,29 @@ function formatDate(dateStr) {
   });
 }
 
+function getDueText(task) {
+  const today = new Date();
+  const d = new Date(task.deadline);
+
+  today.setHours(0,0,0,0);
+  d.setHours(0,0,0,0);
+
+  const diffDays = Math.ceil((d - today) / (1000 * 60 * 60 * 24));
+
+  // plural helper
+  const dayLabel = Math.abs(diffDays) === 1 ? "day" : "days";
+
+  if (diffDays < 0) {
+    return `Overdue by ${Math.abs(diffDays)} ${dayLabel}`;
+  }
+
+  if (diffDays === 0) {
+    return "Due today";
+  }
+
+  return `Due in ${diffDays} ${dayLabel}`;
+}
+
 function openFilterModal() {
   document.getElementById("filterModal").classList.add("active");
 
@@ -451,10 +472,10 @@ function openFilterModal() {
   const hint = document.getElementById("filterHint");
 
   if (filters.urgency === "AtRisk") {
-    urgencyDropdown.value = "";
+    urgencyDropdown.selectedIndex = -1;
     hint.classList.remove("hidden");
   } else {
-    urgencyDropdown.value = filters.urgency;
+    urgencyDropdown.value = filters.urgency || "";
     hint.classList.add("hidden");
   }
 }
