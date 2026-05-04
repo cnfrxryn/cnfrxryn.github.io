@@ -242,6 +242,14 @@ body {
   display: none;
 }
 
+.selection-info {
+  font-size: 12px;
+  font-style: italic;
+  color: #777;
+  margin-left: auto;
+  margin-right: 10px;
+}
+
 /* TABLE */
 .table-container {
   background: white;

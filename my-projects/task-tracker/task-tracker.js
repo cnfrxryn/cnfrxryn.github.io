@@ -168,6 +168,26 @@ function renderTasks() {
 
   const paginatedTasks = filteredTasks.slice(start, end);
 
+  // PLACEHOLDER TEXT
+  if (paginatedTasks.length === 0) {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td colspan="6" style="text-align:center; padding: 20px; color:#777;">
+        ${
+          currentView === "active"
+            ? "No tasks created yet."
+            : "No completed tasks."
+        }
+      </td>
+    `;
+
+    tbody.appendChild(row);
+
+    renderPagination(1);
+    return;
+  }
+
   // 🔁 RENDER ROWS
   paginatedTasks.forEach(task => {
     const row = document.createElement("tr");
@@ -191,7 +211,7 @@ function renderTasks() {
     `;
 
     row.addEventListener("click", (e) => {
-      if (e.target.tagName === "INPUT") return;
+      if (e.target.closest("input")) return;
       openViewModal(task.id);
     });
 
@@ -201,7 +221,16 @@ function renderTasks() {
   renderPagination(totalPages);
 
   const selectAll = document.getElementById("selectAll");
-  if (selectAll) selectAll.checked = false;
+  
+  if (selectAll) {
+    const visibleIds = paginatedTasks.map(t => t.id);
+
+    const allSelected =
+      visibleIds.length > 0 &&
+      visibleIds.every(id => selectedTaskIds.has(id));
+
+    selectAll.checked = allSelected;
+  }
 }
 
 /* =========================
@@ -261,15 +290,24 @@ function toggleTaskSelection(e, taskId) {
   }
 
   updateCompleteButton();
+  renderTasks();
 }
 
 function updateCompleteButton() {
   const btn = document.querySelector(".btn-complete");
+  const info = document.getElementById("selectionInfo");
+  const count = selectedTaskIds.size;
 
   if (selectedTaskIds.size > 0) {
     btn.classList.remove("hidden");
+    info.classList.remove("hidden");
+    info.textContent = 
+      count === 1
+        ? "1 task selected."
+        : `${count} tasks selected.`;
   } else {
     btn.classList.add("hidden");
+    info.classList.add("hidden");
   }
 }
 
@@ -315,6 +353,15 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           visibleTasks = visibleTasks.filter(t => getUrgency(t) === filters.urgency);
         }
+      }
+
+      if (searchQuery) {
+        visibleTasks = visibleTasks.filter(t => {
+          const title = t.title.toLowerCase();
+          const desc = (t.description || "").toLowerCase();
+
+          return title.includes(searchQuery) || desc.includes(searchQuery);
+        });
       }
 
       const start = (currentPage - 1) * rowsPerPage;
@@ -398,8 +445,8 @@ function openFilterModal() {
   const hint = document.getElementById("filterHint");
 
   if (filters.urgency === "AtRisk") {
-    urgencyDropdown.value = "";       // keep dropdown blank
-    hint.classList.remove("hidden");  // show message
+    urgencyDropdown.value = "";
+    hint.classList.remove("hidden");
   } else {
     urgencyDropdown.value = filters.urgency;
     hint.classList.add("hidden");
