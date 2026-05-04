@@ -76,7 +76,10 @@ function openViewModal(taskId) {
   selectedTaskId = taskId;
 
   document.getElementById("viewTitle").textContent = task.title;
-  document.getElementById("viewDescription").textContent = task.description || "";
+  document.getElementById("viewDescription").textContent =
+    task.description?.trim()
+      ? task.description
+      : "No description provided.";
   document.getElementById("viewPriority").textContent = task.priority;
   document.getElementById("viewStatus").textContent = task.status;
   document.getElementById("viewDeadline").textContent = formatDate(task.deadline);
@@ -662,6 +665,7 @@ function downloadXLS() {
 
   const formatted = data.map(t => ({
     Task: t.title,
+    Description: t.description || "",
     Priority: t.priority,
     Deadline: formatDate(t.deadline),
     Urgency: getUrgency(t),
@@ -692,26 +696,38 @@ function downloadPDF() {
 
   // headers
   doc.text("Task", 10, y);
-  doc.text("Priority", 60, y);
-  doc.text("Deadline", 90, y);
-  doc.text("Urgency", 130, y);
-  doc.text("Status", 160, y);
-
+  doc.text("Description", 50, y);
+  doc.text("Priority", 110, y);
+  doc.text("Deadline", 135, y);
+  doc.text("Urgency", 165, y);
+  doc.text("Status", 185, y);
   y += 6;
 
   data.forEach(t => {
-    if (y > 280) {
+    const taskLines = doc.splitTextToSize(t.title, 35);
+    const desc = (t.description || "").trim();
+    const limitedDesc = desc.substring(0, 120);
+    const descLines = doc.splitTextToSize(limitedDesc, 55);
+
+    const rowHeight = Math.max(
+      taskLines.length * 5,
+      descLines.length * 5,
+      6
+    );
+
+    if (y + rowHeight > 280) {
       doc.addPage();
       y = 10;
     }
 
-    doc.text(t.title.substring(0, 25), 10, y);
-    doc.text(t.priority, 60, y);
-    doc.text(formatDate(t.deadline), 90, y);
-    doc.text(getUrgency(t), 130, y);
-    doc.text(t.status, 160, y);
+    doc.text(taskLines, 10, y);
+    doc.text(descLines, 50, y);
+    doc.text(t.priority, 110, y);
+    doc.text(formatDate(t.deadline), 135, y);
+    doc.text(getUrgency(t), 165, y);
+    doc.text(t.status, 185, y);
 
-    y += 6;
+    y += rowHeight;
   });
 
   doc.save("task-tracker.pdf");
