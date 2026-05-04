@@ -660,73 +660,59 @@ function getFilteredTasksForExport() {
 function downloadXLS() {
   const data = getFilteredTasksForExport();
 
-  let csv = "Task,Priority,Deadline,Urgency,Status\n";
+  const formatted = data.map(t => ({
+    Task: t.title,
+    Priority: t.priority,
+    Deadline: formatDate(t.deadline),
+    Urgency: getUrgency(t),
+    Status: t.status
+  }));
 
-  data.forEach(t => {
-    csv += `"${t.title}","${t.priority}","${formatDate(t.deadline)}","${getUrgency(t)}","${t.status}"\n`;
-  });
+  const worksheet = XLSX.utils.json_to_sheet(formatted);
+  const workbook = XLSX.utils.book_new();
 
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
 
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "tasks.xls";
-  link.click();
+  XLSX.writeFile(workbook, "task-tracker.xlsx");
 }
 
 function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
   const data = getFilteredTasksForExport();
 
-  let html = `
-    <html>
-    <head>
-      <title>Tasks</title>
-      <style>
-        body { font-family: Arial; padding: 20px; }
-        h2 { margin-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td {
-          border: 1px solid #ccc;
-          padding: 8px;
-          text-align: left;
-        }
-        th {
-          background: #eee;
-        }
-      </style>
-    </head>
-    <body>
-      <h2>Task List</h2>
-      <table>
-        <tr>
-          <th>Task</th>
-          <th>Priority</th>
-          <th>Deadline</th>
-          <th>Urgency</th>
-          <th>Status</th>
-        </tr>
-  `;
+  let y = 10;
+
+  doc.setFontSize(14);
+  doc.text("Task List", 10, y);
+  y += 10;
+
+  doc.setFontSize(10);
+
+  // headers
+  doc.text("Task", 10, y);
+  doc.text("Priority", 60, y);
+  doc.text("Deadline", 90, y);
+  doc.text("Urgency", 130, y);
+  doc.text("Status", 160, y);
+
+  y += 6;
 
   data.forEach(t => {
-    html += `
-      <tr>
-        <td>${t.title}</td>
-        <td>${t.priority}</td>
-        <td>${formatDate(t.deadline)}</td>
-        <td>${getUrgency(t)}</td>
-        <td>${t.status}</td>
-      </tr>
-    `;
+    if (y > 280) {
+      doc.addPage();
+      y = 10;
+    }
+
+    doc.text(t.title.substring(0, 25), 10, y);
+    doc.text(t.priority, 60, y);
+    doc.text(formatDate(t.deadline), 90, y);
+    doc.text(getUrgency(t), 130, y);
+    doc.text(t.status, 160, y);
+
+    y += 6;
   });
 
-  html += `
-      </table>
-    </body>
-    </html>
-  `;
-
-  const win = window.open("", "", "width=800,height=600");
-  win.document.write(html);
-  win.document.close();
-  win.print();
+  doc.save("task-tracker.pdf");
 }
