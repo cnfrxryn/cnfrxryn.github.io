@@ -328,47 +328,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // SELECT ALL
   document.getElementById("selectAll").addEventListener("change", (e) => {
-    selectedTaskIds.clear();
+    let visibleTasks =
+      currentView === "active"
+        ? tasks.filter(t => t.status !== "Completed")
+        : tasks.filter(t => t.status === "Completed");
+
+    if (filters.priority) {
+      visibleTasks = visibleTasks.filter(t => t.priority === filters.priority);
+    }
+
+    if (filters.status) {
+      visibleTasks = visibleTasks.filter(t => t.status === filters.status);
+    }
+
+    if (filters.urgency) {
+      if (filters.urgency === "AtRisk") {
+        visibleTasks = visibleTasks.filter(t => {
+          const u = getUrgency(t);
+          return u === "High" || u === "Medium";
+        });
+      } else {
+        visibleTasks = visibleTasks.filter(t => getUrgency(t) === filters.urgency);
+      }
+    }
+
+    if (searchQuery) {
+      visibleTasks = visibleTasks.filter(t => {
+        const title = t.title.toLowerCase();
+        const desc = (t.description || "").toLowerCase();
+        return title.includes(searchQuery) || desc.includes(searchQuery);
+      });
+    }
+
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageTasks = visibleTasks.slice(start, end);
 
     if (e.target.checked) {
-      let visibleTasks =
-        currentView === "active"
-          ? tasks.filter(t => t.status !== "Completed")
-          : tasks.filter(t => t.status === "Completed");
-
-      if (filters.priority) {
-        visibleTasks = visibleTasks.filter(t => t.priority === filters.priority);
-      }
-
-      if (filters.status) {
-        visibleTasks = visibleTasks.filter(t => t.status === filters.status);
-      }
-
-      if (filters.urgency) {
-        if (filters.urgency === "AtRisk") {
-          visibleTasks = visibleTasks.filter(t => {
-            const u = getUrgency(t);
-            return u === "High" || u === "Medium";
-          });
-        } else {
-          visibleTasks = visibleTasks.filter(t => getUrgency(t) === filters.urgency);
-        }
-      }
-
-      if (searchQuery) {
-        visibleTasks = visibleTasks.filter(t => {
-          const title = t.title.toLowerCase();
-          const desc = (t.description || "").toLowerCase();
-
-          return title.includes(searchQuery) || desc.includes(searchQuery);
-        });
-      }
-
-      const start = (currentPage - 1) * rowsPerPage;
-      const end = start + rowsPerPage;
-
-      visibleTasks.slice(start, end).forEach(task => {
+      pageTasks.forEach(task => {
         selectedTaskIds.add(task.id);
+      });
+    } else {
+      pageTasks.forEach(task => {
+        selectedTaskIds.delete(task.id);
       });
     }
 

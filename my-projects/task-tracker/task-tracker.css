@@ -242,12 +242,17 @@ body {
   display: none;
 }
 
+.selection-wrapper {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* minimal spacing */
+}
+
 .selection-info {
   font-size: 12px;
   font-style: italic;
   color: #777;
-  margin-left: auto;
-  margin-right: 10px;
 }
 
 /* TABLE */
