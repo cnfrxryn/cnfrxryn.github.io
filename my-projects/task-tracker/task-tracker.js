@@ -620,3 +620,113 @@ function clearFilters() {
   updateClearFiltersVisibility();
   renderTasks();
 }
+
+function getFilteredTasksForExport() {
+  let filtered =
+    currentView === "active"
+      ? tasks.filter(t => t.status !== "Completed")
+      : tasks.filter(t => t.status === "Completed");
+
+  if (filters.priority) {
+    filtered = filtered.filter(t => t.priority === filters.priority);
+  }
+
+  if (filters.status) {
+    filtered = filtered.filter(t => t.status === filters.status);
+  }
+
+  if (filters.urgency) {
+    if (filters.urgency === "AtRisk") {
+      filtered = filtered.filter(t => {
+        const u = getUrgency(t);
+        return u === "High" || u === "Medium";
+      });
+    } else {
+      filtered = filtered.filter(t => getUrgency(t) === filters.urgency);
+    }
+  }
+
+  if (searchQuery) {
+    filtered = filtered.filter(t => {
+      const title = t.title.toLowerCase();
+      const desc = (t.description || "").toLowerCase();
+      return title.includes(searchQuery) || desc.includes(searchQuery);
+    });
+  }
+
+  return filtered;
+}
+
+function downloadXLS() {
+  const data = getFilteredTasksForExport();
+
+  let csv = "Task,Priority,Deadline,Urgency,Status\n";
+
+  data.forEach(t => {
+    csv += `"${t.title}","${t.priority}","${formatDate(t.deadline)}","${getUrgency(t)}","${t.status}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "tasks.xls";
+  link.click();
+}
+
+function downloadPDF() {
+  const data = getFilteredTasksForExport();
+
+  let html = `
+    <html>
+    <head>
+      <title>Tasks</title>
+      <style>
+        body { font-family: Arial; padding: 20px; }
+        h2 { margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+          border: 1px solid #ccc;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background: #eee;
+        }
+      </style>
+    </head>
+    <body>
+      <h2>Task List</h2>
+      <table>
+        <tr>
+          <th>Task</th>
+          <th>Priority</th>
+          <th>Deadline</th>
+          <th>Urgency</th>
+          <th>Status</th>
+        </tr>
+  `;
+
+  data.forEach(t => {
+    html += `
+      <tr>
+        <td>${t.title}</td>
+        <td>${t.priority}</td>
+        <td>${formatDate(t.deadline)}</td>
+        <td>${getUrgency(t)}</td>
+        <td>${t.status}</td>
+      </tr>
+    `;
+  });
+
+  html += `
+      </table>
+    </body>
+    </html>
+  `;
+
+  const win = window.open("", "", "width=800,height=600");
+  win.document.write(html);
+  win.document.close();
+  win.print();
+}

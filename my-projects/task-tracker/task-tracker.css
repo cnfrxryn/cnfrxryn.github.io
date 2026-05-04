@@ -150,7 +150,7 @@ body {
   gap: 6px;
 }
 
-.btn-primary:hover {
+.dropdown:hover .btn-primary {
   background: #444;
   color: white;
 }
@@ -169,7 +169,7 @@ body {
 }
 
 /* DOWNLOAD BUTTON ICON SWAP */
-.dropdown .btn-primary:hover .download-icon {
+.dropdown:hover .download-icon {
   content: url('/assets/icons/download-btn-light.png');
 }
 
