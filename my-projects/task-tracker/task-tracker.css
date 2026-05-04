@@ -155,6 +155,24 @@ body {
   color: white;
 }
 
+.btn-icon-img {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  object-fit: contain;
+  transition: opacity 0.2s ease;
+}
+
+/* ADD NEW BUTTON ICON SWAP */
+.btn-primary:hover .add-icon {
+  content: url('/assets/icons/add-new-btn-light.png');
+}
+
+/* DOWNLOAD BUTTON ICON SWAP */
+.dropdown .btn-primary:hover .download-icon {
+  content: url('/assets/icons/download-btn-light.png');
+}
+
 /* DROPDOWN */
 .dropdown {
   position: relative;
@@ -678,12 +696,4 @@ input[type="checkbox"] {
   font-size: 12px;
   color: #666;
   font-style: italic;
-}
-
-/* ADD NEW AND DOWNLOAD BUTTONS */
-.btn-icon-img {
-  width: 16px;
-  height: 16px;
-  margin-right: 6px;
-  object-fit: contain;
 }
