@@ -15,7 +15,7 @@ body {
 ========================= */
 
 .container {
-  padding: 20px 90px;
+  padding: 10px 55px 40px;
 }
 
 /* =========================
@@ -26,30 +26,31 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .header h1 {
-  font-size: 64px;
+  font-size: 56px;
   font-weight: 800;
 }
 
 /* MONTH NAV */
-
 .month-navigation {
   display: flex;
   align-items: center;
-  gap: 12px;
+  background: white;
+  border: 1px solid #888;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .month-btn {
-  width: 36px;
-  height: 36px;
-  border: 1px solid #999;
+  width: 34px;
+  height: 34px;
+  border: none;
   background: white;
-  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   transition: 0.2s;
 }
 
@@ -59,54 +60,32 @@ body {
 }
 
 #currentMonth {
-  font-size: 20px;
-  font-weight: 600;
-  min-width: 140px;
+  min-width: 120px;
   text-align: center;
+  font-size: 17px;
+  font-weight: 500;
 }
 
-/* =========================
-   SUMMARY
-========================= */
-
+/* SUMMARY */
 .summary {
-  position: relative;
-  padding: 30px;
-  border-radius: 18px;
-  overflow: hidden;
-  background: linear-gradient(to right, #1f1f1f, #555);
-  margin-bottom: 25px;
-}
-
-/* decorative background */
-
-.summary::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url('/assets/images/task-tracker-banner.png') center/cover no-repeat;
-  opacity: 0.12;
-}
-
-.summary > * {
-  position: relative;
-  z-index: 1;
+  margin-bottom: 28px;
 }
 
 .summary-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 18px;
 }
 
 .card {
   background: white;
-  border-radius: 14px;
-  padding: 22px;
+  border: 1px solid #999;
+  border-radius: 6px;
+  padding: 18px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  min-height: 130px;
+  gap: 18px;
+  min-height: 115px;
 }
 
 .card.clickable {
@@ -114,36 +93,40 @@ body {
   transition: 0.2s;
 }
 
-.card.clickable:hover {
-  transform: translateY(-2px);
-}
-
 .card-text {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .card-title {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 500;
   margin-bottom: 10px;
+  text-transform: uppercase;
 }
 
 .card h3 {
-  font-size: 36px;
+  font-size: 24px;
   margin-bottom: 8px;
+  font-weight: 800;
 }
 
 .card-subtext {
   font-size: 13px;
-  color: #666;
+  color: #555;
   font-style: italic;
 }
 
 .card-icon {
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
+  order: -1;
+}
+
+.card.clickable:hover {
+  background: #f8f8f8;
 }
 
 /* =========================
@@ -159,8 +142,9 @@ body {
 
 .chart-card {
   background: white;
-  border-radius: 16px;
-  padding: 22px;
+  border: 1px solid #999;
+  border-radius: 6px;
+  padding: 18px;
 }
 
 .chart-header {
@@ -184,9 +168,8 @@ body {
 }
 
 .chart-placeholder {
-  height: 320px;
-  border-radius: 12px;
-  background: #f5f5f5;
+  height: 280px;
+  background: #fafafa;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -206,8 +189,9 @@ body {
 }
 
 .transactions-header h2 {
-  font-size: 40px;
+  font-size: 22px;
   font-weight: 800;
+  text-transform: uppercase;
 }
 
 /* =========================
@@ -219,6 +203,7 @@ body {
   align-items: center;
   gap: 14px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 /* SEARCH */
@@ -227,7 +212,7 @@ body {
   display: flex;
   align-items: center;
   background: white;
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 10px 14px;
   border: 1px solid #ccc;
   min-width: 260px;
@@ -253,7 +238,7 @@ body {
 
 .filter-dropdown {
   padding: 10px 14px;
-  border-radius: 12px;
+  border-radius: 6px;
   border: 1px solid #ccc;
   background: white;
   min-width: 180px;
@@ -268,7 +253,7 @@ body {
 
 .btn-primary {
   padding: 12px 18px;
-  border-radius: 14px;
+  border-radius: 6px;
   border: none;
   background: #444;
   color: white;
@@ -295,8 +280,7 @@ body {
 
 .table-container {
   background: white;
-  border-radius: 16px;
-  padding: 18px;
+  padding: 16px;
 }
 
 table {
@@ -305,18 +289,18 @@ table {
 }
 
 thead {
-  background: #f2efec;
+  background: #f6f3f1;
 }
 
 th {
-  padding: 18px 16px;
+  padding: 16px;
   text-align: left;
   font-size: 14px;
   font-weight: 700;
 }
 
 td {
-  padding: 18px 16px;
+  padding: 16px;
   border-bottom: 1px solid #f1f1f1;
   vertical-align: middle;
 }
