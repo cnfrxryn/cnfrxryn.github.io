@@ -2,6 +2,361 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BUDGET TRACKER PLACEHOLDER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Budget Tracker</title>
+
+  <!-- GLOBAL NAV -->
+  <link rel="stylesheet" href="/global/css/nav.css">
+
+  <!-- PAGE CSS -->
+  <link rel="stylesheet" href="budget-tracker.css">
 </head>
+
+<body>
+
+  <!-- GLOBAL NAV -->
+  <div id="nav-container"></div>
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+
+      <div class="left">
+        <h1>Budget Tracker</h1>
+      </div>
+
+      <!-- MONTH NAVIGATION -->
+      <div class="month-navigation">
+
+        <button class="month-btn" id="prevMonth">
+          &lt;
+        </button>
+
+        <span id="currentMonth">
+          May 2026
+        </span>
+
+        <button class="month-btn" id="nextMonth">
+          &gt;
+        </button>
+
+      </div>
+
+    </header>
+
+    <!-- SUMMARY SECTION -->
+    <section class="summary">
+
+      <!-- SUMMARY CARDS -->
+      <div class="summary-cards">
+
+        <!-- TOTAL INCOME -->
+        <div class="card">
+
+          <div class="card-text">
+            <span class="card-title">
+              Total Income
+            </span>
+
+            <h3 id="totalIncome">
+              ₱0.00
+            </h3>
+
+            <p class="card-subtext">
+              This month
+            </p>
+          </div>
+
+          <!-- PLACEHOLDER ICON -->
+          <img 
+            src="/assets/icons/total-income.png"
+            class="card-icon"
+            alt="Total Income"
+          >
+
+        </div>
+
+        <!-- TOTAL EXPENSES -->
+        <div class="card">
+
+          <div class="card-text">
+            <span class="card-title">
+              Total Expenses
+            </span>
+
+            <h3 id="totalExpenses">
+              ₱0.00
+            </h3>
+
+            <p class="card-subtext">
+              This month
+            </p>
+          </div>
+
+          <!-- PLACEHOLDER ICON -->
+          <img 
+            src="/assets/icons/total-expenses.png"
+            class="card-icon"
+            alt="Total Expenses"
+          >
+
+        </div>
+
+        <!-- REMAINING BUDGET -->
+        <div class="card">
+
+          <div class="card-text">
+            <span class="card-title">
+              Remaining Budget
+            </span>
+
+            <h3 id="remainingBudget">
+              ₱0.00
+            </h3>
+
+            <p class="card-subtext">
+              Left to spend
+            </p>
+          </div>
+
+          <!-- PLACEHOLDER ICON -->
+          <img 
+            src="/assets/icons/remaining-budget.png"
+            class="card-icon"
+            alt="Remaining Budget"
+          >
+
+        </div>
+
+        <!-- UPCOMING PAYMENTS -->
+        <div 
+          class="card clickable"
+          onclick="filterUpcomingPayments()"
+        >
+
+          <div class="card-text">
+            <span class="card-title">
+              Upcoming Payments
+            </span>
+
+            <h3 id="upcomingPayments">
+              ₱0.00
+            </h3>
+
+            <p class="card-subtext" id="upcomingPaymentsText">
+              0 due within 5 days
+            </p>
+          </div>
+
+          <!-- PLACEHOLDER ICON -->
+          <img 
+            src="/assets/icons/upcoming-payments.png"
+            class="card-icon"
+            alt="Upcoming Payments"
+          >
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- CHARTS -->
+    <section class="charts-section">
+
+      <!-- EXPENSES BY CATEGORY -->
+      <div class="chart-card">
+
+        <div class="chart-header">
+
+          <h2>
+            Expenses by Category
+          </h2>
+
+          <select id="categoryChartMonth">
+            <option>May 2026</option>
+          </select>
+
+        </div>
+
+        <div class="chart-placeholder">
+
+          <!-- REPLACE WITH ACTUAL CHART LATER -->
+          <div class="placeholder-text">
+            Donut Chart Placeholder
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SPENDING TREND -->
+      <div class="chart-card">
+
+        <div class="chart-header">
+
+          <h2>
+            Spending Trend
+          </h2>
+
+          <select id="trendChartMonth">
+            <option>May 2026</option>
+          </select>
+
+        </div>
+
+        <div class="chart-placeholder">
+
+          <!-- REPLACE WITH ACTUAL CHART LATER -->
+          <div class="placeholder-text">
+            Line Chart Placeholder
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TRANSACTIONS -->
+    <section class="transactions-section">
+
+      <!-- TITLE -->
+      <div class="transactions-header">
+
+        <h2>
+          All Transactions
+        </h2>
+
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="controls">
+
+        <!-- SEARCH -->
+        <div class="search-box">
+
+          <img 
+            src="/assets/icons/search.png"
+            class="search-icon"
+            alt="Search"
+          >
+
+          <span class="divider">|</span>
+
+          <input 
+            type="text"
+            placeholder="Search transactions..."
+            id="searchInput"
+          >
+
+        </div>
+
+        <!-- CATEGORY FILTER -->
+        <select id="filterCategory" class="filter-dropdown">
+          <option value="">
+            All Categories
+          </option>
+        </select>
+
+        <!-- TYPE FILTER -->
+        <select id="filterType" class="filter-dropdown">
+          <option value="">
+            All Types
+          </option>
+        </select>
+
+        <!-- STATUS FILTER -->
+        <select id="filterStatus" class="filter-dropdown">
+          <option value="">
+            All Status
+          </option>
+        </select>
+
+        <!-- ADD TRANSACTION -->
+        <button class="btn-primary add-transaction-btn">
+
+          <img 
+            src="/assets/icons/add-new-btn-dark.png"
+            class="btn-icon-img add-icon"
+            alt="Add"
+          >
+
+          Add Transaction
+
+        </button>
+
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>TYPE</th>
+
+              <th>CATEGORY</th>
+
+              <th>DESCRIPTION</th>
+
+              <th>AMOUNT</th>
+
+              <th>DUE</th>
+
+              <th>STATUS</th>
+
+              <th class="notes-column"></th>
+
+              <th>ACTIONS</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="transactionsTableBody">
+
+            <!-- EMPTY STATE -->
+            <tr>
+
+              <td colspan="8" class="empty-state">
+                No transactions yet.
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+        <!-- PAGINATION -->
+        <div class="pagination-wrapper">
+
+          <div class="pagination-info">
+            Showing 0 to 0 of 0 entries
+          </div>
+
+          <div class="pagination" id="pagination">
+
+            <span class="page active">1</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <script src="/global/js/nav.js"></script>
+  <script src="budget-tracker.js"></script>
+
+</body>
 </html>
