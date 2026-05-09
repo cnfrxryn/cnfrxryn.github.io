@@ -11,40 +11,47 @@ let searchQuery = "";
 let currentSort = null;
 let currentView = "transactions";
 
-document.querySelectorAll(".sortable-header").forEach(header => {
-  header.addEventListener("click", () => {
-    const field = header.dataset.sort;
+function initializeSorting() {
+  document.querySelectorAll(".sortable-header")
+    .forEach(header => {
+      header.addEventListener("click", () => {
+        const field = header.dataset.sort;
 
-    /* FIRST SORT */
-    if (!currentSort) {
-      currentSort = {
-        field,
-        direction: "asc"
-      };
-    }
+        /* FIRST SORT */
+        if (!currentSort) {
+          currentSort = {
+            field,
+            direction: "asc"
+          };
+        }
 
-    /* SAME FIELD */
-    else if (currentSort.field === field) {
-      currentSort.direction =
-        currentSort.direction === "asc"
-          ? "desc"
-          : "asc";
-    }
+        /* SAME FIELD */
+        else if (currentSort.field === field) {
+          currentSort.direction =
+            currentSort.direction === "asc"
+              ? "desc"
+              : "asc";
+        }
 
-    /* NEW FIELD */
-    else {
-      currentSort = {
-        field,
-        direction: "asc"
-      };
-    }
+        /* NEW FIELD */
+        else {
+          currentSort = {
+            field,
+            direction: "asc"
+          };
+        }
 
-    /* ACTIVE HEADER */
-    document.querySelectorAll(".sortable-header").forEach(th => th.classList.remove("active-sort"));
-    header.classList.add("active-sort");
-    renderTransactions();
-  });
-});
+        /* ACTIVE HEADER */
+        document.querySelectorAll(".sortable-header")
+          .forEach(th =>
+            th.classList.remove("active-sort")
+          );
+        header.classList.add("active-sort");
+
+        renderTransactions();
+      });
+    });
+}
 
 /* TRANSACTION TYPES */
 const categoriesByType = {
@@ -118,7 +125,13 @@ function getTypeClass(type) {
 document.addEventListener("DOMContentLoaded", () => {
   updateCurrentMonth();
   renderTransactions();
+  initializeSorting();
   updateSummaryCards();
+
+  /* CHART MONTH DEFAULT */
+  const currentMonthValue = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
+  document.getElementById("categoryChartMonth").value = currentMonthValue;
+  document.getElementById("trendChartMonth").value = currentMonthValue;
 
   /* TABS */
   document.querySelectorAll(".tab").forEach(tab => {
@@ -192,13 +205,12 @@ function updateFilterDropdowns() {
   const typeDropdown = document.getElementById("filterType");
   const statusDropdown = document.getElementById("filterStatus");
 
-  let filteredData = [...transactions];
+  let baseData = [...transactions];
 
   /* SUBSCRIPTIONS VIEW */
   if (currentView === "subscriptions") {
-    filteredData = filteredData.filter(transaction => transaction.type === "Subscription");
+    baseData = baseData.filter(transaction => transaction.type === "Subscription");
     filters.type = "Subscription";
-
     typeDropdown.disabled = true;
   }
 
@@ -206,30 +218,16 @@ function updateFilterDropdowns() {
     typeDropdown.disabled = false;
   }
 
-  /* DEPENDENT FILTERS */
-  if (filters.category) {
-    filteredData = filteredData.filter(transaction => transaction.category === filters.category);
-  }
-
-  if (filters.type) {
-    filteredData = filteredData.filter(transaction => transaction.type === filters.type);
-  }
-
-  if (filters.status) {
-    filteredData = filteredData.filter(transaction => transaction.status === filters.status);
-  }
-
   /* UNIQUE VALUES */
-  const categories = 
-    [...new Set(filteredData.map(t => t.category))]
+  const categories =
+    [...new Set(baseData.map(t => t.category))]
       .filter(Boolean);
-
   const types =
-    [...new Set(filteredData.map(t => t.type))]
+    [...new Set(baseData.map(t => t.type))]
       .filter(Boolean);
 
   const statuses =
-    [...new Set(filteredData.map(t => t.status))]
+    [...new Set(baseData.map(t => t.status))]
       .filter(Boolean);
 
   /* CATEGORY */
@@ -348,6 +346,8 @@ function renderTransactions() {
       <th>ACTIONS</th>
     `;
   }
+
+  initializeSorting();
 
   let filteredTransactions = [...transactions];
 
@@ -482,8 +482,16 @@ function renderTransactions() {
             }
           </td>
 
-          <td>${transaction.recurring ? "Monthly" : "One-Time"}</td>
-          <td>${transaction.dueDate}</td>
+          <td>
+            ${
+              transaction.repeatEvery === "Year"
+                ? "Annually"
+                : "Monthly"
+            }
+          </td>
+          <td>
+            ${getNextDueDate(transaction)}
+          </td>
 
           <td class="actions-cell">
             <button class="actions-btn" onclick="toggleActionsMenu(this)">•••</button>
@@ -624,6 +632,34 @@ function updatePagination(totalEntries) {
   pagination.appendChild(nextButton);
 }
 
+/* NEXT DUE DATE */
+function getNextDueDate(transaction) {
+  if (!transaction.dueDate) {
+    return "N/A";
+  }
+
+  const dueDate = new Date(transaction.dueDate);
+
+  /* YEARLY */
+  if (transaction.repeatEvery === "Year") {
+    dueDate.setFullYear(dueDate.getFullYear() + 1);
+  }
+
+  /* MONTHLY */
+  else {
+    dueDate.setMonth(dueDate.getMonth() + 1);
+  }
+
+  return dueDate.toLocaleDateString(
+    "en-US",
+    {
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    }
+  );
+}
+
 /* SUMMARY CARDS */
 function updateSummaryCards() {
   let totalIncome = 0;
@@ -749,6 +785,17 @@ function editTransaction(index) {
 
   if (transaction.dueDate !== "N/A") {
     document.getElementById("transactionDueDate").value = transaction.dueDate;
+  }
+
+  /* RECURRING */
+  document.getElementById("recurringCheckbox").checked =
+    transaction.recurring || false;
+
+  if (transaction.recurring) {
+    document.getElementById("recurringOptions").classList.add("active");
+    document.getElementById("repeatEvery").value = transaction.repeatEvery || "Month";
+    document.getElementById("repeatStarting").value = transaction.repeatStarting || "";
+    document.getElementById("repeatUntil").value = transaction.repeatUntil || "";
   }
 }
 
@@ -919,6 +966,9 @@ function saveTransaction() {
   const amount = document.getElementById("transactionAmount").value.trim();
   const dueDate = document.getElementById("transactionDueDate").value;
   const recurring = document.getElementById("recurringCheckbox").checked;
+  const repeatEvery = document.getElementById("repeatEvery").value;
+  const repeatStarting = document.getElementById("repeatStarting").value;
+  const repeatUntil = document.getElementById("repeatUntil").value;
   let hasError = false;
 
   /* REQUIRED */
@@ -970,7 +1020,10 @@ function saveTransaction() {
     dueDate,
     recurring,
     status: "Unpaid",
-    createdAt: Date.now()
+    createdAt: Date.now(),
+    repeatEvery,
+    repeatStarting,
+    repeatUntil,
   };
 
   /* INCOME */
