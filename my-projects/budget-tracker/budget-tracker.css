@@ -653,25 +653,19 @@ tbody tr:hover {
 
 .amount-input-wrapper {
   position: relative;
-  display: block;
   width: 100%;
 }
 
 .peso-sign {
   position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 15px;
+  transform: translateY(100%);
   color: #555;
   font-size: 14px;
 }
 
 .amount-input-wrapper input {
   padding-left: 34px !important;
-}
-
-.amount-input-wrapper .error-text {
-  display: block;
 }
 
 /* REMOVE NUMBER SPINNERS */
@@ -730,4 +724,18 @@ input::-webkit-inner-spin-button {
   background: white;
   cursor: pointer;
   font-weight: 700;
+}
+
+/* DELETE MODAL */
+.delete-modal {
+  width: 420px;
+  background: white;
+  border-radius: 4px;
+  padding: 24px;
+}
+
+.delete-message {
+  font-size: 15px;
+  margin-bottom: 24px;
+  line-height: 1.5;
 }

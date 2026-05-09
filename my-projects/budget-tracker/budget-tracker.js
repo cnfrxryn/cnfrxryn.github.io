@@ -93,6 +93,7 @@ const incomeCategories = [
 
 let selectedType = "Variable Expense";
 let editingIndex = null;
+let deletingIndex = null;
 
 function getTypeClass(type) {
   switch (type) {
@@ -288,7 +289,15 @@ function renderTransactions() {
           <div class="actions-dropdown">
             <button type="button" onclick="editTransaction(${transactions.indexOf(transaction)})">Edit</button>
             <button type="button" onclick="deleteTransaction(${transactions.indexOf(transaction)})">Delete</button>
-            <button type="button" onclick="markTransactionPaid(${transactions.indexOf(transaction)})">Mark as Paid</button>
+            ${transaction.status !== "N/A"
+              ? `<button type="button" onclick="togglePaidStatus(${transactions.indexOf(transaction)})">
+                ${
+                  transaction.status === "Paid"
+                  ? "Mark as Unpaid"
+                  : "Mark as Paid"
+                }</button>`
+              : ""
+            }
           </div>
         </td>
       </tr>
@@ -414,17 +423,31 @@ function editTransaction(index) {
 }
 
 function deleteTransaction(index) {
-  const confirmed = confirm("Are you sure you want to delete this transaction?");
-  if (!confirmed) return;
-
-  transactions.splice(index, 1);
-
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-  renderTransactions();
+  deletingIndex = index;
+  document.getElementById("deleteModal").classList.add("active");
 }
 
-function markTransactionPaid(index) {
-  if (transactions[index].status !== "N/A") {
+function closeDeleteModal() {
+  deletingIndex = null;
+  document.getElementById("deleteModal").classList.remove("active");
+}
+
+function confirmDeleteTransaction() {
+  if (deletingIndex === null) return;
+  transactions.splice(deletingIndex, 1);
+
+  localStorage.setItem("transactions", JSON.stringify(transactions));
+
+  renderTransactions();
+  closeDeleteModal();
+}
+
+function togglePaidStatus(index) {
+  if (transactions[index].status === "Paid") {
+    transactions[index].status = "Unpaid";
+  }
+
+  else {
     transactions[index].status = "Paid";
   }
 
@@ -442,8 +465,9 @@ document.addEventListener("click", (e) => {
 /* MODAL */
 function openTransactionModal() {
   document.getElementById("transactionModal").classList.add("active");
-  document.querySelector(".modal-header h2").textContent = "Add New Transaction";
-  editingIndex = null;
+  if (editingIndex === null) {
+    document.querySelector(".modal-header h2").textContent = "Add New Transaction";
+  }
 
   /* RESET TYPE */
   selectedType = "Variable Expense";
@@ -468,6 +492,7 @@ function closeTransactionModal() {
   document.getElementById("recurringCheckbox").checked = false;
   document.getElementById("recurringOptions").classList.remove("active");
   clearValidationErrors();
+  editingIndex = null;
 }
 
 /* TYPE SWITCHING */

@@ -331,6 +331,22 @@
     </div>
   </div>
 
+  <!-- DELETE CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="delete-modal">
+      <div class="modal-header">
+        <h2>User Confirmation</h2>
+      </div>
+
+      <p class="delete-message">Are you sure you want to delete this transaction?</p>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+        <button type="button" class="btn-primary" onclick="confirmDeleteTransaction()">Yes</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/global/js/nav.js"></script>
   <script src="budget-tracker.js"></script>
 
