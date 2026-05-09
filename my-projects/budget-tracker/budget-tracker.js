@@ -9,6 +9,7 @@ let filters = {
 };
 let searchQuery = "";
 let currentSort = null;
+let currentView = "transactions";
 
 document.querySelectorAll(".sortable-header").forEach(header => {
   header.addEventListener("click", () => {
@@ -88,7 +89,8 @@ const incomeCategories = [
   "Gift",
   "Bonus",
   "Refund",
-  "Allowance"
+  "Allowance",
+  "Others"
 ];
 
 let selectedType = "Variable Expense";
@@ -114,13 +116,31 @@ function getTypeClass(type) {
 
 /* INIT */
 document.addEventListener("DOMContentLoaded", () => {
-
   updateCurrentMonth();
   renderTransactions();
   updateSummaryCards();
 
-  /* SEARCH */
+  /* TABS */
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t =>
+        t.classList.remove("active")
+      );
 
+      tab.classList.add("active");
+
+      currentView = tab.textContent.trim() === "Subscriptions"
+        ? "subscriptions"
+        : "transactions";
+
+      currentPage = 1;
+
+      updateFilterDropdowns();
+      renderTransactions();
+    });
+  });
+
+  /* SEARCH */
   document
     .getElementById("searchInput")
     .addEventListener("input", (e) => {
@@ -131,7 +151,120 @@ document.addEventListener("DOMContentLoaded", () => {
       currentPage = 1;
       renderTransactions();
     });
+
+  /* FILTERS */
+  document.getElementById("filterCategory")
+    .addEventListener("change", (e) => {
+
+      filters.category = e.target.value;
+      currentPage = 1;
+
+      updateFilterDropdowns();
+      renderTransactions();
+    });
+
+  document.getElementById("filterType")
+    .addEventListener("change", (e) => {
+
+      filters.type = e.target.value;
+      currentPage = 1;
+
+      updateFilterDropdowns();
+      renderTransactions();
+    });
+
+  document.getElementById("filterStatus")
+    .addEventListener("change", (e) => {
+
+      filters.status = e.target.value;
+      currentPage = 1;
+
+      updateFilterDropdowns();
+      renderTransactions();
+    });
+
+  updateFilterDropdowns();
 });
+
+/* FILTER DROPDOWNS */
+function updateFilterDropdowns() {
+  const categoryDropdown = document.getElementById("filterCategory");
+  const typeDropdown = document.getElementById("filterType");
+  const statusDropdown = document.getElementById("filterStatus");
+
+  let filteredData = [...transactions];
+
+  /* SUBSCRIPTIONS VIEW */
+  if (currentView === "subscriptions") {
+    filteredData = filteredData.filter(transaction => transaction.type === "Subscription");
+    filters.type = "Subscription";
+
+    typeDropdown.disabled = true;
+  }
+
+  else {
+    typeDropdown.disabled = false;
+  }
+
+  /* DEPENDENT FILTERS */
+  if (filters.category) {
+    filteredData = filteredData.filter(transaction => transaction.category === filters.category);
+  }
+
+  if (filters.type) {
+    filteredData = filteredData.filter(transaction => transaction.type === filters.type);
+  }
+
+  if (filters.status) {
+    filteredData = filteredData.filter(transaction => transaction.status === filters.status);
+  }
+
+  /* UNIQUE VALUES */
+  const categories = 
+    [...new Set(filteredData.map(t => t.category))]
+      .filter(Boolean);
+
+  const types =
+    [...new Set(filteredData.map(t => t.type))]
+      .filter(Boolean);
+
+  const statuses =
+    [...new Set(filteredData.map(t => t.status))]
+      .filter(Boolean);
+
+  /* CATEGORY */
+  categoryDropdown.innerHTML = `<option value="">All Categories</option>`;
+  categories.forEach(category => {
+    categoryDropdown.innerHTML += `
+      <option value="${category}"
+        ${filters.category === category ? "selected" : ""}>
+        ${category}
+      </option>
+    `;
+  });
+
+  /* TYPE */
+  typeDropdown.innerHTML = `<option value="">All Types</option>`;
+  types.forEach(type => {
+    typeDropdown.innerHTML += `
+      <option value="${type}"
+        ${filters.type === type ? "selected" : ""}>
+        ${type}
+      </option>
+    `;
+  });
+
+  /* STATUS */
+  statusDropdown.innerHTML = `<option value="">All Status</option>`;
+  statuses.forEach(status => {
+    statusDropdown.innerHTML += `
+      <option value="${status}"
+        ${filters.status === status ? "selected" : ""}>
+        ${status}
+      </option>
+    `;
+  });
+}
 
 /* MONTH NAVIGATION */
 function updateCurrentMonth() {
@@ -167,6 +300,55 @@ function renderTransactions() {
   const tbody = document.getElementById("transactionsTableBody");
   tbody.innerHTML = "";
 
+  const tableHeadRow = document.querySelector("thead tr");
+  if (currentView === "subscriptions") {
+    tableHeadRow.innerHTML = `
+      <th>CATEGORY</th>
+      <th>DESCRIPTION</th>
+      <th>AMOUNT</th>
+      <th>DUE</th>
+      <th>STATUS</th>
+      <th>BILLING CYCLE</th>
+      <th>NEXT DUE</th>
+      <th>ACTIONS</th>
+    `;
+  }
+
+  else {
+    tableHeadRow.innerHTML = `
+      <th class="sortable-header" data-sort="type">
+        TYPE
+        <span class="sort-icon">↕</span>
+      </th>
+
+      <th class="sortable-header" data-sort="category">
+        CATEGORY
+        <span class="sort-icon">↕</span>
+      </th>
+
+      <th>DESCRIPTION</th>
+
+      <th class="sortable-header" data-sort="amount">
+        AMOUNT
+        <span class="sort-icon">↕</span>
+      </th>
+
+      <th class="sortable-header" data-sort="dueDate">
+        DUE
+        <span class="sort-icon">↕</span>
+      </th>
+
+      <th class="sortable-header" data-sort="status">
+        STATUS
+        <span class="sort-icon">↕</span>
+      </th>
+
+      <th class="notes-column"></th>
+
+      <th>ACTIONS</th>
+    `;
+  }
+
   let filteredTransactions = [...transactions];
 
   /* SEARCH */
@@ -185,6 +367,26 @@ function renderTransactions() {
             .includes(searchQuery)
         );
       });
+  }
+
+  /* VIEW */
+  if (currentView === "subscriptions") {
+    filteredTransactions = filteredTransactions.filter(transaction => transaction.type === "Subscription");
+  }
+
+  /* CATEGORY */
+  if (filters.category) {
+    filteredTransactions = filteredTransactions.filter(transaction => transaction.category === filters.category);
+  }
+
+  /* TYPE */
+  if (filters.type) {
+    filteredTransactions = filteredTransactions.filter(transaction => transaction.type === filters.type);
+  }
+
+  /* STATUS */
+  if (filters.status) {
+    filteredTransactions = filteredTransactions.filter(transaction => transaction.status === filters.status);
   }
 
   /* SORTING */
@@ -260,50 +462,107 @@ function renderTransactions() {
 
   /* RENDER ROWS */
   paginatedTransactions.forEach(transaction => {
-    tbody.innerHTML += `
-      <tr>
-        <td>
-          <span class="type-pill ${getTypeClass(transaction.type)}">
-            ${transaction.type}
-          </span>
-        </td>
+    /* SUBSCRIPTIONS VIEW */
+    if (currentView === "subscriptions") {
+      tbody.innerHTML += `
+        <tr>
+          <td>${transaction.category}</td>
+          <td>${transaction.description}</td>
+          <td>
+            ₱ ${Number(transaction.amount).toLocaleString()}
+          </td>
 
-        <td>${transaction.category}</td>
+          <td>${transaction.dueDate}</td>
 
-        <td>${transaction.description}</td>
+          <td>
+            ${
+              transaction.status === "Paid"
+                ? `<span class="status-pill status-paid">Paid</span>`
+                : `<span class="status-pill status-unpaid">Not Paid</span>`
+            }
+          </td>
 
-        <td>₱ ${Number(transaction.amount).toLocaleString()}</td>
+          <td>${transaction.recurring ? "Monthly" : "One-Time"}</td>
+          <td>${transaction.dueDate}</td>
 
-        <td>${transaction.dueDate}</td>
+          <td class="actions-cell">
+            <button class="actions-btn" onclick="toggleActionsMenu(this)">•••</button>
 
-        <td>
-          ${
-            transaction.status === "N/A"
-            ? `<span class="status-na">N/A</span>`
-            : `<span class="status-pill status-${transaction.status.toLowerCase().replace(/\s/g, "-")}">${transaction.status}</span>`
-          }
-        </td>
+            <div class="actions-dropdown">
 
-        <td></td>
-
-        <td class="actions-cell">
-          <button class="actions-btn" onclick="toggleActionsMenu(this)">•••</button>
-          <div class="actions-dropdown">
-            <button type="button" onclick="editTransaction(${transactions.indexOf(transaction)})">Edit</button>
-            <button type="button" onclick="deleteTransaction(${transactions.indexOf(transaction)})">Delete</button>
-            ${transaction.status !== "N/A"
-              ? `<button type="button" onclick="togglePaidStatus(${transactions.indexOf(transaction)})">
+              <button type="button" onclick="editTransaction(${transactions.indexOf(transaction)})">Edit</button>
+              <button type="button" onclick="deleteTransaction(${transactions.indexOf(transaction)})">Delete</button>
+              <button type="button" onclick="togglePaidStatus(${transactions.indexOf(transaction)})">
                 ${
                   transaction.status === "Paid"
-                  ? "Mark as Unpaid"
-                  : "Mark as Paid"
-                }</button>`
-              : ""
+                    ? "Mark as Unpaid"
+                    : "Mark as Paid"
+                }
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    /* NORMAL VIEW */
+    else {
+      tbody.innerHTML += `
+        <tr>
+          <td>
+            <span class="type-pill ${getTypeClass(transaction.type)}">
+              ${transaction.type}
+            </span>
+          </td>
+
+          <td>${transaction.category}</td>
+          <td>${transaction.description}</td>
+
+          <td>
+            ₱ ${Number(transaction.amount).toLocaleString()}
+          </td>
+
+          <td>${transaction.dueDate}</td>
+          <td>
+            ${
+              transaction.status === "N/A"
+              ? `<span class="status-na">N/A</span>`
+              : `<span class="status-pill status-${transaction.status.toLowerCase().replace(/\s/g, "-")}">${transaction.status}</span>`
             }
-          </div>
-        </td>
-      </tr>
-    `;
+          </td>
+
+          <td></td>
+
+          <td class="actions-cell">
+            <button class="actions-btn"
+              onclick="toggleActionsMenu(this)">
+              •••
+            </button>
+
+            <div class="actions-dropdown">
+              <button type="button" onclick="editTransaction(${transactions.indexOf(transaction)})">Edit</button>
+              <button type="button" onclick="deleteTransaction(${transactions.indexOf(transaction)})">Delete</button>
+              ${
+                transaction.status !== "N/A"
+                ? `
+                  <button type="button"
+                    onclick="togglePaidStatus(${transactions.indexOf(transaction)})">
+
+                    ${
+                      transaction.status === "Paid"
+                        ? "Mark as Unpaid"
+                        : "Mark as Paid"
+                    }
+
+                  </button>
+                `
+                : ""
+              }
+            </div>
+          </td>
+        </tr>
+      `;
+    }
   });
 
   updatePagination(filteredTransactions.length);
@@ -422,6 +681,15 @@ function updateSummaryCards() {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     })}`;
+
+    const remainingBudgetElement = document.getElementById("remainingBudget");
+    if (remainingBudget < 0) {
+      remainingBudgetElement.classList.add("negative-budget");
+    }
+    
+    else {
+      remainingBudgetElement.classList.remove("negative-budget");
+    }
 
   document.getElementById("upcomingPayments").textContent =
     `₱ ${upcomingPayments.toLocaleString(undefined, {
