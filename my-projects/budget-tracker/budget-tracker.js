@@ -14,8 +14,16 @@ document.querySelectorAll(".sortable-header").forEach(header => {
   header.addEventListener("click", () => {
     const field = header.dataset.sort;
 
+    /* FIRST SORT */
+    if (!currentSort) {
+      currentSort = {
+        field,
+        direction: "asc"
+      };
+    }
+
     /* SAME FIELD */
-    if (currentSort.field === field) {
+    else if (currentSort.field === field) {
       currentSort.direction =
         currentSort.direction === "asc"
           ? "desc"
@@ -24,12 +32,14 @@ document.querySelectorAll(".sortable-header").forEach(header => {
 
     /* NEW FIELD */
     else {
-      currentSort.field = field;
-      currentSort.direction = "asc";
+      currentSort = {
+        field,
+        direction: "asc"
+      };
     }
 
     /* ACTIVE HEADER */
-    document.querySelectorAll(".sortable-header").forEach(th =>th.classList.remove("active-sort"));
+    document.querySelectorAll(".sortable-header").forEach(th => th.classList.remove("active-sort"));
     header.classList.add("active-sort");
     renderTransactions();
   });
@@ -280,8 +290,13 @@ function renderTransactions() {
 
         <td></td>
 
-        <td>
-          <button class="actions-btn">•••</button>
+        <td class="actions-cell">
+          <button class="actions-btn" onclick="toggleActionsMenu(this)">•••</button>
+          <div class="actions-dropdown">
+            <button type="button">Edit</button>
+            <button type="button">Delete</button>
+            <button type="button">Mark as Paid</button>
+          </div>
         </td>
       </tr>
     `;
@@ -358,6 +373,27 @@ function updateSummaryCards() {
 function filterUpcomingPayments() {
   console.log("Upcoming payments clicked");
 }
+
+/* ACTIONS MENU */
+function toggleActionsMenu(button) {
+  const dropdown = button.nextElementSibling;
+
+  /* CLOSE ALL */
+  document.querySelectorAll(".actions-dropdown").forEach(menu => {
+      if (menu !== dropdown) {
+        menu.classList.remove("active");
+      }
+    });
+
+  dropdown.classList.toggle("active");
+}
+
+/* CLOSE ON OUTSIDE CLICK */
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".actions-cell")) {
+    document.querySelectorAll(".actions-dropdown").forEach(menu => menu.classList.remove("active"));
+  }
+});
 
 /* MODAL */
 function openTransactionModal() {
