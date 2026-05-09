@@ -653,8 +653,8 @@ tbody tr:hover {
 
 .amount-input-wrapper {
   position: relative;
-  display: flex;
-  align-items: center;
+  display: block;
+  width: 100%;
 }
 
 .peso-sign {
@@ -668,6 +668,10 @@ tbody tr:hover {
 
 .amount-input-wrapper input {
   padding-left: 34px !important;
+}
+
+.amount-input-wrapper .error-text {
+  display: block;
 }
 
 /* REMOVE NUMBER SPINNERS */

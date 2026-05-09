@@ -10,6 +10,15 @@ let filters = {
 let searchQuery = "";
 let currentSort = null;
 
+transactions = transactions.map(transaction => {
+  if (!transaction.createdAt) {
+    transaction.createdAt = Date.now();
+  }
+
+  return transaction;
+});
+localStorage.setItem("transactions", JSON.stringify(transactions));
+
 document.querySelectorAll(".sortable-header").forEach(header => {
   header.addEventListener("click", () => {
     const field = header.dataset.sort;
@@ -186,9 +195,12 @@ function renderTransactions() {
   /* SORTING */
   /* DEFAULT SORT */
   if (!currentSort) {
-    filteredTransactions.sort(
-      (a, b) => b.createdAt - a.createdAt
-    );
+    filteredTransactions.sort((a, b) => {
+      const dateA = a.createdAt || 0;
+      const dateB = b.createdAt || 0;
+
+      return dateB - dateA;
+    });
   }
 
   /* MANUAL SORT */
