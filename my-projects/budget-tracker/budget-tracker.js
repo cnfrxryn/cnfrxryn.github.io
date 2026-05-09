@@ -151,6 +151,7 @@ document
   .addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     updateCurrentMonth();
+    updateSummaryCards();
   });
 
 document
@@ -158,6 +159,7 @@ document
   .addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     updateCurrentMonth();
+    updateSummaryCards();
   });
 
 /* RENDER TRANSACTIONS */
@@ -365,10 +367,70 @@ function updatePagination(totalEntries) {
 
 /* SUMMARY CARDS */
 function updateSummaryCards() {
-  document.getElementById("totalIncome").textContent = "₱0.00";
-  document.getElementById("totalExpenses").textContent = "₱0.00";
-  document.getElementById("remainingBudget").textContent = "₱0.00";
-  document.getElementById("upcomingPayments").textContent = "₱0.00";
+  let totalIncome = 0;
+  let totalExpenses = 0;
+  let upcomingPayments = 0;
+  let upcomingCount = 0;
+
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  const today = new Date();
+  const fiveDaysLater = new Date();
+  fiveDaysLater.setDate(today.getDate() + 5);
+
+  transactions.forEach(transaction => {
+    /* INCOME */
+    if (transaction.type === "Income") {
+      totalIncome += Number(transaction.amount);
+    }
+
+    /* EXPENSES */
+    else {
+      totalExpenses += Number(transaction.amount);
+    }
+
+    /* UPCOMING PAYMENTS */
+    if (transaction.status !== "Paid" && transaction.dueDate !== "N/A") {
+      const dueDate = new Date(transaction.dueDate);
+      const isCurrentMonth = dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear;
+      const isUpcoming = dueDate >= today && dueDate <= fiveDaysLater;
+
+      if (isCurrentMonth && isUpcoming) {
+        upcomingPayments += Number(transaction.amount);
+        upcomingCount++;
+      }
+    }
+  });
+
+  const remainingBudget = totalIncome - totalExpenses;
+
+  /* UPDATE UI */
+  document.getElementById("totalIncome").textContent = 
+    `₱ ${totalIncome.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+
+  document.getElementById("totalExpenses").textContent =
+    `₱ ${totalExpenses.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+
+  document.getElementById("remainingBudget").textContent =
+    `₱ ${remainingBudget.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+
+  document.getElementById("upcomingPayments").textContent =
+    `₱ ${upcomingPayments.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+
+  document.getElementById("upcomingPaymentsText").textContent =
+    `${upcomingCount} due within 5 days`;
 }
 
 /* UPCOMING PAYMENTS */
@@ -439,6 +501,7 @@ function confirmDeleteTransaction() {
   localStorage.setItem("transactions", JSON.stringify(transactions));
 
   renderTransactions();
+  updateSummaryCards();
   closeDeleteModal();
 }
 
@@ -453,6 +516,7 @@ function togglePaidStatus(index) {
 
   localStorage.setItem("transactions", JSON.stringify(transactions));
   renderTransactions();
+  updateSummaryCards();
 }
 
 /* CLOSE ON OUTSIDE CLICK */
@@ -661,5 +725,6 @@ function saveTransaction() {
   localStorage.setItem("transactions", JSON.stringify(transactions));
 
   renderTransactions();
+  updateSummaryCards();
   closeTransactionModal();
 }

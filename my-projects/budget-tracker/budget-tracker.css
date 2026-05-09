@@ -119,8 +119,8 @@ body {
 }
 
 .card.clickable:hover {
-  background: #f1f1f1;
-  border-color: #666;
+  background: #e7e7e7;
+  border-color: #444;
 }
 
 /* CHARTS */
