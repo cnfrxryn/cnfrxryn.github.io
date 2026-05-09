@@ -8,10 +8,7 @@ let filters = {
   status: ""
 };
 let searchQuery = "";
-let currentSort = {
-  field: "createdAt",
-  direction: "desc"
-};
+let currentSort = null;
 
 document.querySelectorAll(".sortable-header").forEach(header => {
   header.addEventListener("click", () => {
@@ -177,50 +174,64 @@ function renderTransactions() {
   }
 
   /* SORTING */
-  filteredTransactions.sort((a, b) => {
-    let valueA = a[currentSort.field];
-    let valueB = b[currentSort.field];
+  /* DEFAULT SORT */
+  if (!currentSort) {
+    filteredTransactions.sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
+  }
 
-    /* AMOUNT */
-    if (currentSort.field === "amount") {
-      valueA = Number(valueA);
-      valueB = Number(valueB);
-    }
+  /* MANUAL SORT */
+  else {
+    filteredTransactions.sort((a, b) => {
+      let valueA = a[currentSort.field];
+      let valueB = b[currentSort.field];
 
-    /* DUE DATE */
-    if (currentSort.field === "dueDate") {
-      if (valueA === "N/A") valueA = "";
-      if (valueB === "N/A") valueB = "";
+      /* AMOUNT */
+      if (currentSort.field === "amount") {
+        valueA = Number(valueA);
+        valueB = Number(valueB);
+      }
 
-      valueA = new Date(valueA);
-      valueB = new Date(valueB);
-    }
+      /* DUE DATE */
+      if (currentSort.field === "dueDate") {
+        valueA =
+          valueA === "N/A"
+            ? 0
+            : new Date(valueA).getTime();
 
-    /* TEXT */
-    if (typeof valueA === "string") {
-      valueA = valueA.toLowerCase();
-    }
+        valueB =
+          valueB === "N/A"
+            ? 0
+            : new Date(valueB).getTime();
+      }
 
-    if (typeof valueB === "string") {
-      valueB = valueB.toLowerCase();
-    }
+      /* TEXT */
+      if (typeof valueA === "string") {
+        valueA = valueA.toLowerCase();
+      }
 
-    /* ASCENDING */
-    if (currentSort.direction === "asc") {
-      if (valueA > valueB) return 1;
-      if (valueA < valueB) return -1;
+      if (typeof valueB === "string") {
+        valueB = valueB.toLowerCase();
+      }
 
-      return 0;
-    }
+      /* ASC */
+      if (currentSort.direction === "asc") {
+        if (valueA > valueB) return 1;
+        if (valueA < valueB) return -1;
 
-    /* DESCENDING */
-    else {
-      if (valueA < valueB) return 1;
-      if (valueA > valueB) return -1;
+        return 0;
+      }
 
-      return 0;
-    }
-  });
+      /* DESC */
+      else {
+        if (valueA < valueB) return 1;
+        if (valueA > valueB) return -1;
+
+        return 0;
+      }
+    });
+  }
 
   /* EMPTY */
   if (filteredTransactions.length === 0) {
@@ -371,17 +382,10 @@ function openTransactionModal() {
 }
 
 function closeTransactionModal() {
-  document
-    .getElementById("transactionModal")
-    .classList.remove("active");
-
-  document
-    .getElementById("recurringCheckbox")
-    .checked = false;
-
-  document
-    .getElementById("recurringOptions")
-    .classList.remove("active");
+  document.getElementById("transactionModal").classList.remove("active");
+  document.getElementById("recurringCheckbox").checked = false;
+  document.getElementById("recurringOptions").classList.remove("active");
+  clearValidationErrors();
 }
 
 /* TYPE SWITCHING */

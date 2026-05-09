@@ -287,12 +287,17 @@ th {
 }
 
 .sort-icon {
-  font-size: 11px;
-  margin-left: 6px;
-  opacity: 0.55;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  line-height: 1;
+  opacity: 0.5;
+  transition: 0.2s ease;
+  margin-left: 5px;
 }
 
-.sortable-header.active-sort .sort-icon {
+.sortable-header.active-sort .sort-icon, .sort-icon.active, th:hover .sort-icon {
   opacity: 1;
 }
 
@@ -612,6 +617,8 @@ tbody tr:hover {
 
 .amount-input-wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .peso-sign {
