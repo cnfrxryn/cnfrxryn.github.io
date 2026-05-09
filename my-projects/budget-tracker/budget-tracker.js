@@ -13,6 +13,31 @@ let currentSort = {
   direction: "desc"
 };
 
+document.querySelectorAll(".sortable-header").forEach(header => {
+  header.addEventListener("click", () => {
+    const field = header.dataset.sort;
+
+    /* SAME FIELD */
+    if (currentSort.field === field) {
+      currentSort.direction =
+        currentSort.direction === "asc"
+          ? "desc"
+          : "asc";
+    }
+
+    /* NEW FIELD */
+    else {
+      currentSort.field = field;
+      currentSort.direction = "asc";
+    }
+
+    /* ACTIVE HEADER */
+    document.querySelectorAll(".sortable-header").forEach(th =>th.classList.remove("active-sort"));
+    header.classList.add("active-sort");
+    renderTransactions();
+  });
+});
+
 /* TRANSACTION TYPES */
 const categoriesByType = {
   "Fixed Expense": [
@@ -150,6 +175,52 @@ function renderTransactions() {
         );
       });
   }
+
+  /* SORTING */
+  filteredTransactions.sort((a, b) => {
+    let valueA = a[currentSort.field];
+    let valueB = b[currentSort.field];
+
+    /* AMOUNT */
+    if (currentSort.field === "amount") {
+      valueA = Number(valueA);
+      valueB = Number(valueB);
+    }
+
+    /* DUE DATE */
+    if (currentSort.field === "dueDate") {
+      if (valueA === "N/A") valueA = "";
+      if (valueB === "N/A") valueB = "";
+
+      valueA = new Date(valueA);
+      valueB = new Date(valueB);
+    }
+
+    /* TEXT */
+    if (typeof valueA === "string") {
+      valueA = valueA.toLowerCase();
+    }
+
+    if (typeof valueB === "string") {
+      valueB = valueB.toLowerCase();
+    }
+
+    /* ASCENDING */
+    if (currentSort.direction === "asc") {
+      if (valueA > valueB) return 1;
+      if (valueA < valueB) return -1;
+
+      return 0;
+    }
+
+    /* DESCENDING */
+    else {
+      if (valueA < valueB) return 1;
+      if (valueA > valueB) return -1;
+
+      return 0;
+    }
+  });
 
   /* EMPTY */
   if (filteredTransactions.length === 0) {
@@ -364,24 +435,90 @@ function updateTransactionModal() {
 }
 
 /* RECURRING TOGGLE */
-document
-  .getElementById("recurringCheckbox")
-  .addEventListener("change", (e) => {
-    document
-      .getElementById("recurringOptions")
-      .classList.toggle(
-        "active",
-        e.target.checked
-      );
-  });
+document.getElementById("recurringCheckbox").addEventListener("change", (e) => {
+  document
+    .getElementById("recurringOptions")
+    .classList.toggle(
+      "active",
+      e.target.checked
+    );
+});
+
+function clearValidationErrors() {
+
+  document
+    .querySelectorAll(".error-text")
+    .forEach(error => error.remove());
+
+  document
+    .querySelectorAll(".input-error")
+    .forEach(input =>
+      input.classList.remove("input-error")
+    );
+
+}
+
+function showValidationError(inputId, message) {
+  const input = document.getElementById(inputId);
+  input.classList.add("input-error");
+  const error = document.createElement("div");
+
+  error.className = "error-text";
+  error.textContent = message;
+  input.parentElement.appendChild(error);
+}
 
 /* SAVE TRANSACTION */
 function saveTransaction() {
+  clearValidationErrors();
   const category = document.getElementById("transactionCategory").value;
-  const description = document.getElementById("transactionDescription").value;
-  const amount = document.getElementById("transactionAmount").value;
+  const description = document.getElementById("transactionDescription").value.trim();
+  const amount = document.getElementById("transactionAmount").value.trim();
   const dueDate = document.getElementById("transactionDueDate").value;
   const recurring = document.getElementById("recurringCheckbox").checked;
+  let hasError = false;
+
+  /* REQUIRED */
+  if (!description) {
+    showValidationError("transactionDescription", "Please enter a description.");
+    hasError = true;
+  }
+
+  if (!amount) {
+    showValidationError("transactionAmount", "Please enter an amount.");
+    hasError = true;
+  }
+
+  /* VALID NUMBER */
+  if (amount && isNaN(amount)) {
+    showValidationError("transactionAmount", "Please enter a valid amount.");
+    hasError = true;
+  }
+
+  /* DUE DATE */
+  if (selectedType !== "Income" && !dueDate) {
+    showValidationError("transactionDueDate", "Please select a due date.");
+    hasError = true;
+  }
+
+  /* RECURRING */
+  if (recurring) {
+    const repeatStarting = document.getElementById("repeatStarting").value;
+    const repeatUntil = document.getElementById("repeatUntil").value;
+
+    if (!repeatStarting) {
+      showValidationError("repeatStarting", "Please select a start date.");
+      hasError = true;
+    }
+
+    if (!repeatUntil) {
+      showValidationError("repeatUntil","Please select an end date.");
+      hasError = true;
+    }
+  }
+
+  if (hasError) return;
+
   const transaction = {
     type: selectedType,
     category,
@@ -400,11 +537,7 @@ function saveTransaction() {
   }
 
   transactions.push(transaction);
-
-  localStorage.setItem(
-    "transactions",
-    JSON.stringify(transactions)
-  );
+  localStorage.setItem("transactions", JSON.stringify(transactions));
 
   renderTransactions();
   closeTransactionModal();

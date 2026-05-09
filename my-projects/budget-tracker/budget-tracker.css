@@ -286,6 +286,16 @@ th {
   background: #efebe8;
 }
 
+.sort-icon {
+  font-size: 11px;
+  margin-left: 6px;
+  opacity: 0.55;
+}
+
+.sortable-header.active-sort .sort-icon {
+  opacity: 1;
+}
+
 td, .status-na {
   padding: 16px;
   border-bottom: 1px solid #f1f1f1;
@@ -544,6 +554,16 @@ tbody tr:hover {
   opacity: 1;
 }
 
+.input-error {
+  border-color: #d9534f !important;
+}
+
+.error-text {
+  margin-top: 6px;
+  color: #d9534f;
+  font-size: 12px;
+}
+
 /* TYPE COLORS */
 .income-btn {
   background: #e5f3de;
@@ -631,6 +651,10 @@ input::-webkit-inner-spin-button {
 
 .recurring-toggle input {
   margin: 0;
+}
+
+.recurring-toggle input:hover {
+  cursor: pointer;
 }
 
 .recurring-options {
