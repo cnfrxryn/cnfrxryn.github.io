@@ -37,6 +37,23 @@ const incomeCategories = [
 
 let selectedType = "Income";
 
+function getTypeClass(type) {
+  switch (type) {
+    case "Income":
+      return "type-income";
+    case "Fixed Expense":
+      return "type-fixed";
+    case "Variable Expense":
+      return "type-variable";
+    case "Subscription":
+      return "type-subscription";
+    case "Loan":
+      return "type-loan";
+    default:
+      return "";
+  }
+}
+
 /* INIT */
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -89,6 +106,7 @@ document
 function renderTransactions() {
   const tbody = document.getElementById("transactionsTableBody");
   tbody.innerHTML = "";
+
   let filteredTransactions = [...transactions];
 
   /* SEARCH */
@@ -98,7 +116,9 @@ function renderTransactions() {
         return (
           transaction.description
             ?.toLowerCase()
-            .includes(searchQuery) ||
+            .includes(searchQuery)
+
+          ||
 
           transaction.category
             ?.toLowerCase()
@@ -117,35 +137,107 @@ function renderTransactions() {
       </tr>
     `;
 
+    updatePagination(0);
     return;
   }
 
-  filteredTransactions.forEach(transaction => {
+  /* PAGINATION */
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedTransactions = filteredTransactions.slice(startIndex,endIndex);
+
+  /* RENDER ROWS */
+  paginatedTransactions.forEach(transaction => {
     tbody.innerHTML += `
-        <tr>
+      <tr>
         <td>
-            <span class="type-pill type-${transaction.type.toLowerCase().replace(/\s/g, "-")}">
+          <span class="type-pill ${getTypeClass(transaction.type)}">
             ${transaction.type}
-            </span>
+          </span>
         </td>
+
         <td>${transaction.category}</td>
+
         <td>${transaction.description}</td>
-        <td>₱${Number(transaction.amount).toLocaleString()}</td>
+
+        <td>₱ ${Number(transaction.amount).toLocaleString()}</td>
+
         <td>${transaction.dueDate}</td>
+
         <td>
-            <span class="status-pill status-${transaction.status.toLowerCase().replace(/\s/g, "-")}">
-            ${transaction.status}
-            </span>
+          ${
+            transaction.status === "N/A"
+            ? `<span class="status-na">N/A</span>`
+            : `<span class="status-pill status-${transaction.status.toLowerCase().replace(/\s/g, "-")}">${transaction.status}</span>`
+          }
         </td>
+
         <td></td>
 
         <td>
-            <button class="actions-btn">•••</button>
+          <button class="actions-btn">•••</button>
         </td>
-
-        </tr>
+      </tr>
     `;
+  });
+
+  updatePagination(filteredTransactions.length);
+}
+
+function updatePagination(totalEntries) {
+  const pagination = document.getElementById("pagination");
+  const paginationInfo = document.querySelector(".pagination-info");
+  pagination.innerHTML = "";
+  const totalPages = Math.ceil(totalEntries / rowsPerPage);
+
+  /* INFO */
+  const startEntry =
+    totalEntries === 0
+      ? 0
+      : (currentPage - 1) * rowsPerPage + 1;
+
+  const endEntry = Math.min(currentPage * rowsPerPage,totalEntries);
+  paginationInfo.textContent = `Showing ${startEntry} to ${endEntry} of ${totalEntries} entries`;
+
+  /* PREVIOUS */
+  const prevButton = document.createElement("span");
+  prevButton.className = `page ${currentPage === 1 ? "disabled" : ""}`;
+  prevButton.innerHTML = "&lt;";
+
+  if (currentPage > 1) {
+    prevButton.addEventListener("click", () => {
+      currentPage--;
+      renderTransactions();
     });
+  }
+
+  pagination.appendChild(prevButton);
+
+  /* PAGE NUMBERS */
+  for (let i = 1; i <= totalPages; i++) {
+    const page = document.createElement("span");
+    page.className = `page ${i === currentPage ? "active" : ""}`;
+    page.textContent = i;
+    page.addEventListener("click", () => {
+      currentPage = i;
+      renderTransactions();
+    });
+
+    pagination.appendChild(page);
+  }
+
+  /* NEXT */
+  const nextButton = document.createElement("span");
+  nextButton.className = `page ${currentPage === totalPages ? "disabled" : ""}`;
+  nextButton.innerHTML = "&gt;";
+
+  if (currentPage < totalPages) {
+    nextButton.addEventListener("click", () => {
+      currentPage++;
+      renderTransactions();
+    });
+  }
+  pagination.appendChild(nextButton);
 }
 
 /* SUMMARY CARDS */

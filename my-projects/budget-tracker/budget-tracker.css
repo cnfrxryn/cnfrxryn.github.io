@@ -119,7 +119,8 @@ body {
 }
 
 .card.clickable:hover {
-  background: #f8f8f8;
+  background: #f1f1f1;
+  border-color: #666;
 }
 
 /* CHARTS */
@@ -372,6 +373,11 @@ tbody tr:hover {
   color: #d17b00;
 }
 
+.status-na {
+  font-size: 14px;
+  color: #666;
+}
+
 /* NOTES */
 .notes-column {
   width: 40px;
@@ -433,6 +439,12 @@ tbody tr:hover {
   background: #444;
   color: white;
   font-weight: bold;
+}
+
+.page.disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
 }
 
 /* GLOBAL NAV OVERRIDE */
