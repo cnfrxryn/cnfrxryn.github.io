@@ -8,23 +8,47 @@ let filters = {
   status: ""
 };
 let searchQuery = "";
+let currentSort = {
+  field: "createdAt",
+  direction: "desc"
+};
 
 /* TRANSACTION TYPES */
-const outCategories = [
-  "Housing",
-  "Transportation",
-  "Car",
-  "Utilities",
-  "Cards",
-  "Loan",
-  "Shopping",
-  "Travel",
-  "Food",
-  "Groceries",
-  "Health",
-  "Entertainment",
-  "Others"
-];
+const categoriesByType = {
+  "Fixed Expense": [
+    "Housing",
+    "Insurance",
+    "Tuition",
+    "Internet",
+    "Mobile Plan",
+    "Others"
+  ],
+
+  "Variable Expense": [
+    "Transportation",
+    "Car",
+    "Utilities",
+    "Credit Cards",
+    "Shopping",
+    "Travel",
+    "Food",
+    "Groceries",
+    "Health",
+    "Entertainment",
+    "Others"
+  ],
+
+  "Subscription": [
+    "Entertainment",
+    "Software",
+    "Others"
+  ],
+
+  "Loan": [
+    "Loan",
+    "Others"
+  ]
+};
 
 const incomeCategories = [
   "Salary",
@@ -35,7 +59,7 @@ const incomeCategories = [
   "Allowance"
 ];
 
-let selectedType = "Income";
+let selectedType = "Variable Expense";
 
 function getTypeClass(type) {
   switch (type) {
@@ -255,9 +279,23 @@ function filterUpcomingPayments() {
 
 /* MODAL */
 function openTransactionModal() {
-  document
-    .getElementById("transactionModal")
-    .classList.add("active");
+  document.getElementById("transactionModal").classList.add("active");
+
+  /* RESET TYPE */
+  selectedType = "Variable Expense";
+  typeButtons.forEach(btn => btn.classList.remove("active"));
+
+  document.querySelector('[data-type="Variable Expense"]').classList.add("active");
+
+  /* CLEAR FIELDS */
+  document.getElementById("transactionDescription").value = "";
+  document.getElementById("transactionAmount").value = "";
+  document.getElementById("transactionDueDate").value = "";
+  document.getElementById("repeatStarting").value = "";
+  document.getElementById("repeatUntil").value = "";
+  document.getElementById("recurringCheckbox").checked = false;
+
+  document.getElementById("recurringOptions").classList.remove("active");
   updateTransactionModal();
 }
 
@@ -301,7 +339,6 @@ function updateTransactionModal() {
   if (selectedType === "Income") {
     dueDateGroup.style.display = "none";
     recurringWrapper.style.display = "none";
-
     incomeCategories.forEach(category => {
       categorySelect.innerHTML += `
         <option value="${category}">
@@ -315,14 +352,14 @@ function updateTransactionModal() {
   else {
     dueDateGroup.style.display = "flex";
     recurringWrapper.style.display = "block";
-
-    outCategories.forEach(category => {
-      categorySelect.innerHTML += `
-        <option value="${category}">
-          ${category}
-        </option>
-      `;
-    });
+    categoriesByType[selectedType]
+      .forEach(category => {
+        categorySelect.innerHTML += `
+          <option value="${category}">
+            ${category}
+          </option>
+        `;
+      });
   }
 }
 
@@ -352,7 +389,8 @@ function saveTransaction() {
     amount,
     dueDate,
     recurring,
-    status: "Unpaid"
+    status: "Unpaid",
+    createdAt: Date.now()
   };
 
   /* INCOME */

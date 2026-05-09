@@ -277,7 +277,16 @@ th {
   font-weight: 700;
 }
 
-td {
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable-header:hover {
+  background: #efebe8;
+}
+
+td, .status-na {
   padding: 16px;
   border-bottom: 1px solid #f1f1f1;
   vertical-align: middle;
@@ -371,11 +380,6 @@ tbody tr:hover {
 .status-due-today {
   background: #ffe8c9;
   color: #d17b00;
-}
-
-.status-na {
-  font-size: 14px;
-  color: #666;
 }
 
 /* NOTES */
@@ -586,6 +590,30 @@ tbody tr:hover {
   font-size: 14px;
 }
 
+.amount-input-wrapper {
+  position: relative;
+}
+
+.peso-sign {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #555;
+  font-size: 14px;
+}
+
+.amount-input-wrapper input {
+  padding-left: 34px !important;
+}
+
+/* REMOVE NUMBER SPINNERS */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .recurring-section {
   margin-top: 24px;
 }
@@ -595,6 +623,14 @@ tbody tr:hover {
   align-items: center;
   gap: 10px;
   margin-bottom: 18px;
+}
+
+.recurring-toggle label {
+  margin-bottom: 0;
+}
+
+.recurring-toggle input {
+  margin: 0;
 }
 
 .recurring-options {
