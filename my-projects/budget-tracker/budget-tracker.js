@@ -184,8 +184,7 @@ function renderTransactions() {
   }
 
   /* SORTING */
-  /* MANUAL SORT */
-  else {
+  if (currentSort) {
     filteredTransactions.sort((a, b) => {
       let valueA = a[currentSort.field];
       let valueB = b[currentSort.field];
