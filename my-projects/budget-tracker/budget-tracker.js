@@ -92,6 +92,7 @@ const incomeCategories = [
 ];
 
 let selectedType = "Variable Expense";
+let editingIndex = null;
 
 function getTypeClass(type) {
   switch (type) {
@@ -285,9 +286,9 @@ function renderTransactions() {
         <td class="actions-cell">
           <button class="actions-btn" onclick="toggleActionsMenu(this)">•••</button>
           <div class="actions-dropdown">
-            <button type="button">Edit</button>
-            <button type="button">Delete</button>
-            <button type="button">Mark as Paid</button>
+            <button type="button" onclick="editTransaction(${transactions.indexOf(transaction)})">Edit</button>
+            <button type="button" onclick="deleteTransaction(${transactions.indexOf(transaction)})">Delete</button>
+            <button type="button" onclick="markTransactionPaid(${transactions.indexOf(transaction)})">Mark as Paid</button>
           </div>
         </td>
       </tr>
@@ -380,6 +381,57 @@ function toggleActionsMenu(button) {
   dropdown.classList.toggle("active");
 }
 
+function editTransaction(index) {
+  editingIndex = index;
+  const transaction = transactions[index];
+
+  openTransactionModal();
+
+  /* TITLE */
+  document.querySelector(".modal-header h2").textContent = "Edit Transaction";
+
+  /* TYPE */
+  selectedType = transaction.type;
+  typeButtons.forEach(btn => {
+    btn.classList.remove("active");
+    if (
+      btn.dataset.type === transaction.type
+    ) {
+      btn.classList.add("active");
+    }
+  });
+
+  updateTransactionModal();
+
+  /* VALUES */
+  document.getElementById("transactionCategory").value = transaction.category;
+  document.getElementById("transactionDescription").value = transaction.description;
+  document.getElementById("transactionAmount").value = transaction.amount;
+
+  if (transaction.dueDate !== "N/A") {
+    document.getElementById("transactionDueDate").value = transaction.dueDate;
+  }
+}
+
+function deleteTransaction(index) {
+  const confirmed = confirm("Are you sure you want to delete this transaction?");
+  if (!confirmed) return;
+
+  transactions.splice(index, 1);
+
+  localStorage.setItem("transactions", JSON.stringify(transactions));
+  renderTransactions();
+}
+
+function markTransactionPaid(index) {
+  if (transactions[index].status !== "N/A") {
+    transactions[index].status = "Paid";
+  }
+
+  localStorage.setItem("transactions", JSON.stringify(transactions));
+  renderTransactions();
+}
+
 /* CLOSE ON OUTSIDE CLICK */
 document.addEventListener("click", (e) => {
   if (!e.target.closest(".actions-cell")) {
@@ -390,6 +442,8 @@ document.addEventListener("click", (e) => {
 /* MODAL */
 function openTransactionModal() {
   document.getElementById("transactionModal").classList.add("active");
+  document.querySelector(".modal-header h2").textContent = "Add New Transaction";
+  editingIndex = null;
 
   /* RESET TYPE */
   selectedType = "Variable Expense";
@@ -568,7 +622,17 @@ function saveTransaction() {
     transaction.dueDate = "N/A";
   }
 
-  transactions.unshift(transaction);
+  if (editingIndex !== null) {
+    transactions[editingIndex] = {
+      ...transactions[editingIndex],
+      ...transaction
+    };
+  }
+
+  else {
+    transactions.unshift(transaction);
+  }
+
   localStorage.setItem("transactions", JSON.stringify(transactions));
 
   renderTransactions();
