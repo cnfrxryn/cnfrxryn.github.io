@@ -137,13 +137,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* CHART MONTH PICKERS */
   document.getElementById("categoryChartMonth").addEventListener("change", (e) => {
-    categoryChartDate = new Date(e.target.value);
-    renderCharts();
+    categoryChartDate = new Date(`${e.target.value}-01`);
+    renderCategoryChart();
   });
   
   document.getElementById("trendChartMonth").addEventListener("change", (e) => {
-    trendChartDate = new Date(e.target.value);
-    renderCharts();
+    trendChartDate = new Date(`${e.target.value}-01`);
+    renderTrendChart();
   });
 
   /* TABS */
@@ -302,10 +302,10 @@ function updateCurrentMonth() {
 }
 
 document.getElementById("currentMonthPicker").addEventListener("change", (e) => {
-  currentDate = new Date(e.target.value);
+  currentDate = new Date(`${e.target.value}-01`);
   /* SYNC CHART MONTHS */
-  categoryChartDate = new Date(e.target.value);
-  trendChartDate = new Date(e.target.value);
+  categoryChartDate = new Date(`${e.target.value}-01`);
+  trendChartDate = new Date(`${e.target.value}-01`);
 
   document.getElementById("categoryChartMonth").value = e.target.value;
   document.getElementById("trendChartMonth").value = e.target.value;
@@ -329,8 +329,8 @@ document
     document.getElementById("trendChartMonth").value = syncedMonth;
     renderTransactions();
 
-    categoryChartDate = new Date(syncedMonth);
-    trendChartDate = new Date(syncedMonth);
+    categoryChartDate = new Date(`${syncedMonth}-01`);
+    trendChartDate = new Date(`${syncedMonth}-01`);
   });
 
 document
@@ -534,6 +534,8 @@ function renderTransactions() {
       }
     });
   }
+
+  updateClearFiltersButton();
 
   /* EMPTY */
   if (filteredTransactions.length === 0) {
@@ -799,10 +801,13 @@ const centerTextPlugin = {
 Chart.register(centerTextPlugin);
 /* CHARTS */
 function renderCharts() {
+  renderCategoryChart();
+  renderTrendChart();
+}
+
+function renderCategoryChart() {
   const categoryMonth = categoryChartDate.getMonth();
   const categoryYear = categoryChartDate.getFullYear();
-  const trendMonth = trendChartDate.getMonth();
-  const trendYear = trendChartDate.getFullYear();
   
   const categoryFilteredData = transactions.filter(transaction => {
     if (transaction.dueDate === "N/A") {
@@ -817,27 +822,12 @@ function renderCharts() {
     );
   });
 
-  const trendFilteredData = transactions.filter(transaction => {
-    if (transaction.dueDate === "N/A") {
-      return false;
-    }
-
-    const dueDate = new Date(transaction.dueDate);
-
-    return (
-      dueDate.getMonth() === trendMonth &&
-      dueDate.getFullYear() === trendYear
-    );
-  });
-
   const hasCategoryData = categoryFilteredData.length > 0;
-  const hasTrendData = trendFilteredData.length > 0;
+  document.getElementById("categoryChart").style.display = hasCategoryData
+    ? "block"
+    : "none";
 
-  document.getElementById("categoryChartEmpty").style.display =
-    hasCategoryData ? "none" : "flex";
-
-  document.getElementById("trendChartEmpty").style.display =
-    hasTrendData ? "none" : "flex";
+  document.getElementById("categoryChartEmpty").style.display = hasCategoryData ? "none" : "flex";
 
   /* TYPE TOTALS */
   const typeTotals = {};
@@ -856,10 +846,6 @@ function renderCharts() {
   /* DESTROY OLD */
   if (categoryChartInstance) {
     categoryChartInstance.destroy();
-  }
-
-  if (trendChartInstance) {
-    trendChartInstance.destroy();
   }
 
   if (hasCategoryData) {
@@ -901,7 +887,41 @@ function renderCharts() {
       }
     });
   }
+}
+  
+function renderTrendChart() {
+  const trendMonth = trendChartDate.getMonth();
+  const trendYear = trendChartDate.getFullYear();
 
+  const trendFilteredData = transactions.filter(transaction => {
+    if (transaction.dueDate === "N/A") {
+      return false;
+    }
+
+    const dueDate = new Date(transaction.dueDate);
+
+    return (
+      dueDate.getMonth() === trendMonth &&
+      dueDate.getFullYear() === trendYear
+    );
+  });
+
+  const hasTrendData = trendFilteredData.length > 0;
+
+  document.getElementById("trendChart").style.display =
+    hasTrendData
+      ? "block"
+      : "none";
+
+  document.getElementById("trendChartEmpty").style.display =
+    hasTrendData
+      ? "none"
+      : "flex";
+
+  if (trendChartInstance) {
+    trendChartInstance.destroy();
+  }
+  
   /* WEEKLY TOTALS */
   const weeklyTotals = {
     "Week 1": 0,
@@ -1063,6 +1083,20 @@ function updateSummaryCards() {
     `${upcomingCount} due within 5 days`;
 }
 
+function updateClearFiltersButton() {
+  const clearBtn = document.getElementById("clearFiltersBtn");
+  const hasFilters =
+    showUpcomingOnly ||
+    filters.category ||
+    filters.type ||
+    filters.status ||
+    searchQuery;
+
+  clearBtn.style.display = hasFilters
+    ? "block"
+    : "none";
+}
+
 /* UPCOMING PAYMENTS */
 function filterUpcomingPayments() {
   /* SWITCH TAB */
@@ -1092,6 +1126,27 @@ function filterUpcomingPayments() {
   currentPage = 1;
 
   updateFilterDropdowns();
+  updateClearFiltersButton();
+  renderTransactions();
+}
+
+function clearAllFilters() {
+  showUpcomingOnly = false;
+  filters = {
+    category: "",
+    type: "",
+    status: ""
+  };
+
+  searchQuery = "";
+
+  document.getElementById("searchInput").value = "";
+  document.getElementById("filterCategory").value = "";
+  document.getElementById("filterType").value = "";
+  document.getElementById("filterStatus").value = "";
+
+  updateFilterDropdowns();
+  updateClearFiltersButton();
   renderTransactions();
 }
 
@@ -1184,6 +1239,7 @@ function togglePaidStatus(index) {
   }
 
   localStorage.setItem("transactions", JSON.stringify(transactions));
+  transactions = [...transactions];
   renderTransactions();
   updateSummaryCards();
   renderCharts();

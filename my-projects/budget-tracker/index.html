@@ -108,11 +108,11 @@
 
     <!-- CHARTS -->
     <section class="charts-section">
-      <!-- EXPENSES BY CATEGORY -->
+      <!-- EXPENSES BY TYPE -->
       <div class="chart-card">
         <div class="chart-header">
           <h2>
-            Expenses by Category
+            Expenses by Type
           </h2>
           <input type="month" id="categoryChartMonth">
         </div>
@@ -175,6 +175,9 @@
         <select id="filterStatus" class="filter-dropdown">
           <option value="">All Status</option>
         </select>
+
+        <!-- CLEAR FILTERS -->
+        <button type="button" id="clearFiltersBtn" class="clear-filters-btn" onclick="clearAllFilters()">Clear Filters ✕</button>
 
         <!-- ADD TRANSACTION -->
         <button type="button" class="btn-primary add-transaction-btn" onclick="openTransactionModal()">

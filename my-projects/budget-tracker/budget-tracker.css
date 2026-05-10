@@ -808,3 +808,34 @@ input[type="month"]:focus-visible {
   appearance: none;
   -webkit-appearance: none;
 }
+
+#categoryChartMonth,
+#trendChartMonth {
+  background-image:
+    linear-gradient(45deg, transparent 50%, #c24747 50%),
+    linear-gradient(135deg, #c24747 50%, transparent 50%);
+
+  background-position:
+    calc(100% - 16px) calc(50% - 3px),
+    calc(100% - 10px) calc(50% - 3px);
+
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+
+  padding-right: 34px;
+}
+
+/* CLEAR FILTERS BUTTON */
+.clear-filters-btn {
+  border: none;
+  background: none;
+  color: #c24747;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: none;
+}
+
+.clear-filters-btn:hover {
+  text-decoration: underline;
+}
