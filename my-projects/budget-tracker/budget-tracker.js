@@ -135,6 +135,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("categoryChartMonth").value = currentMonthValue;
   document.getElementById("trendChartMonth").value = currentMonthValue;
 
+  /* CHART MONTH PICKERS */
+  document.getElementById("categoryChartMonth").addEventListener("change", (e) => {
+    categoryChartDate = new Date(e.target.value);
+    renderCharts();
+  });
+  
+  document.getElementById("trendChartMonth").addEventListener("change", (e) => {
+    trendChartDate = new Date(e.target.value);
+    renderCharts();
+  });
+
   /* TABS */
   document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
@@ -287,10 +298,16 @@ function updateCurrentMonth() {
       year: "numeric"
     });
 
-  document.getElementById("currentMonth").textContent =
-    monthYear;
-
+  document.getElementById("currentMonthPicker").value = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
 }
+
+document.getElementById("currentMonthPicker").addEventListener("change", (e) => {
+  currentDate = new Date(e.target.value);
+  updateCurrentMonth();
+  updateSummaryCards();
+  renderCharts();
+  renderTransactions();
+});
 
 document 
   .getElementById("prevMonth")
@@ -299,6 +316,11 @@ document
     updateCurrentMonth();
     updateSummaryCards();
     renderCharts();
+
+    const syncedMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
+    document.getElementById("categoryChartMonth").value = syncedMonth;
+    document.getElementById("trendChartMonth").value = syncedMonth;
+    renderTransactions();
   });
 
 document
@@ -308,6 +330,11 @@ document
     updateCurrentMonth();
     updateSummaryCards();
     renderCharts();
+
+    const syncedMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
+    document.getElementById("categoryChartMonth").value = syncedMonth;
+    document.getElementById("trendChartMonth").value = syncedMonth;
+    renderTransactions();
   });
 
 /* RENDER TRANSACTIONS */
@@ -370,12 +397,23 @@ function renderTransactions() {
 
   /* GLOBAL MONTH FILTER */
   filteredTransactions = filteredTransactions.filter(transaction => {
-    if (!transaction.dueDate || transaction.dueDate === "N/A") {
-      return false;
+    let referenceDate;
+    
+    /* INCOME */
+    if (transaction.type === "Income") {
+      referenceDate = new Date(transaction.createdAt);
     }
-
-    const dueDate = new Date(transaction.dueDate);
-    return (dueDate.getMonth() === currentDate.getMonth() && dueDate.getFullYear() === currentDate.getFullYear());
+    
+    /* EXPENSES */
+    else {
+      if (!transaction.dueDate || transaction.dueDate === "N/A") {
+        return false;
+      }
+      
+      referenceDate = new Date(transaction.dueDate);
+    }
+    
+    return (referenceDate.getMonth() === currentDate.getMonth() && referenceDate.getFullYear() === currentDate.getFullYear());
   });
 
   /* SEARCH */
@@ -705,42 +743,63 @@ function getNextDueDate(transaction) {
 
 let categoryChartInstance = null;
 let trendChartInstance = null;
+let categoryChartDate = new Date();
+let trendChartDate = new Date();
 
 /* CHARTS */
 function renderCharts() {
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
-  const filteredData = transactions.filter(transaction => {
+  const categoryMonth = categoryChartDate.getMonth();
+  const categoryYear = categoryChartDate.getFullYear();
+  const trendMonth = trendChartDate.getMonth();
+  const trendYear = trendChartDate.getFullYear();
+  
+  const categoryFilteredData = transactions.filter(transaction => {
     if (transaction.dueDate === "N/A") {
       return false;
     }
-    
+
     const dueDate = new Date(transaction.dueDate);
-    return (dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear);
+
+    return (
+      dueDate.getMonth() === categoryMonth &&
+      dueDate.getFullYear() === categoryYear
+    );
   });
 
-  const hasData = filteredData.length > 0;
-  document.getElementById("categoryChartEmpty").style.display = hasData
-    ? "none"
-    : "flex";
-    
-  document.getElementById("trendChartEmpty").style.display = hasData
-    ? "none"
-    : "flex";
+  const trendFilteredData = transactions.filter(transaction => {
+    if (transaction.dueDate === "N/A") {
+      return false;
+    }
 
-  /* CATEGORY TOTALS */
-  const categoryTotals = {};
+    const dueDate = new Date(transaction.dueDate);
 
-  filteredData.forEach(transaction => {
+    return (
+      dueDate.getMonth() === trendMonth &&
+      dueDate.getFullYear() === trendYear
+    );
+  });
+
+  const hasCategoryData = categoryFilteredData.length > 0;
+  const hasTrendData = trendFilteredData.length > 0;
+
+  document.getElementById("categoryChartEmpty").style.display =
+    hasCategoryData ? "none" : "flex";
+
+  document.getElementById("trendChartEmpty").style.display =
+    hasTrendData ? "none" : "flex";
+
+  /* TYPE TOTALS */
+  const typeTotals = {};
+  categoryFilteredData.forEach(transaction => {
     if (transaction.type === "Income") {
       return;
     }
-
-    if (!categoryTotals[transaction.category]) {
-      categoryTotals[transaction.category] = 0;
+    
+    if (!typeTotals[transaction.type]) {
+      typeTotals[transaction.type] = 0;
     }
-
-    categoryTotals[transaction.category] += Number(transaction.amount);
+    
+    typeTotals[transaction.type] += Number(transaction.amount);
   });
 
   /* DESTROY OLD */
@@ -753,41 +812,93 @@ function renderCharts() {
   }
 
   /* NO DATA */
-  if (!hasData) {
+  if (!hasCategoryData && !hasTrendData) {
     return;
   }
 
+  if (hasCategoryData) {
   /* CATEGORY CHART */
-  categoryChartInstance = new Chart(document.getElementById("categoryChart"), {
-    type: "doughnut",
-    data: {
-      labels: Object.keys(categoryTotals),
-      datasets: [{
-        data: Object.values(categoryTotals)
-      }]
-    },
-    
-    options: {
-      responsive: true,
-      maintainAspectRatio: false
+    categoryChartInstance = new Chart(document.getElementById("categoryChart"), {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(typeTotals),
+        datasets: [{
+          data: Object.values(typeTotals)
+        }]
+      },
+      
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+          legend: {
+            position: "left"
+          }
+        }
+      }
+    });
+  }
+
+  /* WEEKLY TOTALS */
+  const weeklyTotals = {
+    "Week 1": 0,
+    "Week 2": 0,
+    "Week 3": 0,
+    "Week 4": 0,
+    "Week 5": 0
+  };
+
+  trendFilteredData.forEach(transaction => {
+    if (transaction.type === "Income") {
+      return;
     }
+    
+    const dueDate = new Date(transaction.dueDate);
+    const day = dueDate.getDate();
+    let week;
+
+    if (day <= 7) {
+      week = "Week 1";
+    }
+
+    else if (day <= 14) {
+      week = "Week 2";
+    }
+
+    else if (day <= 21) {
+      week = "Week 3";
+    }
+
+    else if (day <= 28) {
+      week = "Week 4";
+    }
+
+    else {
+      week = "Week 5";
+    }
+
+    weeklyTotals[week] += Number(transaction.amount);
   });
 
-  /* TREND CHART */
-  trendChartInstance = new Chart(document.getElementById("trendChart"), {
-    type: "line",
-    data: {
-      labels: filteredData.map(t => t.dueDate),
-      datasets: [{
-        label: "Expenses",
-        data: filteredData.map(t => Number(t.amount))
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false
-    }
-  });
+  if (hasTrendData) {
+    /* TREND CHART */
+    trendChartInstance = new Chart(document.getElementById("trendChart"), {
+      type: "line",
+      data: {
+        labels: Object.keys(weeklyTotals),
+        datasets: [{
+          label: "Expenses",
+          data: Object.values(weeklyTotals),
+          tension: 0.35
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  }
 }
 
 /* SUMMARY CARDS */
@@ -805,12 +916,26 @@ function updateSummaryCards() {
 
   transactions.forEach(transaction => {
     /* MONTH FILTER */
-    if (transaction.dueDate !== "N/A") {
-      const dueDate = new Date(transaction.dueDate);
-      const matchesMonth = dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear;
-      if (!matchesMonth) {
+    let referenceDate;
+
+    /* INCOME */
+    if (transaction.type === "Income") {
+      referenceDate = new Date(transaction.createdAt);
+    }
+    
+    /* EXPENSES */
+    else {
+      if (transaction.dueDate === "N/A") {
         return;
       }
+      
+      referenceDate = new Date(transaction.dueDate);
+    }
+    
+    const matchesMonth = referenceDate.getMonth() === currentMonth && referenceDate.getFullYear() === currentYear;
+
+    if (!matchesMonth) {
+      return;
     }
 
     /* INCOME */
