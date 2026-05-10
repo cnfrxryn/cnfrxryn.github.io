@@ -316,35 +316,33 @@ document.getElementById("currentMonthPicker").addEventListener("change", (e) => 
   renderTransactions();
 });
 
-document 
-  .getElementById("prevMonth")
-  .addEventListener("click", () => {
-    const syncedMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
-    categoryChartDate = new Date(`${syncedMonth}-01`);
-    trendChartDate = new Date(`${syncedMonth}-01`);
-    document.getElementById("categoryChartMonth").value = syncedMonth;
-    document.getElementById("trendChartMonth").value = syncedMonth;
-    
-    updateCurrentMonth();
-    updateSummaryCards();
-    renderCharts();
-    renderTransactions();
-  });
+document.getElementById("prevMonth").addEventListener("click", () => {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  const syncedMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
+  categoryChartDate = new Date(`${syncedMonth}-01`);
+  trendChartDate = new Date(`${syncedMonth}-01`);
+  document.getElementById("categoryChartMonth").value = syncedMonth;
+  document.getElementById("trendChartMonth").value = syncedMonth;
 
-document
-  .getElementById("nextMonth")
-  .addEventListener("click", () => {
-    const syncedMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
-    categoryChartDate = new Date(`${syncedMonth}-01`);
-    trendChartDate = new Date(`${syncedMonth}-01`);
-    document.getElementById("categoryChartMonth").value = syncedMonth;
-    document.getElementById("trendChartMonth").value = syncedMonth;
-    
-    updateCurrentMonth();
-    updateSummaryCards();
-    renderCharts();
-    renderTransactions();
-  });
+  updateCurrentMonth();
+  updateSummaryCards();
+  renderCharts();
+  renderTransactions();
+});
+
+document.getElementById("nextMonth").addEventListener("click", () => {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  const syncedMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
+  categoryChartDate = new Date(`${syncedMonth}-01`);
+  trendChartDate = new Date(`${syncedMonth}-01`);
+  document.getElementById("categoryChartMonth").value = syncedMonth;
+  document.getElementById("trendChartMonth").value = syncedMonth;
+
+  updateCurrentMonth();
+  updateSummaryCards();
+  renderCharts();
+  renderTransactions();
+});
 
 /* RENDER TRANSACTIONS */
 function renderTransactions() {
