@@ -346,8 +346,8 @@ document
     document.getElementById("trendChartMonth").value = syncedMonth;
     renderTransactions();
 
-    categoryChartDate = new Date(syncedMonth);
-    trendChartDate = new Date(syncedMonth);
+    categoryChartDate = new Date(`${syncedMonth}-01`);
+    trendChartDate = new Date(`${syncedMonth}-01`);
   });
 
 /* RENDER TRANSACTIONS */
