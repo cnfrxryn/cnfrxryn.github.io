@@ -164,12 +164,12 @@ body {
 
 .chart-card canvas {
   width: 100% !important;
-  height: 280px !important;
+  height: 340px !important;
 }
 
 .chart-content {
   position: relative;
-  height: 280px;
+  height: 340px;
 }
 
 .chart-empty-state {
@@ -785,4 +785,26 @@ input::-webkit-inner-spin-button {
   font-size: 15px;
   margin-bottom: 24px;
   line-height: 1.5;
+}
+
+/* REMOVE MONTH INPUT STYLING */
+input[type="month"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  cursor: pointer;
+}
+
+input[type="month"]:focus,
+input[type="month"]:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* CLEAN MONTH PICKERS */
+#currentMonthPicker,
+#categoryChartMonth,
+#trendChartMonth {
+  appearance: none;
+  -webkit-appearance: none;
 }

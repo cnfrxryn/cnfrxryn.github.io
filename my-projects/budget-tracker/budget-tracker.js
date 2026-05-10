@@ -303,6 +303,13 @@ function updateCurrentMonth() {
 
 document.getElementById("currentMonthPicker").addEventListener("change", (e) => {
   currentDate = new Date(e.target.value);
+  /* SYNC CHART MONTHS */
+  categoryChartDate = new Date(e.target.value);
+  trendChartDate = new Date(e.target.value);
+
+  document.getElementById("categoryChartMonth").value = e.target.value;
+  document.getElementById("trendChartMonth").value = e.target.value;
+
   updateCurrentMonth();
   updateSummaryCards();
   renderCharts();
@@ -321,6 +328,9 @@ document
     document.getElementById("categoryChartMonth").value = syncedMonth;
     document.getElementById("trendChartMonth").value = syncedMonth;
     renderTransactions();
+
+    categoryChartDate = new Date(syncedMonth);
+    trendChartDate = new Date(syncedMonth);
   });
 
 document
@@ -335,6 +345,9 @@ document
     document.getElementById("categoryChartMonth").value = syncedMonth;
     document.getElementById("trendChartMonth").value = syncedMonth;
     renderTransactions();
+
+    categoryChartDate = new Date(syncedMonth);
+    trendChartDate = new Date(syncedMonth);
   });
 
 /* RENDER TRANSACTIONS */
@@ -746,6 +759,44 @@ let trendChartInstance = null;
 let categoryChartDate = new Date();
 let trendChartDate = new Date();
 
+const centerTextPlugin = {
+  id: "centerTextPlugin",
+  afterDraw(chart) {
+    if (chart.config.type !== "doughnut") {
+      return;
+    }
+
+    const {
+      ctx,
+      chartArea: {
+        width,
+        height
+      }
+    } = chart;
+
+    const total = chart.data.datasets[0].data.reduce((sum, value) => sum + value, 0);
+
+    ctx.save();
+    ctx.font = "700 22px Arial";
+    ctx.fillStyle = "#222";
+    ctx.textAlign = "center";
+    ctx.fillText(
+      `₱ ${total.toLocaleString()}`,
+      width / 2,
+      height / 2
+    );
+    ctx.font = "14px Arial";
+    ctx.fillStyle = "#777";
+    ctx.fillText(
+      "Total",
+      width / 2,
+      (height / 2) + 28
+    );
+    ctx.restore();
+  }
+};
+
+Chart.register(centerTextPlugin);
 /* CHARTS */
 function renderCharts() {
   const categoryMonth = categoryChartDate.getMonth();
@@ -811,17 +862,17 @@ function renderCharts() {
     trendChartInstance.destroy();
   }
 
-  /* NO DATA */
-  if (!hasCategoryData && !hasTrendData) {
-    return;
-  }
-
   if (hasCategoryData) {
   /* CATEGORY CHART */
     categoryChartInstance = new Chart(document.getElementById("categoryChart"), {
       type: "doughnut",
       data: {
-        labels: Object.keys(typeTotals),
+        labels: Object.keys(typeTotals).map(type => {
+          const total = Object.values(typeTotals).reduce((sum, value) => sum + value, 0);
+          const amount = typeTotals[type];
+          const percentage = ((amount / total) * 100).toFixed(0);
+          return `${type}  ${percentage}%  ₱ ${amount.toLocaleString()}`;
+        }),
         datasets: [{
           data: Object.values(typeTotals)
         }]
@@ -830,12 +881,23 @@ function renderCharts() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-
         plugins: {
           legend: {
-            position: "left"
+            position: "right",
+            labels: {
+              usePointStyle: true,
+              pointStyle: "circle",
+              padding: 24,
+              boxWidth: 10,
+              boxHeight: 10,
+              font: {
+                size: 13,
+                weight: "600"
+              }
+            }
           }
-        }
+        },
+        cutout: "68%"
       }
     });
   }
