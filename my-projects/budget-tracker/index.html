@@ -117,7 +117,7 @@
           <input type="month" id="categoryChartMonth">
         </div>
 
-        <div class="chart-placeholder">
+        <canvas id="categoryChart"></canvas>
           <!-- REPLACE WITH ACTUAL CHART LATER -->
           <div class="placeholder-text">
             Donut Chart Placeholder
@@ -134,7 +134,7 @@
           <input type="month" id="trendChartMonth">
         </div>
 
-        <div class="chart-placeholder">
+        <canvas id="trendChart"></canvas>
           <!-- REPLACE WITH ACTUAL CHART LATER -->
           <div class="placeholder-text">
             Line Chart Placeholder
@@ -342,6 +342,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/global/js/nav.js"></script>
   <script src="budget-tracker.js"></script>
 

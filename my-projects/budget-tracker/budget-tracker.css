@@ -159,12 +159,9 @@ body {
   cursor: pointer;
 }
 
-.chart-placeholder {
-  height: 280px;
-  background: #fafafa;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.chart-card canvas {
+  width: 100% !important;
+  height: 280px !important;
 }
 
 .placeholder-text {

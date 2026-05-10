@@ -10,6 +10,7 @@ let filters = {
 let searchQuery = "";
 let currentSort = null;
 let currentView = "transactions";
+let showUpcomingOnly = false;
 
 function initializeSorting() {
   document.querySelectorAll(".sortable-header")
@@ -127,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTransactions();
   initializeSorting();
   updateSummaryCards();
+  renderCharts();
 
   /* CHART MONTH DEFAULT */
   const currentMonthValue = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
@@ -147,6 +149,19 @@ document.addEventListener("DOMContentLoaded", () => {
         : "transactions";
 
       currentPage = 1;
+      
+      /* RESET FILTERS */
+      filters = {
+        category: "",
+        type: "",
+        status: ""
+      };
+
+      showUpcomingOnly = false;
+
+      document.getElementById("filterCategory").value = "";
+      document.getElementById("filterType").value = "";
+      document.getElementById("filterStatus").value = "";
 
       updateFilterDropdowns();
       renderTransactions();
@@ -283,6 +298,7 @@ document
     currentDate.setMonth(currentDate.getMonth() - 1);
     updateCurrentMonth();
     updateSummaryCards();
+    renderCharts();
   });
 
 document
@@ -291,6 +307,7 @@ document
     currentDate.setMonth(currentDate.getMonth() + 1);
     updateCurrentMonth();
     updateSummaryCards();
+    renderCharts();
   });
 
 /* RENDER TRANSACTIONS */
@@ -351,6 +368,16 @@ function renderTransactions() {
 
   let filteredTransactions = [...transactions];
 
+  /* GLOBAL MONTH FILTER */
+  filteredTransactions = filteredTransactions.filter(transaction => {
+    if (!transaction.dueDate || transaction.dueDate === "N/A") {
+      return false;
+    }
+
+    const dueDate = new Date(transaction.dueDate);
+    return (dueDate.getMonth() === currentDate.getMonth() && dueDate.getFullYear() === currentDate.getFullYear());
+  });
+
   /* SEARCH */
   if (searchQuery) {
     filteredTransactions =
@@ -382,6 +409,22 @@ function renderTransactions() {
   /* TYPE */
   if (filters.type) {
     filteredTransactions = filteredTransactions.filter(transaction => transaction.type === filters.type);
+  }
+
+  /* UPCOMING PAYMENTS */
+  if (showUpcomingOnly) {
+    const today = new Date();
+
+    filteredTransactions = filteredTransactions.filter(transaction => {
+      if (transaction.status === "Paid" || transaction.dueDate === "N/A") {
+        return false;
+      }
+
+      const dueDate = new Date(transaction.dueDate);
+      const diffDays = Math.ceil((dueDate - today) /(1000 * 60 * 60 * 24));
+
+      return diffDays <= 5;
+    });
   }
 
   /* STATUS */
@@ -660,6 +703,79 @@ function getNextDueDate(transaction) {
   );
 }
 
+let categoryChartInstance = null;
+let trendChartInstance = null;
+
+/* CHARTS */
+function renderCharts() {
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  const filteredData = transactions.filter(transaction => {
+    if (transaction.dueDate === "N/A") {
+      return false;
+    }
+    
+    const dueDate = new Date(transaction.dueDate);
+    return (dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear);
+  });
+
+  /* CATEGORY TOTALS */
+  const categoryTotals = {};
+
+  filteredData.forEach(transaction => {
+    if (transaction.type === "Income") {
+      return;
+    }
+
+    if (!categoryTotals[transaction.category]) {
+      categoryTotals[transaction.category] = 0;
+    }
+
+    categoryTotals[transaction.category] += Number(transaction.amount);
+  });
+
+  /* DESTROY OLD */
+  if (categoryChartInstance) {
+    categoryChartInstance.destroy();
+  }
+
+  if (trendChartInstance) {
+    trendChartInstance.destroy();
+  }
+
+  /* CATEGORY CHART */
+  categoryChartInstance = new Chart(document.getElementById("categoryChart"), {
+    type: "doughnut",
+    data: {
+      labels: Object.keys(categoryTotals),
+      datasets: [{
+        data: Object.values(categoryTotals)
+      }]
+    },
+    
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  /* TREND CHART */
+  trendChartInstance = new Chart(document.getElementById("trendChart"), {
+    type: "line",
+    data: {
+      labels: filteredData.map(t => t.dueDate),
+      datasets: [{
+        label: "Expenses",
+        data: filteredData.map(t => Number(t.amount))
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+}
+
 /* SUMMARY CARDS */
 function updateSummaryCards() {
   let totalIncome = 0;
@@ -674,6 +790,15 @@ function updateSummaryCards() {
   fiveDaysLater.setDate(today.getDate() + 5);
 
   transactions.forEach(transaction => {
+    /* MONTH FILTER */
+    if (transaction.dueDate !== "N/A") {
+      const dueDate = new Date(transaction.dueDate);
+      const matchesMonth = dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear;
+      if (!matchesMonth) {
+        return;
+      }
+    }
+
     /* INCOME */
     if (transaction.type === "Income") {
       totalIncome += Number(transaction.amount);
@@ -739,7 +864,34 @@ function updateSummaryCards() {
 
 /* UPCOMING PAYMENTS */
 function filterUpcomingPayments() {
-  console.log("Upcoming payments clicked");
+  /* SWITCH TAB */
+  currentView = "transactions";
+
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.classList.remove("active");
+    
+    if (tab.textContent.trim() === "All Transactions") {
+      tab.classList.add("active");
+    }
+  });
+
+  /* RESET */
+  filters = {
+    category: "",
+    type: "",
+    status: ""
+  };
+
+  document.getElementById("filterCategory").value = "";
+  document.getElementById("filterType").value = "";
+  document.getElementById("filterStatus").value = "";
+
+  /* ENABLE UPCOMING MODE */
+  showUpcomingOnly = true;
+  currentPage = 1;
+
+  updateFilterDropdowns();
+  renderTransactions();
 }
 
 /* ACTIONS MENU */
@@ -817,6 +969,7 @@ function confirmDeleteTransaction() {
 
   renderTransactions();
   updateSummaryCards();
+  renderCharts();
   closeDeleteModal();
 }
 
@@ -832,6 +985,7 @@ function togglePaidStatus(index) {
   localStorage.setItem("transactions", JSON.stringify(transactions));
   renderTransactions();
   updateSummaryCards();
+  renderCharts();
 }
 
 /* CLOSE ON OUTSIDE CLICK */
@@ -1047,5 +1201,6 @@ function saveTransaction() {
 
   renderTransactions();
   updateSummaryCards();
+  renderCharts();
   closeTransactionModal();
 }
