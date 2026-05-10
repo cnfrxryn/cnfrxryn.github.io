@@ -164,9 +164,20 @@ body {
   height: 280px !important;
 }
 
-.placeholder-text {
+.chart-content {
+  position: relative;
+  height: 280px;
+}
+
+.chart-empty-state {
+  position: absolute;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
   color: #999;
-  font-size: 16px;
+  font-size: 15px;
+  font-style: italic;
 }
 
 /* TRANSACTIONS */

@@ -719,6 +719,15 @@ function renderCharts() {
     return (dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear);
   });
 
+  const hasData = filteredData.length > 0;
+  document.getElementById("categoryChartEmpty").style.display = hasData
+    ? "none"
+    : "flex";
+    
+  document.getElementById("trendChartEmpty").style.display = hasData
+    ? "none"
+    : "flex";
+
   /* CATEGORY TOTALS */
   const categoryTotals = {};
 
@@ -741,6 +750,11 @@ function renderCharts() {
 
   if (trendChartInstance) {
     trendChartInstance.destroy();
+  }
+
+  /* NO DATA */
+  if (!hasData) {
+    return;
   }
 
   /* CATEGORY CHART */
