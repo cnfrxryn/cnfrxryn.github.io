@@ -1539,6 +1539,19 @@ function expandRecurringTransactions(transactionList) {
   transactionList.forEach((transaction, index) => {
     expanded.push(transaction);
 
+    /* BACKWARD COMPATIBILITY */
+    if (!transaction.paidOccurrences) {
+      transaction.paidOccurrences = [];
+    }
+
+    if (!transaction.customOccurrences) {
+      transaction.customOccurrences = {};
+    }
+
+    if (!transaction.deletedOccurrences) {
+      transaction.deletedOccurrences = [];
+    }
+
     /* NOT RECURRING */
     if (!transaction.recurring) {
       return;
