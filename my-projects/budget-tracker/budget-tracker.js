@@ -408,7 +408,10 @@ function renderTransactions() {
     
     /* INCOME */
     if (transaction.type === "Income") {
-      referenceDate = new Date(transaction.createdAt);
+      if (!transaction.dueDate || transaction.dueDate === "N/A") {
+        return false;
+      }
+      referenceDate = new Date(transaction.dueDate);
     }
     
     /* EXPENSES */
@@ -996,7 +999,10 @@ function updateSummaryCards() {
 
     /* INCOME */
     if (transaction.type === "Income") {
-      referenceDate = new Date(transaction.createdAt);
+      if (!transaction.dueDate || transaction.dueDate === "N/A") {
+        return;
+      }
+      referenceDate = new Date(transaction.dueDate);
     }
     
     /* EXPENSES */
@@ -1396,9 +1402,13 @@ function saveTransaction() {
     hasError = true;
   }
 
-  /* DUE DATE */
-  if (selectedType !== "Income" && !dueDate) {
-    showValidationError("transactionDueDate", "Please select a due date.");
+  /* DATE */
+  if (!dueDate) {
+    showValidationError("transactionDueDate",selectedType === "Income"
+        ? "Please select a received date."
+        : "Please select a due date."
+    );
+
     hasError = true;
   }
 
@@ -1437,7 +1447,6 @@ function saveTransaction() {
   /* INCOME */
   if (selectedType === "Income") {
     transaction.status = "N/A";
-    transaction.dueDate = "N/A";
   }
 
   if (editingIndex !== null) {
