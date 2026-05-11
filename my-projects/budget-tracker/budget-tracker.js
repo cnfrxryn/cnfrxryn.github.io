@@ -591,9 +591,9 @@ function renderTransactions() {
 
             <div class="actions-dropdown">
 
-              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)})">Edit</button>
-              <button type="button" onclick="deleteTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)})">Delete</button>
-              <button type="button" onclick="togglePaidStatus(${transaction.originalIndex ?? transactions.indexOf(transaction)})">
+              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">Edit</button>
+              <button type="button" onclick="deleteTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">Delete</button>
+              <button type="button" onclick="togglePaidStatus(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">
                 ${
                   transaction.status === "Paid"
                     ? "Mark as Unpaid"
@@ -641,20 +641,17 @@ function renderTransactions() {
             </button>
 
             <div class="actions-dropdown">
-              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)})">Edit</button>
-              <button type="button" onclick="deleteTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)})">Delete</button>
+              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">Edit</button>
+              <button type="button" onclick="deleteTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">Delete</button>
               ${
                 transaction.status !== "N/A"
                 ? `
-                  <button type="button"
-                    onclick="togglePaidStatus(${transaction.originalIndex ?? transactions.indexOf(transaction)})">
-
+                  <button type="button" onclick="togglePaidStatus(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">
                     ${
                       transaction.status === "Paid"
                         ? "Mark as Unpaid"
                         : "Mark as Paid"
                     }
-
                   </button>
                 `
                 : ""
@@ -1164,8 +1161,9 @@ function toggleActionsMenu(button) {
   dropdown.classList.toggle("active");
 }
 
-function editTransaction(index) {
+function editTransaction(index, occurrenceDate = null) {
   editingIndex = index;
+  window.editingOccurrenceDate = occurrenceDate;
   const transaction = transactions[index];
 
   openTransactionModal();
@@ -1207,8 +1205,8 @@ function editTransaction(index) {
   }
 }
 
-function deleteTransaction(index) {
-  deletingIndex = index;
+function deleteTransaction(index, occurrenceDate = null) {
+  deletingIndex = {index,occurrenceDate};
   document.getElementById("deleteModal").classList.add("active");
 }
 
@@ -1218,8 +1216,28 @@ function closeDeleteModal() {
 }
 
 function confirmDeleteTransaction() {
-  if (deletingIndex === null) return;
-  transactions.splice(deletingIndex, 1);
+  if (deletingIndex === null) {
+    return;
+  }
+
+  const {index,occurrenceDate} = deletingIndex;
+  const transaction = transactions[index];
+
+  /* NON-RECURRING */
+  if (!transaction.recurring || !occurrenceDate) {
+    transactions.splice(index, 1);
+  }
+
+  /* RECURRING */
+  else {
+    if (!transaction.deletedOccurrences) {
+      transaction.deletedOccurrences = [];
+    }
+
+    if (!transaction.deletedOccurrences.includes(occurrenceDate)) {
+      transaction.deletedOccurrences.push(occurrenceDate);
+    }
+  }
 
   localStorage.setItem("transactions", JSON.stringify(transactions));
 
@@ -1229,17 +1247,37 @@ function confirmDeleteTransaction() {
   closeDeleteModal();
 }
 
-function togglePaidStatus(index) {
-  if (transactions[index].status === "Paid") {
-    transactions[index].status = "Unpaid";
+function togglePaidStatus(index, occurrenceDate = null) {
+  const transaction = transactions[index];
+
+  /* NORMAL NON-RECURRING */
+  if (!transaction.recurring || !occurrenceDate) {
+    transaction.status = transaction.status === "Paid"
+      ? "Unpaid"
+      : "Paid";
   }
 
+  /* RECURRING */
   else {
-    transactions[index].status = "Paid";
+    if (!transaction.paidOccurrences) {
+      transaction.paidOccurrences = [];
+    }
+
+    const existingIndex = transaction.paidOccurrences.indexOf(occurrenceDate);
+
+    /* REMOVE */
+    if (existingIndex > -1) {
+      transaction.paidOccurrences.splice(existingIndex, 1);
+    }
+
+    /* ADD */
+    else {
+      transaction.paidOccurrences.push(occurrenceDate);
+    }
   }
 
   localStorage.setItem("transactions", JSON.stringify(transactions));
-  transactions = [...transactions];
+
   renderTransactions();
   updateSummaryCards();
   renderCharts();
@@ -1442,6 +1480,9 @@ function saveTransaction() {
     repeatEvery,
     repeatStarting,
     repeatUntil,
+    paidOccurrences: [],
+    customOccurrences: {},
+    deletedOccurrences: [],
   };
 
   /* INCOME */
@@ -1450,10 +1491,26 @@ function saveTransaction() {
   }
 
   if (editingIndex !== null) {
-    transactions[editingIndex] = {
-      ...transactions[editingIndex],
-      ...transaction
-    };
+    /* OCCURRENCE ONLY */
+    if (transactions[editingIndex].recurring && window.editingOccurrenceDate) {
+      if (!transactions[editingIndex].customOccurrences) {
+        transactions[editingIndex].customOccurrences = {};
+      }
+
+      transactions[editingIndex]
+        .customOccurrences[window.editingOccurrenceDate] = {
+          ...transaction,
+          dueDate: window.editingOccurrenceDate
+        };
+    }
+
+    /* NORMAL */
+    else {
+      transactions[editingIndex] = {
+        ...transactions[editingIndex],
+        ...transaction
+      };
+    }
   }
 
   else {
@@ -1501,13 +1558,29 @@ function expandRecurringTransactions(transactionList) {
         .toISOString()
         .split("T")[0];
 
+      if (transaction.deletedOccurrences?.includes(recurringDateString)) {
+        if (transaction.repeatEvery === "Month") {
+          currentRecurringDate.setMonth(currentRecurringDate.getMonth() + 1);
+        }
+
+        else {
+          currentRecurringDate.setFullYear(currentRecurringDate.getFullYear() + 1);
+        }
+
+        continue;
+      }
+
       /* SKIP ORIGINAL */
       if (recurringDateString !== transaction.dueDate) {
         expanded.push({
           ...transaction,
+          ...(transaction.customOccurrences?.[recurringDateString] || {}),
 
           originalIndex: index,
           dueDate: recurringDateString,
+          status: transaction.paidOccurrences?.includes(recurringDateString)
+            ? "Paid"
+            : "Unpaid",
           recurringGenerated: true
         });
       }
