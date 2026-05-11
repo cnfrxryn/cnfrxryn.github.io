@@ -1299,12 +1299,14 @@ function updateTransactionModal() {
   const categorySelect = document.getElementById("transactionCategory");
   const dueDateGroup = document.getElementById("dueDateGroup");
   const recurringWrapper = document.getElementById("recurringWrapper");
+  const dateFieldLabel = document.getElementById("dateFieldLabel");
   categorySelect.innerHTML = "";
 
   /* INCOME */
   if (selectedType === "Income") {
-    dueDateGroup.style.display = "none";
+    dueDateGroup.style.display = "flex";
     recurringWrapper.style.display = "none";
+    dateFieldLabel.textContent = "Received On";
     incomeCategories.forEach(category => {
       categorySelect.innerHTML += `
         <option value="${category}">
@@ -1318,6 +1320,7 @@ function updateTransactionModal() {
   else {
     dueDateGroup.style.display = "flex";
     recurringWrapper.style.display = "block";
+    dateFieldLabel.textContent = "Due Date";
     categoriesByType[selectedType]
       .forEach(category => {
         categorySelect.innerHTML += `
