@@ -591,7 +591,7 @@ function renderTransactions() {
 
             <div class="actions-dropdown">
 
-              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">Edit</button>
+              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}',${JSON.stringify(transaction).replace(/"/g, '&quot;')})">Edit</button>
               <button type="button" onclick="deleteTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">Delete</button>
               <button type="button" onclick="togglePaidStatus(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">
                 ${
@@ -641,7 +641,7 @@ function renderTransactions() {
             </button>
 
             <div class="actions-dropdown">
-              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">Edit</button>
+              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}',${JSON.stringify(transaction).replace(/"/g, '&quot;')})">Edit</button>
               <button type="button" onclick="deleteTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)},'${transaction.dueDate}')">Delete</button>
               ${
                 transaction.status !== "N/A"
@@ -1161,10 +1161,10 @@ function toggleActionsMenu(button) {
   dropdown.classList.toggle("active");
 }
 
-function editTransaction(index, occurrenceDate = null) {
+function editTransaction(index, occurrenceDate = null, transactionData = null) {
   editingIndex = index;
   window.editingOccurrenceDate = occurrenceDate;
-  const transaction = transactions[index];
+  const transaction = transactionData || transactions[index];
 
   openTransactionModal();
 
