@@ -1542,7 +1542,10 @@ function saveTransaction() {
 function expandRecurringTransactions(transactionList) {
   const expanded = [];
   transactionList.forEach((transaction, index) => {
-    expanded.push(transaction);
+    expanded.push({
+      ...transaction,
+      originalIndex: index
+    });
 
     /* BACKWARD COMPATIBILITY */
     if (!transaction.paidOccurrences) {
