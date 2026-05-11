@@ -400,7 +400,7 @@ function renderTransactions() {
 
   initializeSorting();
 
-  let filteredTransactions = [...transactions];
+  let filteredTransactions = expandRecurringTransactions(transactions);
 
   /* GLOBAL MONTH FILTER */
   filteredTransactions = filteredTransactions.filter(transaction => {
@@ -591,9 +591,9 @@ function renderTransactions() {
 
             <div class="actions-dropdown">
 
-              <button type="button" onclick="editTransaction(${transactions.indexOf(transaction)})">Edit</button>
-              <button type="button" onclick="deleteTransaction(${transactions.indexOf(transaction)})">Delete</button>
-              <button type="button" onclick="togglePaidStatus(${transactions.indexOf(transaction)})">
+              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)})">Edit</button>
+              <button type="button" onclick="deleteTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)})">Delete</button>
+              <button type="button" onclick="togglePaidStatus(${transaction.originalIndex ?? transactions.indexOf(transaction)})">
                 ${
                   transaction.status === "Paid"
                     ? "Mark as Unpaid"
@@ -641,13 +641,13 @@ function renderTransactions() {
             </button>
 
             <div class="actions-dropdown">
-              <button type="button" onclick="editTransaction(${transactions.indexOf(transaction)})">Edit</button>
-              <button type="button" onclick="deleteTransaction(${transactions.indexOf(transaction)})">Delete</button>
+              <button type="button" onclick="editTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)})">Edit</button>
+              <button type="button" onclick="deleteTransaction(${transaction.originalIndex ?? transactions.indexOf(transaction)})">Delete</button>
               ${
                 transaction.status !== "N/A"
                 ? `
                   <button type="button"
-                    onclick="togglePaidStatus(${transactions.indexOf(transaction)})">
+                    onclick="togglePaidStatus(${transaction.originalIndex ?? transactions.indexOf(transaction)})">
 
                     ${
                       transaction.status === "Paid"
@@ -806,7 +806,7 @@ function renderCategoryChart() {
   const categoryMonth = categoryChartDate.getMonth();
   const categoryYear = categoryChartDate.getFullYear();
   
-  const categoryFilteredData = transactions.filter(transaction => {
+  const categoryFilteredData = expandRecurringTransactions(transactions).filter(transaction => {
     if (transaction.dueDate === "N/A") {
       return false;
     }
@@ -890,7 +890,7 @@ function renderTrendChart() {
   const trendMonth = trendChartDate.getMonth();
   const trendYear = trendChartDate.getFullYear();
 
-  const trendFilteredData = transactions.filter(transaction => {
+  const trendFilteredData = expandRecurringTransactions(transactions).filter(transaction => {
     if (transaction.dueDate === "N/A") {
       return false;
     }
@@ -993,7 +993,7 @@ function updateSummaryCards() {
   const fiveDaysLater = new Date();
   fiveDaysLater.setDate(today.getDate() + 5);
 
-  transactions.forEach(transaction => {
+  expandRecurringTransactions(transactions).forEach(transaction => {
     /* MONTH FILTER */
     let referenceDate;
 
@@ -1466,4 +1466,67 @@ function saveTransaction() {
   updateSummaryCards();
   renderCharts();
   closeTransactionModal();
+}
+
+function expandRecurringTransactions(transactionList) {
+  const expanded = [];
+  transactionList.forEach((transaction, index) => {
+    expanded.push(transaction);
+
+    /* NOT RECURRING */
+    if (!transaction.recurring) {
+      return;
+    }
+
+    if (!transaction.repeatStarting || !transaction.repeatUntil) {
+      return;
+    }
+
+    const startDate = new Date(transaction.repeatStarting);
+    const endDate = new Date(transaction.repeatUntil);
+
+    let currentRecurringDate = new Date(startDate);
+
+    /* START NEXT CYCLE */
+    if (transaction.repeatEvery === "Month") {
+      currentRecurringDate.setMonth(currentRecurringDate.getMonth() + 1);
+    }
+
+    else {
+      currentRecurringDate.setFullYear(currentRecurringDate.getFullYear() + 1);
+    }
+
+    while (currentRecurringDate <= endDate) {
+      const recurringDateString = currentRecurringDate
+        .toISOString()
+        .split("T")[0];
+
+      /* SKIP ORIGINAL */
+      if (recurringDateString !== transaction.dueDate) {
+        expanded.push({
+          ...transaction,
+
+          originalIndex: index,
+          dueDate: recurringDateString,
+          recurringGenerated: true
+        });
+      }
+
+      /* MONTHLY */
+      if (transaction.repeatEvery === "Month") {
+        currentRecurringDate.setMonth(
+          currentRecurringDate.getMonth() + 1
+        );
+      }
+
+      /* YEARLY */
+      else {
+        currentRecurringDate.setFullYear(
+          currentRecurringDate.getFullYear() + 1
+        );
+      }
+    }
+  });
+
+  return expanded;
 }
