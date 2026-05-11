@@ -471,7 +471,7 @@ function renderTransactions() {
       const dueDate = new Date(transaction.dueDate);
       const diffDays = Math.ceil((dueDate - today) /(1000 * 60 * 60 * 24));
 
-      return diffDays <= 5;
+      return diffDays <= 5 && transaction.status !== "Paid";
     });
   }
 
@@ -1031,9 +1031,9 @@ function updateSummaryCards() {
     if (transaction.status !== "Paid" && transaction.dueDate !== "N/A") {
       const dueDate = new Date(transaction.dueDate);
       const isCurrentMonth = dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear;
-      const isUpcoming = dueDate >= today && dueDate <= fiveDaysLater;
+      const isUpcoming = dueDate <= fiveDaysLater;
 
-      if (isCurrentMonth && isUpcoming) {
+      if (isCurrentMonth && isUpcoming && transaction.status !== "Paid") {
         upcomingPayments += Number(transaction.amount);
         upcomingCount++;
       }
