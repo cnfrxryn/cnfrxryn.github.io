@@ -758,27 +758,40 @@ function updatePagination(totalEntries) {
   pagination.appendChild(nextButton);
 }
 
+function incrementRecurringDate(date, repeatEvery) {
+  const newDate = new Date(date);
+
+  /* WEEKLY */
+  if (repeatEvery === "Week") {
+    newDate.setDate(newDate.getDate() + 7);
+  }
+
+  /* BI-WEEKLY */
+  else if (repeatEvery === "Bi-Week") {
+    newDate.setDate(newDate.getDate() + 14);
+  }
+
+  /* MONTHLY */
+  else if (repeatEvery === "Month") {
+    newDate.setMonth(newDate.getMonth() + 1);
+  }
+
+  /* YEARLY */
+  else {
+    newDate.setFullYear(newDate.getFullYear() + 1);
+  }
+
+  return newDate;
+}
+
 /* NEXT DUE DATE */
 function getNextDueDate(transaction) {
   if (!transaction.dueDate) {
     return "N/A";
   }
 
-  const dueDate = new Date(transaction.dueDate);
-
-  /* YEARLY */
-  if (transaction.repeatEvery === "Year") {
-    dueDate.setFullYear(dueDate.getFullYear() + 1);
-  }
-
-  /* MONTHLY */
-  else {
-    dueDate.setMonth(dueDate.getMonth() + 1);
-  }
-
-  return formatDisplayDate(
-    dueDate.toISOString().split("T")[0]
-  );
+  const nextDate = incrementRecurringDate(transaction.dueDate, transaction.repeatEvery);
+  return formatDisplayDate(nextDate.toISOString().split("T")[0]);
 }
 
 let categoryChartInstance = null;
@@ -1611,13 +1624,7 @@ function expandRecurringTransactions(transactionList) {
     let currentRecurringDate = new Date(startDate);
 
     /* START NEXT CYCLE */
-    if (transaction.repeatEvery === "Month") {
-      currentRecurringDate.setMonth(currentRecurringDate.getMonth() + 1);
-    }
-
-    else {
-      currentRecurringDate.setFullYear(currentRecurringDate.getFullYear() + 1);
-    }
+    currentRecurringDate = incrementRecurringDate(currentRecurringDate, transaction.repeatEvery);
 
     while (currentRecurringDate <= endDate) {
       const recurringDateString = currentRecurringDate
@@ -1625,14 +1632,8 @@ function expandRecurringTransactions(transactionList) {
         .split("T")[0];
 
       if (transaction.deletedOccurrences?.includes(recurringDateString)) {
-        if (transaction.repeatEvery === "Month") {
-          currentRecurringDate.setMonth(currentRecurringDate.getMonth() + 1);
-        }
-
-        else {
-          currentRecurringDate.setFullYear(currentRecurringDate.getFullYear() + 1);
-        }
-
+        /* START NEXT CYCLE */
+        currentRecurringDate = incrementRecurringDate(currentRecurringDate, transaction.repeatEvery);
         continue;
       }
 
@@ -1651,19 +1652,8 @@ function expandRecurringTransactions(transactionList) {
         });
       }
 
-      /* MONTHLY */
-      if (transaction.repeatEvery === "Month") {
-        currentRecurringDate.setMonth(
-          currentRecurringDate.getMonth() + 1
-        );
-      }
-
-      /* YEARLY */
-      else {
-        currentRecurringDate.setFullYear(
-          currentRecurringDate.getFullYear() + 1
-        );
-      }
+      /* WEEKLY */
+      currentRecurringDate = incrementRecurringDate(currentRecurringDate, transaction.repeatEvery);
     }
   });
 
