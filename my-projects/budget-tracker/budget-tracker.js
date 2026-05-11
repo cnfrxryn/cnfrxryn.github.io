@@ -1544,7 +1544,12 @@ function expandRecurringTransactions(transactionList) {
   transactionList.forEach((transaction, index) => {
     expanded.push({
       ...transaction,
-      originalIndex: index
+      ...(transaction.customOccurrences?.[transaction.dueDate] || {}),
+      originalIndex: index,
+      status: transaction.paidOccurrences?.includes(transaction.dueDate)
+              ? "Paid"
+              : transaction.status,
+      recurringGenerated: transaction.recurring
     });
 
     /* BACKWARD COMPATIBILITY */
