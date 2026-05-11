@@ -344,6 +344,21 @@ document.getElementById("nextMonth").addEventListener("click", () => {
   renderTransactions();
 });
 
+function formatDisplayDate(dateString) {
+  if (!dateString || dateString === "N/A") {
+    return "N/A";
+  }
+
+  return new Date(dateString).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    }
+  );
+}
+
 /* RENDER TRANSACTIONS */
 function renderTransactions() {
   const tbody = document.getElementById("transactionsTableBody");
@@ -464,7 +479,7 @@ function renderTransactions() {
     const today = new Date();
 
     filteredTransactions = filteredTransactions.filter(transaction => {
-      if (transaction.status === "Paid" || transaction.dueDate === "N/A") {
+      if (transaction.type === "Income" || transaction.status === "Paid" || transaction.dueDate === "N/A") {
         return false;
       }
 
@@ -565,7 +580,17 @@ function renderTransactions() {
             ₱ ${Number(transaction.amount).toLocaleString()}
           </td>
 
-          <td>${transaction.dueDate}</td>
+          <td>
+            ${
+              transaction.type === "Income"
+                ? `Received: ${new Date(transaction.dueDate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric"
+                  })}`
+                : formatDisplayDate(transaction.dueDate)
+            }
+          </td>
 
           <td>
             ${
@@ -623,7 +648,18 @@ function renderTransactions() {
             ₱ ${Number(transaction.amount).toLocaleString()}
           </td>
 
-          <td>${transaction.dueDate}</td>
+          <td>
+            ${
+              transaction.type === "Income"
+                ? `Received: ${new Date(transaction.dueDate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric"
+                  })}`
+                : formatDisplayDate(transaction.dueDate)
+            }
+          </td>
+
           <td>
             ${
               transaction.status === "N/A"
@@ -740,13 +776,8 @@ function getNextDueDate(transaction) {
     dueDate.setMonth(dueDate.getMonth() + 1);
   }
 
-  return dueDate.toLocaleDateString(
-    "en-US",
-    {
-      month: "long",
-      day: "numeric",
-      year: "numeric"
-    }
+  return formatDisplayDate(
+    dueDate.toISOString().split("T")[0]
   );
 }
 
@@ -1028,12 +1059,12 @@ function updateSummaryCards() {
     }
 
     /* UPCOMING PAYMENTS */
-    if (transaction.status !== "Paid" && transaction.dueDate !== "N/A") {
+    if (transaction.type !== "Income" && transaction.status !== "Paid" && transaction.dueDate !== "N/A") {
       const dueDate = new Date(transaction.dueDate);
-      const isCurrentMonth = dueDate.getMonth() === currentMonth && dueDate.getFullYear() === currentYear;
-      const isUpcoming = dueDate <= fiveDaysLater;
-
-      if (isCurrentMonth && isUpcoming && transaction.status !== "Paid") {
+      const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+      const isUpcoming = diffDays <= 5;
+      
+      if (isUpcoming && transaction.status !== "Paid") {
         upcomingPayments += Number(transaction.amount);
         upcomingCount++;
       }
@@ -1077,7 +1108,7 @@ function updateSummaryCards() {
     })}`;
 
   document.getElementById("upcomingPaymentsText").textContent =
-    `${upcomingCount} due within 5 days`;
+    `${upcomingCount} overdue or due soon`;
 }
 
 function updateClearFiltersButton() {
