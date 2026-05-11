@@ -1508,9 +1508,14 @@ function saveTransaction() {
 
       transactions[editingIndex]
         .customOccurrences[window.editingOccurrenceDate] = {
-          ...transaction,
-          dueDate: window.editingOccurrenceDate
-        };
+          type: transaction.type,
+          category: transaction.category,
+          description: transaction.description,
+          amount: transaction.amount,
+          dueDate: window.editingOccurrenceDate,
+          recurring: false,
+          status: transaction.status
+      };
     }
 
     /* NORMAL */
