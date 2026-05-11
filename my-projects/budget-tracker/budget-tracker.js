@@ -1298,10 +1298,12 @@ function openTransactionModal() {
   }
 
   /* RESET TYPE */
-  selectedType = "Variable Expense";
-  typeButtons.forEach(btn => btn.classList.remove("active"));
+  if (editingIndex === null) {
+    selectedType = "Variable Expense";
 
-  document.querySelector('[data-type="Variable Expense"]').classList.add("active");
+    typeButtons.forEach(btn => btn.classList.remove("active"));
+    document.querySelector('[data-type="Variable Expense"]').classList.add("active");
+  }
 
   /* CLEAR FIELDS */
   document.getElementById("transactionDescription").value = "";
@@ -1321,6 +1323,7 @@ function closeTransactionModal() {
   document.getElementById("recurringOptions").classList.remove("active");
   clearValidationErrors();
   editingIndex = null;
+  window.editingOccurrenceDate = null;
 }
 
 /* TYPE SWITCHING */
@@ -1468,6 +1471,10 @@ function saveTransaction() {
 
   if (hasError) return;
 
+  const existingTransaction = editingIndex !== null
+    ? transactions[editingIndex]
+    : null;
+
   const transaction = {
     type: selectedType,
     category,
@@ -1475,14 +1482,16 @@ function saveTransaction() {
     amount,
     dueDate,
     recurring,
-    status: "Unpaid",
-    createdAt: Date.now(),
+    status: selectedType === "Income"
+            ? "N/A"
+            : (existingTransaction?.status || "Unpaid"),
+    createdAt: existingTransaction?.createdAt || Date.now(),
     repeatEvery,
     repeatStarting,
     repeatUntil,
-    paidOccurrences: [],
-    customOccurrences: {},
-    deletedOccurrences: [],
+    paidOccurrences: existingTransaction?.paidOccurrences || [],
+    customOccurrences: existingTransaction?.customOccurrences || {},
+    deletedOccurrences: existingTransaction?.deletedOccurrences || [],
   };
 
   /* INCOME */
