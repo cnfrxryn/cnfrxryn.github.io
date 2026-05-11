@@ -1549,7 +1549,7 @@ function expandRecurringTransactions(transactionList) {
       status: transaction.paidOccurrences?.includes(transaction.dueDate)
               ? "Paid"
               : transaction.status,
-      recurringGenerated: transaction.recurring
+      recurringGenerated: false
     });
 
     /* BACKWARD COMPATIBILITY */
