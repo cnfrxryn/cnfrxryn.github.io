@@ -203,6 +203,10 @@ html {
   border-radius: 999px;
   cursor: pointer;
   transition: 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .project-btn:hover {
@@ -263,6 +267,8 @@ html {
   font-size: 28px;
   color: #c78d67;
   transition: 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .mini-icon img {
