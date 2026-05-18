@@ -336,7 +336,53 @@ body {
   font-size: 17px;
   color: #777;
   font-style: italic;
-  margin-top: -15px;
+  /* margin-top: -15px; */
+}
+
+/* FOOTER */
+.converter-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* REFRESH BUTTON */
+.refresh-btn {
+  width: 54px;
+  height: 54px;
+  border: none;
+  border-radius: 18px;
+  background: #F3EEFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.refresh-btn:hover {
+  background: #E8DFFF;
+}
+
+.refresh-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* ROTATE ANIMATION */
+.refresh-btn.loading .refresh-icon {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* DATASET GENERATOR (Temporary only; to be re-used) */

@@ -12,11 +12,14 @@ const toFlagIcon = document.getElementById("toFlagIcon");
 const fromAmountInput = document.getElementById("fromAmountInput");
 const toAmountInput = document.getElementById("toAmountInput");
 const swapBtn = document.querySelector(".swap-btn");
+const refreshBtn = document.getElementById("refreshBtn");
+const lastUpdatedText = document.getElementById("lastUpdatedText");
 
 /* STATE */
 let fromCurrency = "USD";
 let toCurrency = "EUR";
 let exchangeRate = 0;
+let lastUpdatedTimestamp = Date.now();
 
 /* GET FLAG URL */
 function getFlagUrl(currencyCode) {
@@ -27,6 +30,24 @@ function getFlagUrl(currencyCode) {
   }
 
   return `https://flagcdn.com/${currencyData.countryCode}.svg`;
+}
+
+/* UPDATE LAST UPDATED TEXT */
+function updateLastUpdatedTime() {
+  const secondsAgo = Math.floor((Date.now() - lastUpdatedTimestamp) / 1000);
+
+  if (secondsAgo < 10) {
+    lastUpdatedText.textContent = "Last updated: Just now";
+  }
+
+  else if (secondsAgo < 60) {
+    lastUpdatedText.textContent = `Last updated: ${secondsAgo} secs ago`;
+  }
+
+  else {
+    const minutesAgo = Math.floor(secondsAgo / 60);
+    lastUpdatedText.textContent = `Last updated: ${minutesAgo} min ago`;
+  }
 }
 
 /* RENDER DROPDOWNS */
@@ -78,14 +99,21 @@ function renderCurrencyDropdown(dropdownElement, type, searchValue = "") {
 /* FETCH EXCHANGE RATE */
 async function fetchExchangeRate() {
   try {
+    refreshBtn.classList.add("loading");
     const response = await fetch(`https://open.er-api.com/v6/latest/${fromCurrency}`);
     const data = await response.json();
     exchangeRate = data.rates[toCurrency];
     convertCurrency();
+
+    lastUpdatedTimestamp = Date.now();
+    updateLastUpdatedTime();
+
+    refreshBtn.classList.remove("loading");
   }
 
   catch (error) {
     console.error("Exchange rate fetch failed:", error);
+    refreshBtn.classList.remove("loading");
   }
 }
 
@@ -135,6 +163,11 @@ document.getElementById("toCurrencySearch").addEventListener("input", (e) => {
 /* LIVE CONVERSION */
 fromAmountInput.addEventListener("input", convertCurrency);
 
+/* MANUAL REFRESH */
+refreshBtn.addEventListener("click", () => {
+  fetchExchangeRate();
+});
+
 /* SWAP CURRENCIES */
 swapBtn.addEventListener("click", () => {
   const tempCurrency = fromCurrency;
@@ -155,6 +188,11 @@ swapBtn.addEventListener("click", () => {
 
   fetchExchangeRate();
 });
+
+/* UPDATE TIMER */
+setInterval(() => {
+  updateLastUpdatedTime();
+}, 1000);
 
 /* INIT */
 renderCurrencyDropdown(fromCurrencyDropdown, "from");
