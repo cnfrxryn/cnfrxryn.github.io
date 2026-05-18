@@ -7,6 +7,8 @@ const fromCurrencyCode = document.getElementById("fromCurrencyCode");
 const fromCurrencyName = document.getElementById("fromCurrencyName");
 const toCurrencyCode = document.getElementById("toCurrencyCode");
 const toCurrencyName = document.getElementById("toCurrencyName");
+const fromFlagIcon = document.getElementById("fromFlagIcon");
+const toFlagIcon = document.getElementById("toFlagIcon");
 const fromAmountInput = document.getElementById("fromAmountInput");
 const toAmountInput = document.getElementById("toAmountInput");
 const swapBtn = document.querySelector(".swap-btn");
@@ -15,6 +17,17 @@ const swapBtn = document.querySelector(".swap-btn");
 let fromCurrency = "USD";
 let toCurrency = "EUR";
 let exchangeRate = 0;
+
+/* GET FLAG URL */
+function getFlagUrl(currencyCode) {
+  const currencyData = currencies.find((currency) => currency.code === currencyCode);
+
+  if (!currencyData) {
+    return "";
+  }
+
+  return `https://flagcdn.com/${currencyData.countryCode}.svg`;
+}
 
 /* RENDER DROPDOWNS */
 function renderCurrencyDropdown(dropdownElement, type, searchValue = "") {
@@ -43,6 +56,7 @@ function renderCurrencyDropdown(dropdownElement, type, searchValue = "") {
         fromCurrency = currency.code;
         fromCurrencyCode.textContent = currency.code;
         fromCurrencyName.textContent = currency.name;
+        fromFlagIcon.src = getFlagUrl(currency.code);
         fromCurrencyDropdown.classList.remove("active");
       }
 
@@ -50,6 +64,7 @@ function renderCurrencyDropdown(dropdownElement, type, searchValue = "") {
         toCurrency = currency.code;
         toCurrencyCode.textContent = currency.code;
         toCurrencyName.textContent = currency.name;
+        toFlagIcon.src = getFlagUrl(currency.code);
         toCurrencyDropdown.classList.remove("active");
       }
 
@@ -77,7 +92,7 @@ async function fetchExchangeRate() {
 /* CONVERT CURRENCY */
 function convertCurrency() {
   const amount = parseFloat(fromAmountInput.value);
-  if (!amount) {
+  if (isNaN(amount)) {
     toAmountInput.value = "";
     return;
   }
@@ -133,6 +148,10 @@ swapBtn.addEventListener("click", () => {
   const tempName = fromCurrencyName.textContent;
   fromCurrencyName.textContent = toCurrencyName.textContent;
   toCurrencyName.textContent = tempName;
+
+  const tempFlag = fromFlagIcon.src;
+  fromFlagIcon.src = toFlagIcon.src;
+  toFlagIcon.src = tempFlag;
 
   fetchExchangeRate();
 });
