@@ -79,6 +79,18 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-gradient {
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(111, 92, 255, 0.12), transparent 70%);
+  pointer-events: none;
 }
 
 /* GROUP */
