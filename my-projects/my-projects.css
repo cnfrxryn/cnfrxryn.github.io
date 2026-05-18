@@ -1,3 +1,7 @@
+body {
+  background-color: #fcf7f6;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -5,10 +9,9 @@ html {
 /* PAGE BACKGROUND */
 .projects {
   position: relative;
-  min-height: 100vh;
-  overflow: hidden;
-  background: #f5f1ee;
+  min-height: 60vh;
   padding: 60px 0 100px;
+  overflow: visible;
 }
 
 .projects::before {
@@ -16,16 +19,16 @@ html {
   position: absolute;
   top: 0;
   right: 0;
-  width: 55%;
-  height: 900px;
+  width: 100%;
+  height: 950px;
   background: url('/assets/images/bg-img-transparent.png') top right / contain no-repeat;
-  opacity: 0.95;
+  opacity: 0.9;
   pointer-events: none;
   z-index: 1;
 }
 
 .projects-container {
-  width: min(1320px, 90%);
+  width: min(1700px, 90%);
   margin: auto;
   position: relative;
   z-index: 2;
@@ -50,11 +53,10 @@ html {
   display: flex;
   align-items: flex-start;
   padding-top: 20px;
-  margin-bottom: 180px;
 }
 
 .hero-left {
-  max-width: 520px;
+  max-width: 85%;
   padding-top: 20px;
   position: relative;
   z-index: 2;
@@ -91,23 +93,20 @@ html {
 }
 
 /* FEATURED GRID */
-.featured-section,
-.other-projects-section {
+.featured-section, .other-projects-section {
+  margin: auto;
+  width: min(1700px, 90%);
   position: relative;
+  padding: 2px;
+  margin-bottom: 50px;
   z-index: 2;
-}
-
-.featured-section {
-  margin-top: 120px;
-  margin-bottom: 100px;
-  padding-top: 20px;
 }
 
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 380px));
-  justify-content: space-between;
-  gap: 35px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  align-items: stretch;
 }
 
 /* FEATURED CARD */
@@ -131,22 +130,10 @@ html {
 
 .featured-image {
   width: 100%;
-  height: 300px;
+  height: 360px;
   object-fit: cover;
-  object-position: top;
+  object-position: top left;
   transition: transform 0.4s ease;
-}
-
-.featured-card:nth-child(1) .featured-image {
-  object-position: top;
-}
-
-.featured-card:nth-child(2) .featured-image {
-  object-position: top;
-}
-
-.featured-card:nth-child(3) .featured-image {
-  object-position: center;
 }
 
 .featured-content {
@@ -222,7 +209,7 @@ html {
 .mini-projects-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
+  gap: 18px;
 }
 
 /* MINI CARD */
@@ -230,7 +217,7 @@ html {
   background: rgba(255,255,255,0.6);
   border: 1px solid rgba(0,0,0,0.05);
   border-radius: 20px;
-  padding: 24px;
+  padding: 20px;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -285,6 +272,9 @@ html {
 
 /*RESPONSIVE LAYOUT*/
 @media (max-width: 1100px) {
+  .projects {
+    min-height: 20vh;
+  }
   .featured-grid {
     grid-template-columns: 1fr;
   }
