@@ -11,8 +11,21 @@ html {
   padding: 60px 0 100px;
 }
 
+.projects::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 900px;
+  background: url('/assets/images/bg-img-transparent.png') top right / contain no-repeat;
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .projects-container {
-  width: 88%;
+  width: min(1320px, 90%);
   margin: auto;
   position: relative;
   z-index: 2;
@@ -34,20 +47,10 @@ html {
 /* HERO */
 .projects-hero {
   position: relative;
-  min-height: 550px;
   display: flex;
   align-items: flex-start;
   padding-top: 20px;
-  margin-bottom: 100px;
-  background: url('/assets/images/bg-img-transparent.png') top right / contain no-repeat;
-}
-
-.projects-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom,rgba(245,241,238,0) 70%,#f5f1ee 100%);
-  pointer-events: none;
+  margin-bottom: 180px;
 }
 
 .hero-left {
@@ -88,14 +91,22 @@ html {
 }
 
 /* FEATURED GRID */
+.featured-section,
+.other-projects-section {
+  position: relative;
+  z-index: 2;
+}
+
 .featured-section {
+  margin-top: 120px;
   margin-bottom: 100px;
   padding-top: 20px;
 }
 
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 380px));
+  justify-content: space-between;
   gap: 35px;
 }
 
@@ -210,7 +221,7 @@ html {
 /* MINI GRID */
 .mini-projects-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
 }
 
