@@ -81,6 +81,7 @@ body {
 
 /* GROUP */
 .currency-group {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -140,24 +141,21 @@ body {
 }
 
 /* DROPDOWN */
-
-.currency-group {
-  position: relative;
-}
-
 .currency-dropdown {
   position: absolute;
-  top: 115px;
+  top: 98px;
   left: 0;
   width: 100%;
   max-height: 320px;
   overflow-y: auto;
-  background: white;
+  overflow-x: hidden;
+  background: #FFFFFF;
   border: 2px solid #D9D9D9;
   border-radius: 22px;
   display: none;
   z-index: 1000;
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  scroll-behavior: smooth;
 }
 
 .currency-dropdown.active {
@@ -165,7 +163,7 @@ body {
 }
 
 .currency-option {
-  padding: 18px 24px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -188,6 +186,26 @@ body {
 .currency-option-name {
   font-size: 18px;
   color: #777;
+}
+
+/* CUSTOM SCROLLBAR */
+.currency-dropdown::-webkit-scrollbar {
+  width: 10px;
+}
+
+.currency-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 12px 0;
+}
+
+.currency-dropdown::-webkit-scrollbar-thumb {
+  background: #D6D0FF;
+  border-radius: 999px;
+  border: 2px solid #FFFFFF;
+}
+
+.currency-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #BEB2FF;
 }
 
 /* INPUT */
