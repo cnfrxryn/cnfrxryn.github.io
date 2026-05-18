@@ -38,7 +38,7 @@
       <!-- FROM -->
       <div class="currency-group">
         <label for="from-currency">From</label>
-        <div class="currency-select">
+        <div class="currency-select" id="fromCurrencySelect">
           <div class="currency-info">
             <img src="https://flagcdn.com/us.svg" alt="USD" class="flag-icon">
             <span class="currency-code">USD</span>
@@ -48,6 +48,7 @@
           <img src="/assets/icons/dropdown-down.png" alt="Dropdown Icon" class="dropdown-icon">
         </div>
 
+        <div class="currency-dropdown" id="fromCurrencyDropdown"></div>
         <input type="number" value="1000" class="currency-input">
       </div>
 
@@ -57,13 +58,14 @@
       <!-- TO -->
       <div class="currency-group">
         <label for="to-currency">To</label>
-        <div class="currency-select">
+        <div class="currency-select" id="toCurrencySelect">
           <div class="currency-info">
             <img src="https://flagcdn.com/eu.svg" alt="EUR" class="flag-icon">
             <span class="currency-code">EUR</span>
             <span class="currency-name">Euro</span>
           </div>
 
+          <div class="currency-dropdown" id="toCurrencyDropdown"></div>
           <img src="/assets/icons/dropdown-down.png" alt="Dropdown Icon" class="dropdown-icon">
         </div>
 
@@ -85,6 +87,7 @@
   </section>
 
   <script src="/global/js/nav.js"></script>
+  <script src="/global/js/currency-data.js"></script>
   <script src="currency-converter.js"></script>
 
 </body>
