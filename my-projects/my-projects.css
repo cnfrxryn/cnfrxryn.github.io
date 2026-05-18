@@ -251,6 +251,10 @@ html {
   font-size: 28px;
 }
 
+.mini-content {
+  max-width: 60%;
+}
+
 .mini-content h4 {
   font-size: 22px;
   color: #4f4f4f;
