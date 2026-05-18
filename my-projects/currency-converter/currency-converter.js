@@ -9,9 +9,15 @@ const toCurrencyCode = document.getElementById("toCurrencyCode");
 const toCurrencyName = document.getElementById("toCurrencyName");
 
 /* RENDER DROPDOWNS */
-function renderCurrencyDropdown(dropdownElement, type) {
-  dropdownElement.innerHTML = "";
-  currencies.forEach((currency) => {
+function renderCurrencyDropdown(dropdownElement, type, searchValue = "") {
+  const optionsList = dropdownElement.querySelector(".currency-options-list");
+  optionsList.innerHTML = "";
+  const filteredCurrencies = currencies.filter((currency) => {
+      const search = searchValue.toLowerCase();
+      return (currency.code.toLowerCase().includes(search) || currency.name.toLowerCase().includes(search));
+    });
+
+  filteredCurrencies.forEach((currency) => {
     const option = document.createElement("div");
     option.classList.add("currency-option");
     option.innerHTML = `
@@ -25,20 +31,20 @@ function renderCurrencyDropdown(dropdownElement, type) {
     `;
 
     option.addEventListener("click", () => {
-        if (type === "from") {
-          fromCurrencyCode.textContent = currency.code;
-          fromCurrencyName.textContent = currency.name;
-          fromCurrencyDropdown.classList.remove("active");
-        }
+      if (type === "from") {
+        fromCurrencyCode.textContent = currency.code;
+        fromCurrencyName.textContent = currency.name;
+        fromCurrencyDropdown.classList.remove("active");
+      }
 
-        else {
-          toCurrencyCode.textContent = currency.code;
-          toCurrencyName.textContent = currency.name;
-          toCurrencyDropdown.classList.remove("active");
-        }
+      else {
+        toCurrencyCode.textContent = currency.code;
+        toCurrencyName.textContent = currency.name;
+        toCurrencyDropdown.classList.remove("active");
+      }
     });
 
-    dropdownElement.appendChild(option);
+    optionsList.appendChild(option);
   });
 }
 
@@ -62,6 +68,15 @@ document.addEventListener("click", (event) => {
     if (!toCurrencySelect.contains(event.target) && !toCurrencyDropdown.contains(event.target)) {
       toCurrencyDropdown.classList.remove("active");
     }
+});
+
+/* SEARCH */
+document.getElementById("fromCurrencySearch").addEventListener("input", (e) => {
+    renderCurrencyDropdown(fromCurrencyDropdown, "from", e.target.value);
+});
+
+document.getElementById("toCurrencySearch").addEventListener("input", (e) => {
+    renderCurrencyDropdown(toCurrencyDropdown, "to", e.target.value);
 });
 
 /* INIT */
