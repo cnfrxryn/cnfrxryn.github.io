@@ -1,64 +1,83 @@
-<section class="currency-converter-section">
-  <!-- LEFT SIDE -->
-  <div class="converter-left">
-    <h1>Currency <br>
-      Converter
-    </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Currency Converter</title>
 
-    <p>
-      Live exchange rates. Fast. Accurate. Simple.
-    </p>
+  <!-- CSS -->
+  <link rel="stylesheet" href="currency-converter.css">
+</head>
 
-    <img src="assets/images/currency-bg-img.png" alt="Currency background" class="currency-bg-img">
-  </div>
+<body>
+  <section class="currency-converter-section">
+    <!-- LEFT SIDE -->
+    <div class="converter-left">
+      <h1>Currency <br>
+        Converter
+      </h1>
 
-  <!-- RIGHT SIDE -->
-  <div class="converter-card">
-    <!-- FROM -->
-    <div class="currency-group">
-      <label>From</label>
-      <div class="currency-select">
-        <div class="currency-info">
-          <img src="https://flagcdn.com/us.svg" alt="USD" class="flag-icon">
-          <span class="currency-code">USD</span>
-          <span class="currency-name">US Dollar</span>
+      <p>
+        Live exchange rates. Fast. Accurate. Simple.
+      </p>
+
+      <div class="currency-bg-wrapper">
+        <img src="assets/images/currency-bg-img.png" alt="Currency background" class="currency-bg-img">
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="converter-card">
+      <!-- FROM -->
+      <div class="currency-group">
+        <label for="from-currency">From</label>
+        <div class="currency-select">
+          <div class="currency-info">
+            <img src="https://flagcdn.com/us.svg" alt="USD" class="flag-icon">
+            <span class="currency-code">USD</span>
+            <span class="currency-name">US Dollar</span>
+          </div>
+
+          <span class="dropdown-icon">⌄</span>
         </div>
 
-        <span class="dropdown-icon">▼</span>
+        <input type="number" value="1000" class="currency-input">
       </div>
 
-      <input type="number" value="1000" class="currency-input">
-    </div>
+      <!-- SWITCH -->
+      <button class="swap-btn">⇅</button>
 
-    <!-- SWITCH -->
-    <button class="swap-btn">⇅</button>
+      <!-- TO -->
+      <div class="currency-group">
+        <label for="to-currency">To</label>
+        <div class="currency-select">
+          <div class="currency-info">
+            <img src="https://flagcdn.com/eu.svg" alt="EUR" class="flag-icon">
+            <span class="currency-code">EUR</span>
+            <span class="currency-name">Euro</span>
+          </div>
 
-    <!-- TO -->
-    <div class="currency-group">
-      <label>To</label>
-      <div class="currency-select">
-        <div class="currency-info">
-          <img src="https://flagcdn.com/eu.svg" alt="EUR" class="flag-icon">
-          <span class="currency-code">EUR</span>
-          <span class="currency-name">Euro</span>
+          <span class="dropdown-icon">⌄</span>
         </div>
 
-        <span class="dropdown-icon">▼</span>
+        <input type="text" value="921.20" class="currency-input converted-input" readonly>
       </div>
 
-      <input type="text" value="921.20" class="currency-input converted-input" readonly>
-    </div>
-
-    <!-- RATE -->
-    <div class="exchange-rate">
-      <span>1 USD = 0.9212 EUR</span>
-      <div class="live-status">
-        <span class="live-dot"></span>
-        <span>Live</span>
+      <!-- RATE -->
+      <div class="exchange-rate">
+        <span>1 USD = 0.9212 EUR</span>
+        <div class="live-status">
+          <span class="live-dot"></span>
+          <span>Live</span>
+        </div>
       </div>
-    </div>
 
-    <!-- UPDATED -->
-    <p class="last-updated">Last updated: 2 mins ago</p>
-  </div>
-</section>
+      <!-- UPDATED -->
+      <p class="last-updated">Last updated: 2 mins ago</p>
+    </div>
+  </section>
+
+  <script src="assets/js/currency-converter.js"></script>
+
+</body>
+</html>
