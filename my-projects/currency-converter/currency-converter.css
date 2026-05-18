@@ -16,20 +16,18 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 80px;
-
-  padding: 60px;
+  justify-content: space-evenly;
+  padding: 60px 30px;
 }
 
 /* LEFT SIDE */
 .converter-left {
-  width: 500px;
+  width: 35%;
 }
 
 .converter-left h1 {
   font-size: 82px;
-  line-height: 0.95;
+  line-height: 1.25;
   font-weight: 700;
   color: #505050;
   margin-bottom: 24px;
@@ -37,7 +35,7 @@ body {
 
 .converter-left p {
   font-size: 24px;
-  color: #5C5C5C;
+  color: #5c5c5c8a;
   margin-bottom: 40px;
 }
 
@@ -79,18 +77,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  position: relative;
-  overflow: hidden;
-}
-
-.card-gradient {
-  position: absolute;
-  top: -120px;
-  right: -120px;
-  width: 260px;
-  height: 260px;
-  background: radial-gradient(circle, rgba(111, 92, 255, 0.12), transparent 70%);
-  pointer-events: none;
 }
 
 /* GROUP */
@@ -117,6 +103,11 @@ body {
   cursor: pointer;
 }
 
+.currency-select:hover,
+.currency-input:hover {
+  border-color: #C7BEFF;
+}
+
 .currency-info {
   display: flex;
   align-items: center;
@@ -138,12 +129,14 @@ body {
 
 .currency-name {
   font-size: 22px;
-  color: #666;
+  color: #8A8A8A;
 }
 
 .dropdown-icon {
-  font-size: 26px;
-  color: #666;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  transition: 0.2s ease;
 }
 
 /* INPUT */
@@ -157,6 +150,25 @@ body {
   font-weight: 700;
   color: #4D4D4D;
   outline: none;
+  line-height: 88px;
+}
+
+.currency-input:focus {
+  border-color: #6B5BFF;
+  box-shadow: 0 0 0 4px rgba(107, 91, 255, 0.08);
+}
+
+/* REMOVE DEFAULT NUMBER INPUT ARROWS */
+/* Chrome, Safari, Edge, Opera */
+.currency-input::-webkit-outer-spin-button,
+.currency-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.currency-input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .converted-input {
@@ -165,8 +177,8 @@ body {
 
 /* SWAP BUTTON */
 .swap-btn {
-  width: 72px;
-  height: 72px;
+  width: 60px;
+  height: 60px;
   margin: 0 auto;
   border-radius: 50%;
   border: 2px solid #D9D9D9;
@@ -188,6 +200,7 @@ body {
   gap: 24px;
   font-size: 22px;
   color: #555;
+  margin-top: 25px;
 }
 
 .live-status {
@@ -206,6 +219,8 @@ body {
 
 /* UPDATED */
 .last-updated {
-  font-size: 20px;
+  font-size: 17px;
   color: #777;
+  font-style: italic;
+  margin-top: -15px;
 }
