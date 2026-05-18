@@ -41,16 +41,16 @@
         <div class="currency-select" id="fromCurrencySelect">
           <div class="currency-info">
             <img src="https://flagcdn.com/us.svg" alt="USD" class="flag-icon">
-            <span class="currency-code">USD</span>
-            <span class="currency-name">US Dollar</span>
+            <span class="currency-code" id="fromCurrencyCode">USD</span>
+            <span class="currency-name" id="fromCurrencyName">US Dollar</span>
           </div>
 
           <img src="/assets/icons/dropdown-down.png" alt="Dropdown Icon" class="dropdown-icon">
         </div>
 
-        <div class="currency-dropdown" id="fromCurrencyDropdown"></div>
         <input type="number" value="1000" class="currency-input">
       </div>
+      <div class="currency-dropdown" id="fromCurrencyDropdown"></div>
 
       <!-- SWITCH -->
       <button class="swap-btn">⇅</button>
@@ -61,13 +61,13 @@
         <div class="currency-select" id="toCurrencySelect">
           <div class="currency-info">
             <img src="https://flagcdn.com/eu.svg" alt="EUR" class="flag-icon">
-            <span class="currency-code">EUR</span>
-            <span class="currency-name">Euro</span>
+            <span class="currency-code" id="toCurrencyCode">EUR</span>
+            <span class="currency-name" id="toCurrencyName">Euro</span>
           </div>
 
-          <div class="currency-dropdown" id="toCurrencyDropdown"></div>
           <img src="/assets/icons/dropdown-down.png" alt="Dropdown Icon" class="dropdown-icon">
         </div>
+        <div class="currency-dropdown" id="toCurrencyDropdown"></div>
 
         <input type="text" value="921.20" class="currency-input converted-input" readonly>
       </div>
