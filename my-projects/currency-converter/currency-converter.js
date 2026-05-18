@@ -82,3 +82,55 @@ document.getElementById("toCurrencySearch").addEventListener("input", (e) => {
 /* INIT */
 renderCurrencyDropdown(fromCurrencyDropdown, "from");
 renderCurrencyDropdown(toCurrencyDropdown, "to");
+
+/* TO DELETE */
+const generateCurrencyDataBtn = document.getElementById("generateCurrencyDataBtn");
+const currencyDataOutput = document.getElementById("currencyDataOutput");
+generateCurrencyDataBtn.addEventListener("click", async () => {
+    try {
+      generateCurrencyDataBtn.textContent = "Generating...";
+
+      /* FETCH COUNTRIES */
+      const response = await fetch("https://restcountries.com/v3.1/all?fields=currencies,cca2");
+      const countries = await response.json();
+
+      /* STORE UNIQUE CURRENCIES */
+      const currencyMap = new Map();
+
+      countries.forEach((country) => {
+        if (!country.currencies) return;
+        Object.entries(country.currencies).forEach(([code, currencyData]) => {
+            if (!currencyMap.has(code)) {
+              currencyMap.set(code, {
+                code,
+                name: currencyData.name || "",
+                symbol: currencyData.symbol || "",
+                countryCode: (country.cca2 || "").toLowerCase()
+              });
+            }
+          });
+      });
+
+      /* CONVERT TO ARRAY */
+      const currencyArray = Array.from(currencyMap.values());
+
+      /* SORT ALPHABETICALLY */
+      currencyArray.sort((a, b) => a.code.localeCompare(b.code));
+
+      /* GENERATE JS CONTENT */
+      const finalOutput = `const currencies = ${JSON.stringify(currencyArray, null, 2)};`;
+
+      /* SHOW OUTPUT */
+      currencyDataOutput.value = finalOutput;
+      console.log(currencyArray);
+
+      generateCurrencyDataBtn.textContent = "Dataset Generated";
+    }
+
+    catch (error) {
+      console.error(error);
+      currencyDataOutput.value = "Error generating currency data.";
+      generateCurrencyDataBtn.textContent = "Generation Failed";
+    }
+  }
+);
