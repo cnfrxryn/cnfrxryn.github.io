@@ -39,7 +39,7 @@ html {
 }
 
 .hero-left {
-  max-width: 500px;
+  max-width: 45%;
   padding-top: 20px;
 }
 
@@ -53,7 +53,7 @@ html {
   font-size: 20px;
   line-height: 1.8;
   color: #6f6f6f;
-  max-width: 420px;
+  max-width: 80%;
 }
 
 /* HERO IMAGE */
@@ -63,7 +63,7 @@ html {
 
 .hero-bg-image {
   width: 600px;
-  opacity: 0.10;
+  opacity: 0.9;
   object-fit: cover;
 }
 
