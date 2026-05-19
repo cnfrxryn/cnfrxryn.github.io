@@ -1,5 +1,6 @@
 // TIMELINE ELEMENTS
 const timelineScrolls = document.querySelectorAll('.timeline-scroll');
+const syncScrollToggle = document.querySelector('#sync-scroll-toggle');
 
 // CENTER ACTIVE CELLS
 function centerActiveCells() {
@@ -19,6 +20,8 @@ function centerActiveCells() {
 let isSyncingScroll = false;
 timelineScrolls.forEach((timeline) => {
   timeline.addEventListener('scroll', () => {
+    // STOP IF TOGGLE IS OFF
+    if (!syncScrollToggle.checked) return;
     if (isSyncingScroll) return;
     isSyncingScroll = true;
 

@@ -163,6 +163,58 @@ body {
   background: #5a49f5;
 }
 
+.sync-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding-left: 4px;
+}
+
+.sync-label {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* HIDE DEFAULT CHECKBOX */
+.sync-toggle input {
+  display: none;
+}
+
+/* TOGGLE */
+.sync-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #d6d9e4;
+  border-radius: 999px;
+  transition: 0.2s ease;
+  display: block;
+}
+
+/* TOGGLE CIRCLE */
+.sync-slider::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  transition: 0.2s ease;
+}
+
+/* ACTIVE STATE */
+.sync-toggle input:checked + .sync-slider {
+  background: #6d5dfc;
+}
+
+.sync-toggle input:checked + .sync-slider::before {
+  transform: translateX(20px);
+}
+
 /* TIMEZONE LIST */
 .timezone-list {
   display: flex;
