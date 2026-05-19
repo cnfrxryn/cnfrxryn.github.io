@@ -1,14 +1,15 @@
-// TIMELINE AUTO ALIGN
+// TIMELINE ELEMENTS
 const timelineScrolls = document.querySelectorAll('.timeline-scroll');
+
+// CENTER ACTIVE CELLS
 function centerActiveCells() {
   timelineScrolls.forEach((timeline) => {
     const activeCell = timeline.querySelector('.active-cell');
     if (!activeCell) return;
 
-    const timelineWidth = timeline.offsetWidth;
-    const activeOffset = activeCell.offsetLeft;
-    const activeWidth = activeCell.offsetWidth;
-    const scrollPosition = activeOffset - (timelineWidth / 2) + (activeWidth / 2);
+    const timelineWidth = timeline.clientWidth;
+    const activeOffset = activeCell.offsetLeft + (activeCell.clientWidth / 2);
+    const scrollPosition = activeOffset - (timelineWidth / 2);
 
     timeline.scrollLeft = scrollPosition;
   });
@@ -21,18 +22,22 @@ timelineScrolls.forEach((timeline) => {
     if (isSyncingScroll) return;
     isSyncingScroll = true;
 
-    const scrollLeft = timeline.scrollLeft;
+    const currentScrollLeft = timeline.scrollLeft;
     timelineScrolls.forEach((otherTimeline) => {
       if (otherTimeline !== timeline) {
-        otherTimeline.scrollLeft = scrollLeft;
+        otherTimeline.scrollLeft = currentScrollLeft;
       }
     });
 
-    isSyncingScroll = false;
+    requestAnimationFrame(() => {
+      isSyncingScroll = false;
+    });
   });
 });
 
-// INITIALIZE
+//INITIALIZE
 window.addEventListener('load', () => {
-  centerActiveCells();
+  setTimeout(() => {
+    centerActiveCells();
+  }, 100);
 });
