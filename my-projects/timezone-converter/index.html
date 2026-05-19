@@ -1,7 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>TIME ZONE CONVERTER PLACEHOLDER</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Zone Converter</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="timezone-converter.css" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
+<body>
+  <main class="app-container">
+    <!-- HEADER -->
+    <header class="hero-section">
+      <div class="hero-left">
+        <div class="logo-wrapper">🌎</div>
+        <div>
+          <h1>Time Zone Converter</h1>
+          <p>Convert between time zones and compare times worldwide.</p>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="time-format-toggle">
+          <button class="toggle-btn active">12h</button>
+          <button class="toggle-btn">24h</button>
+        </div>
+
+        <button class="theme-btn">☀️</button>
+      </div>
+
+    </header>
+
+    <!-- CONTROL PANEL -->
+    <section class="control-panel">
+      <div class="control-group">
+        <label>Reference Time Zone</label>
+
+        <button class="control-input large-input">
+          <span>Manila, Philippines</span>
+          <div class="timezone-meta">
+            <span>PHT</span>
+            <span>GMT+8</span>
+          </div>
+        </button>
+
+      </div>
+      <div class="control-group">
+        <label>Date</label>
+        <button class="control-input">May 19, 2025</button>
+      </div>
+
+      <div class="control-group">
+        <label>Time</label>
+        <button class="control-input">04:00 PM</button>
+      </div>
+
+      <button class="add-timezone-btn">+ Add Time Zone</button>
+
+    </section>
+
+    <!-- TIMEZONE LIST -->
+    <section class="timezone-list">
+      <!-- MANILA -->
+      <article class="timezone-card">
+        <div class="timezone-info">
+          <div class="timezone-dot purple"></div>
+          <div class="timezone-details">
+            <div class="timezone-title-row">
+              <h2>Manila</h2>
+              <div class="timezone-tags">
+                <span>PHT</span>
+                <span>GMT+8</span>
+              </div>
+            </div>
+
+            <p class="country-name">Philippines</p>
+            <p class="timezone-date">Mon, May 19</p>
+          </div>
+        </div>
+
+        <div class="current-time-box">
+          <h3>04:00</h3>
+          <span class="time-pill purple-pill">PM</span>
+        </div>
+
+        <div class="timeline-wrapper">
+          <div class="timeline-hours">
+            <span>12 AM</span>
+            <span>3 AM</span>
+            <span>6 AM</span>
+            <span>9 AM</span>
+            <span>12 PM</span>
+            <span>3 PM</span>
+            <span>6 PM</span>
+            <span>9 PM</span>
+            <span>12 AM</span>
+          </div>
+
+          <div class="timeline-grid">
+            <div class="time-cell">12</div>
+            <div class="time-cell">1</div>
+            <div class="time-cell">2</div>
+            <div class="time-cell">3</div>
+            <div class="time-cell">4</div>
+            <div class="time-cell">5</div>
+            <div class="time-cell">6</div>
+            <div class="time-cell">7</div>
+            <div class="time-cell">8</div>
+            <div class="time-cell">9</div>
+            <div class="time-cell">10</div>
+            <div class="time-cell">11</div>
+            <div class="time-cell active purple-active">4 PM</div>
+            <div class="time-cell">5</div>
+            <div class="time-cell">6</div>
+            <div class="time-cell">7</div>
+            <div class="time-cell">8</div>
+            <div class="time-cell">9</div>
+            <div class="time-cell">10</div>
+            <div class="time-cell">11</div>
+          </div>
+        </div>
+
+      </article>
+
+      <!-- LOS ANGELES -->
+      <article class="timezone-card">
+        <div class="timezone-info">
+          <div class="timezone-dot blue"></div>
+          <div class="timezone-details">
+            <div class="timezone-title-row">
+              <h2>Los Angeles</h2>
+              <div class="timezone-tags">
+                <span>PDT</span>
+                <span>GMT-7</span>
+              </div>
+            </div>
+
+            <p class="country-name">United States</p>
+            <p class="timezone-date">Mon, May 19</p>
+          </div>
+
+        </div>
+
+        <div class="current-time-box">
+          <h3>01:00</h3>
+          <span class="time-pill blue-pill">AM</span>
+        </div>
+
+        <div class="timeline-wrapper">
+          <div class="timeline-hours">
+            <span>12 AM</span>
+            <span>3 AM</span>
+            <span>6 AM</span>
+            <span>9 AM</span>
+            <span>12 PM</span>
+            <span>3 PM</span>
+            <span>6 PM</span>
+            <span>9 PM</span>
+            <span>12 AM</span>
+          </div>
+
+          <div class="timeline-grid">
+            <div class="time-cell active blue-active">1 AM</div>
+            <div class="time-cell">2</div>
+            <div class="time-cell">3</div>
+            <div class="time-cell">4</div>
+            <div class="time-cell">5</div>
+            <div class="time-cell">6</div>
+            <div class="time-cell">7</div>
+            <div class="time-cell">8</div>
+            <div class="time-cell">9</div>
+            <div class="time-cell">10</div>
+            <div class="time-cell">11</div>
+            <div class="time-cell">12</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MELBOURNE -->
+      <article class="timezone-card">
+        <div class="timezone-info">
+          <div class="timezone-dot green"></div>
+          <div class="timezone-details">
+            <div class="timezone-title-row">
+              <h2>Melbourne</h2>
+              <div class="timezone-tags">
+                <span>AEST</span>
+                <span>GMT+10</span>
+              </div>
+            </div>
+
+            <p class="country-name">Australia</p>
+            <p class="timezone-date">Mon, May 19</p>
+
+          </div>
+        </div>
+
+        <div class="current-time-box">
+          <h3>06:00</h3>
+          <span class="time-pill green-pill">PM</span>
+        </div>
+
+        <div class="timeline-wrapper">
+          <div class="timeline-hours">
+            <span>12 AM</span>
+            <span>3 AM</span>
+            <span>6 AM</span>
+            <span>9 AM</span>
+            <span>12 PM</span>
+            <span>3 PM</span>
+            <span>6 PM</span>
+            <span>9 PM</span>
+            <span>12 AM</span>
+          </div>
+
+          <div class="timeline-grid">
+            <div class="time-cell">12</div>
+            <div class="time-cell">1</div>
+            <div class="time-cell">2</div>
+            <div class="time-cell">3</div>
+            <div class="time-cell">4</div>
+            <div class="time-cell">5</div>
+            <div class="time-cell active green-active">6 PM</div>
+            <div class="time-cell">7</div>
+            <div class="time-cell">8</div>
+            <div class="time-cell">9</div>
+            <div class="time-cell">10</div>
+            <div class="time-cell">11</div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- FOOTER TIP -->
+    <div class="tip-box">💡 Tip: Click or drag the timeline to compare times.</div>
+
+  </main>
+
+</body>
 </html>
