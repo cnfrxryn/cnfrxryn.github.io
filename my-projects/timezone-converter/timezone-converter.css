@@ -177,7 +177,7 @@ body {
   border-radius: 30px;
   padding: 28px;
   display: grid;
-  grid-template-columns: 320px 140px 1fr;
+  grid-template-columns: 280px 140px minmax(0, 1fr);
   gap: 28px;
   align-items: center;
 }
@@ -214,8 +214,12 @@ body {
 }
 
 .timezone-title-row h2 {
-  font-size: 38px;
+  font-size: clamp(2rem, 2vw, 3rem);
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
 }
 
 .timezone-tags {
@@ -280,6 +284,33 @@ body {
   width: 100%;
 }
 
+.timeline-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #d6d9e4 transparent;
+  padding-bottom: 6px;
+  scroll-behavior: smooth;
+}
+
+.timeline-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.timeline-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.timeline-scroll::-webkit-scrollbar-thumb {
+  background: #d6d9e4;
+  border-radius: 999px;
+}
+
+.timeline-scroll::-webkit-scrollbar-thumb:hover {
+  background: #c3c8d8;
+}
+
 .timeline-hours {
   display: flex;
   justify-content: space-between;
@@ -292,13 +323,15 @@ body {
 .timeline-grid {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  width: max-content;
+  min-width: 100%;
 }
 
 .time-cell {
-  width: 52px;
+  flex-shrink: 0;
+  width: 74px;
   height: 72px;
-  border-radius: 16px;
+  border-radius: 18px;
   background: #f4f6fb;
   display: flex;
   align-items: center;
@@ -306,6 +339,7 @@ body {
   color: #7b8190;
   font-weight: 600;
   font-size: 14px;
+  transition: 0.2s ease;
 }
 
 .active {
