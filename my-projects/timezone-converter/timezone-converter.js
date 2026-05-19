@@ -10,7 +10,18 @@ function centerActiveCells() {
 
     const timelineWidth = timeline.clientWidth;
     const activeOffset = activeCell.offsetLeft + (activeCell.clientWidth / 2);
-    const scrollPosition = activeOffset - (timelineWidth / 2);
+    let scrollPosition = activeOffset - (timelineWidth / 2);
+    const maxScroll = timeline.scrollWidth - timeline.clientWidth;
+
+    // LEFT EDGE
+    if (scrollPosition < 0) {
+        scrollPosition = 0;
+    }
+
+    // RIGHT EDGE
+    if (scrollPosition > maxScroll) {
+        scrollPosition = maxScroll;
+    }
 
     timeline.scrollLeft = scrollPosition;
   });
