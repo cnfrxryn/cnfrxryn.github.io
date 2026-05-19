@@ -14,6 +14,7 @@ const toAmountInput = document.getElementById("toAmountInput");
 const swapBtn = document.querySelector(".swap-btn");
 const refreshBtn = document.getElementById("refreshBtn");
 const lastUpdatedText = document.getElementById("lastUpdatedText");
+const exchangeRateText = document.getElementById("exchangeRateText");
 
 /* STATE */
 let fromCurrency = "USD";
@@ -46,7 +47,7 @@ function updateLastUpdatedTime() {
 
   else {
     const minutesAgo = Math.floor(secondsAgo / 60);
-    lastUpdatedText.textContent = `Last updated: ${minutesAgo} min ago`;
+    lastUpdatedText.textContent = `Last updated: ${minutesAgo} ${minutesAgo === 1 ? "min" : "mins"} ago`;
   }
 }
 
@@ -103,17 +104,22 @@ async function fetchExchangeRate() {
     const response = await fetch(`https://open.er-api.com/v6/latest/${fromCurrency}`);
     const data = await response.json();
     exchangeRate = data.rates[toCurrency];
+    exchangeRateText.textContent = `1 ${fromCurrency} = ${exchangeRate.toFixed(4)} ${toCurrency}`;
     convertCurrency();
 
     lastUpdatedTimestamp = Date.now();
     updateLastUpdatedTime();
 
-    refreshBtn.classList.remove("loading");
+    setTimeout(() => {
+      refreshBtn.classList.remove("loading");
+    }, 500);
   }
 
   catch (error) {
     console.error("Exchange rate fetch failed:", error);
-    refreshBtn.classList.remove("loading");
+    setTimeout(() => {
+      refreshBtn.classList.remove("loading");
+    }, 500);
   }
 }
 

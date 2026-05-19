@@ -58,7 +58,11 @@
       </div>
 
       <!-- SWITCH -->
-      <button class="swap-btn">⇅</button>
+      <div class="swap-divider">
+        <button class="swap-btn" id="swapBtn">
+          <img src="/assets/icons/swap-icon.png" alt="Swap currencies" class="swap-icon">
+        </button>
+      </div>
 
       <!-- TO -->
       <div class="currency-group">
@@ -86,11 +90,7 @@
 
       <!-- RATE -->
       <div class="exchange-rate">
-        <span>1 USD = 0.9212 EUR</span>
-        <div class="live-status">
-          <span class="live-dot"></span>
-          <span>Live</span>
-        </div>
+        <span id="exchangeRateText">1 USD = 0.9212 EUR</span>
       </div>
 
       <!-- FOOTER -->
