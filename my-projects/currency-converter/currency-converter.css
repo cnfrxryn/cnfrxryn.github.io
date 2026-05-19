@@ -399,6 +399,353 @@ body {
   }
 }
 
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+/* LARGE LAPTOPS */
+@media screen and (max-width: 1440px) {
+  .converter-left h1 {
+    font-size: 72px;
+  }
+
+  .converter-card {
+    width: 620px;
+  }
+}
+
+/* SMALL LAPTOPS */
+@media screen and (max-width: 1200px) {
+  .currency-converter-section {
+    gap: 50px;
+  }
+
+  .converter-left {
+    width: 42%;
+  }
+
+  .converter-left h1 {
+    font-size: 64px;
+  }
+
+  .converter-left p {
+    font-size: 22px;
+  }
+
+  .converter-card {
+    width: 560px;
+    padding: 40px;
+  }
+
+  .currency-bg-img {
+    width: 420px;
+  }
+}
+
+/* TABLETS */
+@media screen and (max-width: 1024px) {
+  .currency-converter-section {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 40px;
+    padding: 120px 24px 60px;
+  }
+
+  .converter-left {
+    width: 100%;
+    text-align: center;
+  }
+
+  .converter-left h1 {
+    font-size: 58px;
+    margin-bottom: 16px;
+  }
+
+  .converter-left p {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  .currency-bg-wrapper {
+    height: 320px;
+  }
+
+  .currency-bg-wrapper::before {
+    width: 320px;
+    height: 320px;
+  }
+
+  .currency-bg-img {
+    width: 340px;
+  }
+
+  .converter-card {
+    width: 100%;
+    max-width: 680px;
+  }
+}
+
+/* LARGE MOBILE */
+@media screen and (max-width: 768px) {
+  .currency-converter-section {
+    padding: 110px 18px 40px;
+    gap: 30px;
+  }
+
+  .converter-left h1 {
+    font-size: 48px;
+    line-height: 1.15;
+  }
+
+  .converter-left p {
+    font-size: 18px;
+  }
+
+  .currency-bg-wrapper {
+    height: 240px;
+  }
+
+  .currency-bg-wrapper::before {
+    width: 240px;
+    height: 240px;
+    filter: blur(40px);
+  }
+
+  .currency-bg-img {
+    width: 260px;
+  }
+
+  .converter-card {
+    padding: 28px;
+    border-radius: 30px;
+    gap: 20px;
+  }
+
+  .currency-select {
+    height: 76px;
+    padding: 0 18px;
+    border-radius: 18px;
+  }
+
+  .currency-input {
+    height: 76px;
+    font-size: 34px;
+    border-radius: 18px;
+  }
+
+  .currency-input::placeholder {
+    font-size: 20px;
+  }
+
+  .currency-code {
+    font-size: 24px;
+  }
+
+  .currency-name {
+    font-size: 18px;
+  }
+
+  .flag-icon {
+    width: 44px;
+    height: 32px;
+  }
+
+  .exchange-rate {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+
+  .converter-footer {
+    margin-top: -10px;
+  }
+
+  .swap-btn {
+    width: 56px;
+    height: 56px;
+  }
+
+  .swap-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .refresh-btn {
+    width: 48px;
+    height: 48px;
+  }
+
+  .currency-dropdown {
+    top: 84px;
+  }
+
+  .currency-options-list {
+    max-height: 220px;
+  }
+}
+
+/* MOBILE */
+@media screen and (max-width: 480px) {
+  .currency-converter-section {
+    padding: 100px 14px 30px;
+  }
+
+  .converter-left h1 {
+    font-size: 42px;
+  }
+
+  .converter-left p {
+    font-size: 16px;
+  }
+
+  .currency-bg-wrapper {
+    height: 180px;
+  }
+
+  .currency-bg-wrapper::before {
+    width: 180px;
+    height: 180px;
+  }
+
+  .currency-bg-img {
+    width: 200px;
+  }
+
+  .converter-card {
+    padding: 22px;
+    border-radius: 26px;
+  }
+
+  .currency-group label {
+    font-size: 18px;
+  }
+
+  .currency-select {
+    height: 70px;
+    border-radius: 16px;
+  }
+
+  .currency-input {
+    height: 70px;
+    font-size: 28px;
+    padding: 0 18px;
+    border-radius: 16px;
+  }
+
+  .currency-input::placeholder {
+    font-size: 18px;
+  }
+
+  .currency-code {
+    font-size: 20px;
+  }
+
+  .currency-name {
+    font-size: 16px;
+  }
+
+  .flag-icon {
+    width: 40px;
+    height: 28px;
+  }
+
+  .currency-info {
+    gap: 12px;
+  }
+
+  .dropdown-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .exchange-rate {
+    font-size: 16px;
+  }
+
+  .last-updated {
+    font-size: 14px;
+  }
+
+  .refresh-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  .refresh-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .swap-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .swap-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .currency-dropdown {
+    top: 78px;
+    border-radius: 18px;
+  }
+
+  .currency-search-input {
+    height: 46px;
+    font-size: 15px;
+  }
+
+  .currency-option {
+    padding: 14px 18px;
+  }
+
+  .currency-option-code,
+  .currency-option-name {
+    font-size: 16px;
+  }
+}
+
+/* SMALL MOBILE */
+@media screen and (max-width: 390px) {
+  .converter-left h1 {
+    font-size: 36px;
+  }
+
+  .converter-card {
+    padding: 18px;
+  }
+
+  .currency-select {
+    padding: 0 14px;
+  }
+
+  .currency-code {
+    font-size: 18px;
+  }
+
+  .currency-name {
+    font-size: 14px;
+  }
+
+  .currency-input {
+    font-size: 24px;
+  }
+
+  .currency-input::placeholder {
+    font-size: 16px;
+  }
+
+  .exchange-rate {
+    font-size: 15px;
+  }
+
+  .converter-footer {
+    gap: 12px;
+  }
+}
+
 /* DATASET GENERATOR (Temporary only; to be re-used) */
 /* .generate-data-btn {
   width: 100%;
