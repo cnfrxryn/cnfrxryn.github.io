@@ -209,25 +209,26 @@ body {
 .timezone-title-row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   margin-bottom: 14px;
+  min-width: 0;
 }
 
 .timezone-title-row h2 {
-  font-size: clamp(2rem, 2vw, 3rem);
+  font-size: clamp(2rem, 1.8vw, 3rem);
   font-weight: 700;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 220px;
+  line-height: 1;
+  flex-shrink: 1;
 }
 
 .timezone-tags {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   color: #6b7280;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .country-name {
